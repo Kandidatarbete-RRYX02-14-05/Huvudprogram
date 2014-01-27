@@ -18,6 +18,8 @@ public class KandidatHuvudprogram {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        TestChart hej = new TestChart();
+        
         String fil = "G1_garb_111111-1s.tsf";
         Import imp = new Import();
         String data[] = null;
