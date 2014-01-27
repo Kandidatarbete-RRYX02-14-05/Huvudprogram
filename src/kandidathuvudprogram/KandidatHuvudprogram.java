@@ -18,11 +18,14 @@ public class KandidatHuvudprogram {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        
+        // Testar Import.Java--------
         String fil = "G1_garb_111111-1s.tsf";
         Import imp = new Import();
         String data[] = null;
         try {
-            data = imp.importera(0, 7, fil);
+            data = imp.importera(800, 4000, fil);
         } catch (FileNotFoundException ex) {
             System.out.println("\n\n--Fil ej funnen: " + fil + " --\n\n");
             Logger.getLogger(KandidatHuvudprogram.class.getName()).log(Level.SEVERE, null, ex);
@@ -31,5 +34,6 @@ public class KandidatHuvudprogram {
         for (int i=0; i<data.length; i++){
             System.out.println(data[i]);
         }
+        //--------------------------
     }
 }
