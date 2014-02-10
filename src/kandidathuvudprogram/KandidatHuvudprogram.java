@@ -38,6 +38,7 @@ public class KandidatHuvudprogram {
             System.out.println(data[i]);
         }
         //--------------------------
+<<<<<<< HEAD
         
         // testar fft
         double testdata1[] = new double[data.length];
@@ -50,5 +51,8 @@ public class KandidatHuvudprogram {
         FFT fft = new FFT(2);
         fft.fft(testdata1,testdata2);*/
         //--------------
+=======
+
+>>>>>>> branch 'master' of https://github.com/Kandidatarbete-RRYX02-14-05/Huvudprogram.git
     }
 }
