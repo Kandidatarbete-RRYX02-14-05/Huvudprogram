@@ -28,6 +28,7 @@ public class Import {
         FileReader filLas = new FileReader(filnamn);
         BufferedReader bfLas = new BufferedReader(filLas);
         
+        //Läser till den rad som läsningen skall starta på(radStart)
         for (int i=0; i<radStart; i++){
             try {
                 bfLas.readLine();
@@ -36,6 +37,8 @@ public class Import {
                 Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        //Läser från radStart det antal rader som specificerats
         for (int i=0; i<antalRader; i++){
             try {
                 data[i] = bfLas.readLine();
