@@ -5,6 +5,7 @@
 package kandidathuvudprogram;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,12 @@ public class KandidatHuvudprogram {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        //hej här har markus ändrat:)
+        System.out.println("Ändrat");
+        
+        
+        
         // Testar TestChart ---
         TestChart hej = new TestChart();
         // ----------------
