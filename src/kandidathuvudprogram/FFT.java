@@ -2,10 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor. 
  */
-/*
- * Coca Cola  (1)
- * Fanta      (0)
- */
+
 package kandidathuvudprogram;
 
 /*
