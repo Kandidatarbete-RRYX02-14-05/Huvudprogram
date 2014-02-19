@@ -65,7 +65,7 @@ public class PowerSpectrum {
     		windowedFun[i]=array[i]*window[i];
     	}
     	double [] emptyImaginary = new double [2*length];
-    	FFT fft = new FFT(2*length);
+    	FFT fft = new FFT(2*length);					// fel längd, bör fixas
     	fft.fft(windowedFun,emptyImaginary);
     	fft.printReIm(windowedFun,emptyImaginary);
 
