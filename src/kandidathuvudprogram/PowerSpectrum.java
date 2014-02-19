@@ -22,9 +22,10 @@ public class PowerSpectrum {
         }
         initValues(6, 10, yValues);
         createIntervals();
-        for (int i=0; i<numberParts; i++){
-            printArray(yValIntervals[i]);
-        }
+       // for (int i=0; i<numberParts; i++){
+         //   printArray(yValIntervals[i]);
+       // }
+        transform(yValues);
         //---------------
         
         
@@ -53,6 +54,23 @@ public class PowerSpectrum {
             System.out.print("["+i+"]: " + array[i]);
         }
         System.out.println("");
+    }
+    
+    //skapar det som ska transformeras och transformerar sedan
+    public void transform(double array[]){
+    	int length=array.length;
+    	double [] window=Window.createWindow(length,"Hamming");
+    	double [] windowedFun = new double [2*length]; 		//resterande element borde vara 0
+    	for (int i=0; i<length; i++){
+    		windowedFun[i]=array[i]*window[i];
+    	}
+    	double [] emptyImaginary = new double [2*length];
+    	FFT fft = new FFT(2*length);
+    	fft.fft(windowedFun,emptyImaginary);
+    	fft.printReIm(windowedFun,emptyImaginary);
+
+    	
+    			
     }
     
 }
