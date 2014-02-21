@@ -10,9 +10,9 @@ package kandidathuvudprogram;
  */
 public class PowerSpectrum {
     
-    int numberParts, overlapLength, intervalLength, FFTLength;
+    int numberParts, intervalLength, FFTLength, dataLength;
     
-    double yValues[], yValIntervals[][], spectrum[], window[];
+    double yValues[], yValIntervals[][], spectrum[], window[], complexIntervals[][];
 
 	private FFT fft;
     
@@ -22,11 +22,12 @@ public class PowerSpectrum {
         for (int i=0; i<2000; i++){
             yValues[i] = Math.sin(i*0.1);
         }*/
-        initValues(1, 0, yValues);        
+        initValues(1, yValues);        
         createIntervals();
         /*for (int i=0; i<numberParts; i++){
            printArray(yValIntervals[i]);
         }*/
+        removeMean();
         prepTransform("Hamming");
         transform();       
         Chart.useChart(spectrum);
@@ -36,21 +37,36 @@ public class PowerSpectrum {
     }
     
     // Sätter inmatade värden
-    public void initValues(int numberParts, int overlapLength, double yValues[]){
+    public void initValues(int numberParts, double yValues[]){
         this.numberParts = numberParts;
-        this.overlapLength = overlapLength;
         this.yValues = yValues;
+        this.dataLength =yValues.length;
+        
     } 
     // Skapar array:en "yValIntervals" där första fältet är 
     public void createIntervals(){
-        intervalLength = (yValues.length+overlapLength*(numberParts-1))/numberParts;
-        yValIntervals = new double[numberParts][intervalLength];
+        intervalLength = yValues.length / numberParts;
+        FFTLength = nextPowerOf2(2*intervalLength);
+        yValIntervals = new double[numberParts][FFTLength];	
+        complexIntervals = new double[numberParts][FFTLength];
+        System.out.println(yValIntervals[0].length +" "  );
         
         for (int i=0; i<numberParts; i++){
             System.arraycopy(yValues, i*intervalLength, yValIntervals[i], 0, intervalLength);
-        }
+        
+        }  
     }
-
+    // removes mean from data
+    public void removeMean(){
+    	double sum = 0;
+    	for (int i = 0 ; i < dataLength; i++){
+    		sum += yValues[i];
+    	}
+    	sum = sum / dataLength;
+    	for (int i = 0 ; i < dataLength; i++){
+    		yValues[i] -= sum;
+    	}
+    }
     
     // Skriver ut varje värde i en array
     public void printArray(double array[]){
@@ -74,7 +90,6 @@ public class PowerSpectrum {
     public void prepTransform(String windowType)
     {
         window = Window.createWindow(intervalLength,windowType);
-        FFTLength = nextPowerOf2(2*intervalLength);
         FFT fft = new FFT(FFTLength);
         this.fft = fft;
     }
@@ -82,27 +97,14 @@ public class PowerSpectrum {
     
     //skapar det som ska transformeras och transformerar sedan
     public void transform(){
-    	
-    	double [] windowedFun = new double [FFTLength]; 		//resterande element borde vara 0
-    	for (int i = 0; i<intervalLength; i++){
-    		windowedFun[i] = yValues[i] * window[i];
-    	}
-    	double [] emptyImaginary = new double [FFTLength];
-    					
-    	fft.fft(windowedFun,emptyImaginary);
-    	//fft.printReIm(windowedFun,emptyImaginary);
+       	double[] transforms = new double[numberParts];
+       	for (int i = 0; i < numberParts; i++){
+    	fft.fft(yValIntervals[i],complexIntervals[i]);
+       	}
+       	
     	spectrum = new double [intervalLength];
-    	double temp;
-    	double sum = 0;
-    	for (int i = 0; i < intervalLength; i++){			//ska det vara intervalLength???
-    		temp=Math.pow(windowedFun[i], 2) + Math.pow(emptyImaginary[i], 2);
-    		spectrum[i] = temp;
-    		sum += temp;
-    	}
-    	sum=sum/intervalLength;
-    	for (int i = 0; i < intervalLength; i++){
-    		spectrum[i] -= sum;
-    	}    			
+    		// vill göra invers transform av
+    		//Math.pow(yValIntervals[i], 2) + Math.pow(complexIntervals[i], 2))
     }
     
 }
