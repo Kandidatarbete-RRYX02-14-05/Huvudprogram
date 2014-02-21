@@ -12,7 +12,7 @@ public class PowerSpectrum {
     
     int numberParts, overlapLength;
     
-    double yValues[], yValIntervals[][];
+    double yValues[], yValIntervals[][], spectrum[];
     
     public PowerSpectrum(){
         //testar funktioner
@@ -20,16 +20,14 @@ public class PowerSpectrum {
         for (int i=0; i<2000; i++){
             yValues[i] = Math.sin(i*0.1);
         }
-        initValues(6, 10, yValues);
-        System.out.println(Math.pow(2,nextPowerOf2(2*12)));
-        System.out.println(nextPowerOf2(5));
-
-        
+        initValues(6, 10, yValues);        
         createIntervals();
        // for (int i=0; i<numberParts; i++){
          //   printArray(yValIntervals[i]);
        // }
-        transform(yValues);
+        transform();
+        
+        Chart.useChart(spectrum);
         //---------------
         
         
@@ -60,7 +58,7 @@ public class PowerSpectrum {
         System.out.println("");
     }
     
-    //behöver räkna ut närmaste tvåpotens för FFT
+    //behöver räkna ut närmaste tvåpotens för FFT << är bitvis operation som i princip 
     public static int nextPowerOf2(final int a)
     {
         int b = 1;
@@ -73,21 +71,23 @@ public class PowerSpectrum {
     
     
     //skapar det som ska transformeras och transformerar sedan
-    public void transform(double array[]){
-    	int length=array.length;
+    public void transform(){
+    	int length=yValues.length;
     	int FFTLength=nextPowerOf2(2*length);
-    	double [] window=Window.createWindow(length,"Hamming");
+    	double [] window=Window.createWindow(length,"rectangular");
     	
     	double [] windowedFun = new double [FFTLength]; 		//resterande element borde vara 0
     	for (int i=0; i<length; i++){
-    		windowedFun[i]=array[i]*window[i];
+    		windowedFun[i]=yValues[i]*window[i];
     	}
     	double [] emptyImaginary = new double [FFTLength];
     	FFT fft = new FFT(FFTLength);				
     	fft.fft(windowedFun,emptyImaginary);
-    	fft.printReIm(windowedFun,emptyImaginary);
-
-    	
+    	//fft.printReIm(windowedFun,emptyImaginary);
+    	spectrum = new double [FFTLength];
+    	for (int i=0; i<FFTLength; i++){			//ska det vara FFTLength???
+    		spectrum[i]=Math.pow(windowedFun[i], 2) + Math.pow(emptyImaginary[i], 2);
+    	}  	
     			
     }
     
