@@ -28,11 +28,11 @@ public class KandidatHuvudprogram {
         
         
         // Testar Import.Java--------
-        String fil = "G1_garb_111111-1s.tsf";
+        String fil = "G1_garb_111111-1s1.tsf";
         Import imp = new Import();
         String data[] = null;
         try {
-            data = imp.importera(0, 5, fil);
+            data = imp.importera(0, 1000, fil);
         } catch (FileNotFoundException ex) {
             System.out.println("\n\n--Fil ej funnen: " + fil + " --\n\n");
             Logger.getLogger(KandidatHuvudprogram.class.getName()).log(Level.SEVERE, null, ex);
@@ -42,11 +42,14 @@ public class KandidatHuvudprogram {
             System.out.println(data[i]);
         }
         //--------------------------
-        
         // testar fft
-        double testdata1[] = new double[data.length];
+        double testdata1[] = new double[1000];
         double testdata2[] = new double[data.length];
-        System.out.println(data[0].split(" ")[5]);
+        System.out.println(Double.parseDouble(data[0].split("  ")[7]));
+        for (int i=0; i<1000; i++){
+        	testdata1[i]=Double.parseDouble(data[i].split("   ")[7]);
+        	System.out.println(i);
+        };
         /*for (int i=0; i<data.length; i++){
             testdata1[i] = Double.parseDouble(data[i].split("\t")[1].replace(" ", ""));
             testdata2[i] = Double.parseDouble(data[i].split("\t")[6]);
