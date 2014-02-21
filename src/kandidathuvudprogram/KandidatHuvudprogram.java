@@ -46,7 +46,7 @@ public class KandidatHuvudprogram {
         // testar fft
         double testdata1[] = new double[data.length];
         double testdata2[] = new double[data.length];
-        System.out.println(data[0].split(" ")[0]);
+        System.out.println(data[0].split(" ")[5]);
         /*for (int i=0; i<data.length; i++){
             testdata1[i] = Double.parseDouble(data[i].split("\t")[1].replace(" ", ""));
             testdata2[i] = Double.parseDouble(data[i].split("\t")[6]);
