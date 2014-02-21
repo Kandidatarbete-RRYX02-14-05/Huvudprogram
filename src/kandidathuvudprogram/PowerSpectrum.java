@@ -14,13 +14,13 @@ public class PowerSpectrum {
     
     double yValues[], yValIntervals[][], spectrum[];
     
-    public PowerSpectrum(){
+    public PowerSpectrum(double [] yValues){
         //testar funktioner
-        double yValues[] = new double[2000]; 
+       /* double yValues[] = new double[2000]; 
         for (int i=0; i<2000; i++){
             yValues[i] = Math.sin(i*0.1);
-        }
-        initValues(6, 10, yValues);        
+        }*/
+        initValues(1, 0, yValues);        
         createIntervals();
        // for (int i=0; i<numberParts; i++){
          //   printArray(yValIntervals[i]);
@@ -74,7 +74,7 @@ public class PowerSpectrum {
     public void transform(){
     	int length=yValues.length;
     	int FFTLength=nextPowerOf2(2*length);
-    	double [] window=Window.createWindow(length,"rectangular");
+    	double [] window=Window.createWindow(length,"Hamming");
     	
     	double [] windowedFun = new double [FFTLength]; 		//resterande element borde vara 0
     	for (int i=0; i<length; i++){
@@ -84,8 +84,8 @@ public class PowerSpectrum {
     	FFT fft = new FFT(FFTLength);				
     	fft.fft(windowedFun,emptyImaginary);
     	//fft.printReIm(windowedFun,emptyImaginary);
-    	spectrum = new double [FFTLength];
-    	for (int i=0; i<FFTLength; i++){			//ska det vara FFTLength???
+    	spectrum = new double [length];
+    	for (int i=0; i<length; i++){			//ska det vara length???
     		spectrum[i]=Math.pow(windowedFun[i], 2) + Math.pow(emptyImaginary[i], 2);
     	}  	
     			

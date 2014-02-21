@@ -37,7 +37,6 @@ public class Window {
 				return wind;
 			
 			default: 
-				System.out.println("Bad String");
 				throw new IllegalArgumentException("INVALID WINDOW :(");
 		}
 

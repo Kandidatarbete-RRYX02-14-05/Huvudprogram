@@ -1,6 +1,7 @@
 package kandidathuvudprogram;
 
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,15 +32,18 @@ public class Chart {
         XYSeries dataChart = new XYSeries("Power Spectrum");
         XYDataset xyDataset = new XYSeriesCollection(dataChart);
         
-        for (int i=0; i<data.length; i++){
+        for (int i=0; i<data.length; i++){ // vilka punkter ska plottas?
         	dataChart.add(i,data[i]);
         }
         JFreeChart chart = ChartFactory.createXYAreaChart
-                     ("Sample XY Chart",  // Title
-                      "Height",           // X-Axis label
-                      "Weight",           // Y-Axis label
+                     ("Power Spectrum",  // Title
+                      "Frequency",           // X-Axis label
+                      "Amplitude",           // Y-Axis label
+                      
                       xyDataset             // Show legend
                      );
+        chart.setBackgroundPaint(Color.WHITE);
+        chart.getPlot().setBackgroundPaint(Color.white);
         try {
             ChartUtilities.saveChartAsJPEG(new File("SpectrumChart.jpg"), chart, 500, 300);
         } catch (IOException ex) {
