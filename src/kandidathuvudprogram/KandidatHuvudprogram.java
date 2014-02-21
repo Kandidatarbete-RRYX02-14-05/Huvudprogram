@@ -28,7 +28,7 @@ public class KandidatHuvudprogram {
         
         
         // Testar Import.Java--------
-        String fil = "G1_garb_111111-1s1.tsf";
+        String fil = "Datafil111111.tsf";
         Import imp = new Import();
         String data[] = null;
         try {
@@ -45,10 +45,8 @@ public class KandidatHuvudprogram {
         // testar fft
         double testdata1[] = new double[1000];
         double testdata2[] = new double[data.length];
-        System.out.println(Double.parseDouble(data[0].split("  ")[7]));
         for (int i=0; i<1000; i++){
-        	testdata1[i]=Double.parseDouble(data[i].split("   ")[7]);
-        	System.out.println(i);
+        	testdata1[i]=Double.parseDouble(data[i]);
         };
         // System.out.println(data[0].split(" ")[0]);
         
