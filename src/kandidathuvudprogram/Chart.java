@@ -32,8 +32,8 @@ public class Chart {
         XYSeries dataChart = new XYSeries("Power Spectrum");
         XYDataset xyDataset = new XYSeriesCollection(dataChart);
         
-        for (int i=0; i<data.length; i++){ // vilka punkter ska plottas?
-        	dataChart.add(i,data[i]);
+        for (int i=0; i<300; i++){ // vilka punkter ska plottas?
+        	dataChart.add(i,Math.log(data[i]));
         }
         JFreeChart chart = ChartFactory.createXYAreaChart
                      ("Power Spectrum",  // Title
@@ -45,7 +45,7 @@ public class Chart {
         chart.setBackgroundPaint(Color.WHITE);
         chart.getPlot().setBackgroundPaint(Color.white);
         try {
-            ChartUtilities.saveChartAsJPEG(new File("SpectrumChart.jpg"), chart, 500, 300);
+            ChartUtilities.saveChartAsJPEG(new File("SpectrumChart2.jpg"), chart, 500, 300);
         } catch (IOException ex) {
             Logger.getLogger(TestChart.class.getName()).log(Level.SEVERE, null, ex);
         }

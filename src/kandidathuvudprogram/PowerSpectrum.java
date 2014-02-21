@@ -10,9 +10,11 @@ package kandidathuvudprogram;
  */
 public class PowerSpectrum {
     
-    int numberParts, overlapLength;
+    int numberParts, overlapLength, intervalLength, FFTLength;
     
-    double yValues[], yValIntervals[][], spectrum[];
+    double yValues[], yValIntervals[][], spectrum[], window[];
+
+	private FFT fft;
     
     public PowerSpectrum(double [] yValues){
         //testar funktioner
@@ -22,11 +24,11 @@ public class PowerSpectrum {
         }*/
         initValues(1, 0, yValues);        
         createIntervals();
-       // for (int i=0; i<numberParts; i++){
-         //   printArray(yValIntervals[i]);
-       // }
-        transform();
-        
+        /*for (int i=0; i<numberParts; i++){
+           printArray(yValIntervals[i]);
+        }*/
+        prepTransform("Hamming");
+        transform();       
         Chart.useChart(spectrum);
         //---------------
         
@@ -41,7 +43,7 @@ public class PowerSpectrum {
     } 
     // Skapar array:en "yValIntervals" där första fältet är 
     public void createIntervals(){
-        int intervalLength = yValues.length/numberParts;
+        intervalLength = yValues.length/numberParts;
         yValIntervals = new double[numberParts][intervalLength];
         
         for (int i=0; i<numberParts; i++){
@@ -58,7 +60,7 @@ public class PowerSpectrum {
         System.out.println("");
     }
     
-    //behöver räkna ut närmaste tvåpotens för FFT << är bitvis operation som i princip 
+    //behöver räkna ut närmaste tvåpotens för FFT << är bitvis operation som i pricip fördubblar i vårt fall.
     public static int nextPowerOf2(final int a)
     {
         int b = 1;
@@ -68,27 +70,39 @@ public class PowerSpectrum {
         }
         return b;
     }
+    // definerar FFTLength etc så vi slipper göra det varje iteration
+    public void prepTransform(String windowType)
+    {
+        window = Window.createWindow(intervalLength,windowType);
+        FFTLength = nextPowerOf2(2*intervalLength);
+        FFT fft = new FFT(FFTLength);
+        this.fft = fft;
+    }
     
     
     //skapar det som ska transformeras och transformerar sedan
     public void transform(){
-    	int length=yValues.length;
-    	int FFTLength=nextPowerOf2(2*length);
-    	double [] window=Window.createWindow(length,"Hamming");
     	
     	double [] windowedFun = new double [FFTLength]; 		//resterande element borde vara 0
-    	for (int i=0; i<length; i++){
-    		windowedFun[i]=yValues[i]*window[i];
+    	for (int i = 0; i<intervalLength; i++){
+    		windowedFun[i] = yValues[i] * window[i];
     	}
     	double [] emptyImaginary = new double [FFTLength];
-    	FFT fft = new FFT(FFTLength);				
+    					
     	fft.fft(windowedFun,emptyImaginary);
     	//fft.printReIm(windowedFun,emptyImaginary);
-    	spectrum = new double [length];
-    	for (int i=0; i<length; i++){			//ska det vara length???
-    		spectrum[i]=Math.pow(windowedFun[i], 2) + Math.pow(emptyImaginary[i], 2);
-    	}  	
-    			
+    	spectrum = new double [intervalLength];
+    	double temp;
+    	double sum = 0;
+    	for (int i = 0; i < intervalLength; i++){			//ska det vara intervalLength???
+    		temp=Math.pow(windowedFun[i], 2) + Math.pow(emptyImaginary[i], 2);
+    		spectrum[i] = temp;
+    		sum += temp;
+    	}
+    	sum=sum/intervalLength;
+    	for (int i = 0; i < intervalLength; i++){
+    		spectrum[i] -= sum;
+    	}    			
     }
     
 }
