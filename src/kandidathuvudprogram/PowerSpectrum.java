@@ -43,7 +43,7 @@ public class PowerSpectrum {
     } 
     // Skapar array:en "yValIntervals" där första fältet är 
     public void createIntervals(){
-        intervalLength = yValues.length/numberParts;
+        intervalLength = (yValues.length+overlapLength*(numberParts-1))/numberParts;
         yValIntervals = new double[numberParts][intervalLength];
         
         for (int i=0; i<numberParts; i++){
