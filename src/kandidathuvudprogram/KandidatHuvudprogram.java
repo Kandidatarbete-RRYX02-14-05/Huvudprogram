@@ -20,9 +20,6 @@ public class KandidatHuvudprogram {
      */
     public static void main(String[] args) {
         
-        //hej här har markus ändrat:)
-        System.out.println("Ändrat");
-        
         
         
         // Testar TestChart ---
@@ -59,6 +56,6 @@ public class KandidatHuvudprogram {
         //--------------
         
         //PowerSpectrum
-        PowerSpectrum testPower = new PowerSpectrum();
+        PowerSpectrum testPower = new PowerSpectrum(testdata1);
     }
 }
