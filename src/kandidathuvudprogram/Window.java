@@ -7,28 +7,29 @@ package kandidathuvudprogram;
 public class Window {
 	
 	
-	public static double[] createWindow(int length, String type) throws IllegalArgumentException {
+	public static double[] createWindow(int length, String window) throws IllegalArgumentException {
 		
 		double[] wind = new double[length];
-		
+		Windows type = Windows.valueOf(window.toUpperCase());
+			
 		switch (type){
-			case "Rectangular": 
+			case RECTANGULAR: 
 				
 				for(int i=0; i<length; i++){
 					wind[i] = 1;
 				}
 				return wind;
-			case "Hamming": 
+			case HAMMING: 
 				for(int i=0; i<length; i++){
 					wind[i] = 0.54-0.46*Math.cos(2*Math.PI*i/(length-1));
 				}
 				return wind;
-			case "Cosinus": 
+			case COSINUS: 
 				for(int i=0; i<length; i++){
 					wind[i] = Math.sin((Math.PI*i)/(length-1));
 				}
 				return wind;
-			case "Gaussian": 
+			case GAUSSIAN: 
 				double sigma = 0.4;
 				for(int i=0; i<length; i++){
 					wind[i] = Math.pow(Math.E, -2*Math.pow((i-((length-1)/2))/(sigma*(length-1)),2));
@@ -38,8 +39,15 @@ public class Window {
 			default: 
 				System.out.println("Bad String");
 				throw new IllegalArgumentException("INVALID WINDOW :(");
-			}
-		
+		}
+
 	}
+	public enum Windows {
+
+	    RECTANGULAR,
+	    HAMMING,
+	    COSINUS,
+	    GAUSSIAN
+	  }
 
 }
