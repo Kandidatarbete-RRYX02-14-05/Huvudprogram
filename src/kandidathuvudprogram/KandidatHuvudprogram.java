@@ -38,9 +38,6 @@ public class KandidatHuvudprogram {
             Logger.getLogger(KandidatHuvudprogram.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        for (int i=0; i<data.length; i++){
-            System.out.println(data[i]);
-        }
         //--------------------------
         // testar fft
         double testdata1[] = new double[data.length];
