@@ -112,8 +112,9 @@ public class PowerSpectrum {
 	    }
     
     }
+    
     // gör invers fourier
-    public void inverseDFT (double [] reArray, double [] imArray){
+    public void inverseFFT (double [] reArray, double [] imArray){
     	fft.fft(reArray,imArray);
     	reverseArray(reArray);
     	reverseArray(imArray);
@@ -127,10 +128,10 @@ public class PowerSpectrum {
     
     //skapar Power spectrum
     public void transform(){
+    	//N=KM, K=numberParts, M=intervalLength;
+    	//DONE: invers FFT på  Areal och Aimag dividera på N  vilket ger c(n)
+    	//TODO: Applicera fönster på c(n) så att (L=FFTLength)
     	
-    	//TODO: invertera Areal och Aimag dividera på N (datalength=?) vilket ger c(n)
-    	//TODO: Applicera fönster på c(n) så att (M=datalength?)(L=FFTLength)
-    			
     			//s=c(m)*w(m)  		0 <= m <= M-1
     			//s= 0 				M <= m <= L-M
     			//s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
@@ -154,6 +155,12 @@ public class PowerSpectrum {
        		Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
        		Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
        		}
+       	}
+       	inverseFFT(Areal,Aimag);
+       	
+       	for (int i=0; i < Areal.length; i++){
+       		Areal[i] = Areal[i]/(numberParts*intervalLength);
+       		Aimag[i] = Aimag[i]/(numberParts*intervalLength);
        	}
        	
        	
