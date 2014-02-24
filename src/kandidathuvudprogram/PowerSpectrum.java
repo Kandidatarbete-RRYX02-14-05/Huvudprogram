@@ -4,6 +4,7 @@
  */
 package kandidathuvudprogram;
 
+
 /**
  *
  * @author Server
@@ -17,13 +18,13 @@ public class PowerSpectrum {
 	private FFT fft;
     
     public PowerSpectrum(double [] yValues){
+
         initValues(1, yValues);        
         createIntervals();
         removeMean();
         //TODO:addfilter
         prepTransform("Hamming");
         transform();
-        printArray(yValIntervals[0]);
         //TODO:removefilter
         //TODO:apply window
         Chart.useChart(spectrum);
@@ -100,17 +101,40 @@ public class PowerSpectrum {
     	return temp;
     }
     
+    // inverterar en double array
+    public void reverseArray(double [] array){
+    
+	    for(int i = 0; i < array.length/2; i++)
+	    {
+	        double temp = array[i];
+	        array[i] = array[array.length - i - 1];
+	        array[array.length - i - 1] = temp;
+	    }
+    
+    }
     // gör invers fourier
     public void inverseDFT (double [] reArray, double [] imArray){
-    	
+    	fft.fft(reArray,imArray);
+    	reverseArray(reArray);
+    	reverseArray(imArray);
+    	double N=reArray.length;
+    	for (int i=0; i < N; i++){
+    		reArray[i]=reArray[i]/N;
+    		imArray[i]=imArray[i]/N;
+    	}
+
     }
     
     //skapar Power spectrum
     public void transform(){
     	
-    	//TODO: invertera Areal och Aimag dividera på N (FFTLength) vilket ger c(n)
-    	//TODO: Applicera fönster på c(n)
-    	//TODO: Göra FFT på c(n) och få C(k) där omega=2PI/L*k där L är 
+    	//TODO: invertera Areal och Aimag dividera på N (datalength=?) vilket ger c(n)
+    	//TODO: Applicera fönster på c(n) så att (M=datalength?)(L=FFTLength)
+    			
+    			//s=c(m)*w(m)  		0 <= m <= M-1
+    			//s= 0 				M <= m <= L-M
+    			//s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
+    	//TODO: Göra FFT på s(n) och få S(k) där omega=2PI/L*k
        	double[] transforms = new double[numberParts];
        	for (int i = 0; i < numberParts; i++){
        		fft.fft(yValIntervals[i],complexIntervals[i]);
@@ -131,6 +155,7 @@ public class PowerSpectrum {
        		Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
        		}
        	}
+       	
        	
     	spectrum = new double [FFTLength];
     }

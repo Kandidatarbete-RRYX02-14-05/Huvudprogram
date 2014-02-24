@@ -27,7 +27,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class TestChart {
     public TestChart(){
         
-        
+    	//omega=2PI/L*k
         XYSeries series = new XYSeries("Average Size");
         series.add(20.0, 10.0);
         series.add(40.0, 20.0);
