@@ -25,6 +25,7 @@ public class PowerSpectrum {
         createIntervals();
         prepTransform("Hamming");
         transform();
+        removeFilter(spectrum[0],0.9);
         //TODO:removefilter
         //TODO:apply window
         Chart.useChart(spectrum[0]);
