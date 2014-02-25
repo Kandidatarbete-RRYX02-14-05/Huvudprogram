@@ -133,6 +133,9 @@ public class PowerSpectrum {
     }
     
     public void removeFilter(double [] array, double alpha){
+	for int i = 0; i < array.length){
+	array[i] = array[i] / (1 - 2*alpha*Math.cosinus(2*Math.PI*i/FFTLength) + Math.pow(alpha,2)); 
+        }
     }
     
     //skapar Power spectrum
