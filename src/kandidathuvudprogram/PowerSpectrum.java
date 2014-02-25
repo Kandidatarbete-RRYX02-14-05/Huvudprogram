@@ -19,10 +19,10 @@ public class PowerSpectrum {
     
     public PowerSpectrum(double [] yValues){
 
-        initValues(1, yValues);        
-        createIntervals();
+        initValues(1, yValues);    
         removeMean();
-        //TODO:addfilter
+        filter(yValues,0.9);
+        createIntervals();
         prepTransform("Hamming");
         transform();
         //TODO:removefilter
@@ -127,15 +127,17 @@ public class PowerSpectrum {
     }
 
     public void filter(double [] array, double alpha ){ //lägger på ett filter yi' = yi-ay(i-1)
-	for (int i = 1; i < array.length){
-	    array[i] = alpha*array[i-1];
-	}
+		for (int i = 1; i < array.length; i++){
+		    array[i] -= alpha*array[i-1];
+		}
     }
     
+    
+    //ofärdig
     public void removeFilter(double [] array, double alpha){
-	for int i = 0; i < array.length){
-	array[i] = array[i] / (1 - 2*alpha*Math.cosinus(2*Math.PI*i/FFTLength) + Math.pow(alpha,2)); 
-        }
+		for (int i = 0; i < array.length; i++){
+			array[i] = array[i] / (1 - 2*alpha*Math.cos(2*Math.PI*i/FFTLength) + Math.pow(alpha,2)); 
+	    }
     }
     
     public static boolean isMaxToBig(double limit, double[] data){
@@ -144,7 +146,7 @@ public class PowerSpectrum {
             return true;
         }
         return false;
-      }
+    }
     
     //skapar Power spectrum
     public void transform(){
