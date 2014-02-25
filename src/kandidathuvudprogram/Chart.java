@@ -28,11 +28,11 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class Chart {
     public static void useChart(double [] data){
         
-        
+    	//omega=2PI/L*k
         XYSeries dataChart = new XYSeries("Power Spectrum");
         XYDataset xyDataset = new XYSeriesCollection(dataChart);
-        
-        for (int i=0; i<300; i++){ // vilka punkter ska plottas?
+        int L=data.length;
+        for (int i=0; i<L/2; i++){ // vilka punkter ska plottas?
         	dataChart.add(i,Math.log(data[i]));
         }
         JFreeChart chart = ChartFactory.createXYAreaChart

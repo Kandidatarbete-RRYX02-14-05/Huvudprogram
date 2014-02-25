@@ -13,7 +13,7 @@ public class PowerSpectrum {
     
     int numberParts, intervalLength, FFTLength, dataLength;
     
-    double yValues[], yValIntervals[][], spectrum[], window[], complexIntervals[][];
+    double yValues[], yValIntervals[][], spectrum[][], window[], complexIntervals[][];
 
 	private FFT fft;
     
@@ -27,7 +27,7 @@ public class PowerSpectrum {
         transform();
         //TODO:removefilter
         //TODO:apply window
-        Chart.useChart(spectrum);
+        Chart.useChart(spectrum[0]);
         //---------------
         
         
@@ -126,11 +126,21 @@ public class PowerSpectrum {
 
     }
     
+    public static boolean isMaxToBig(double limit, double[] data){
+        for(int k = 0; k < data.length; k++){
+          if (data[k] > limit)
+            return true;
+        }
+        return false;
+      }
+    
     //skapar Power spectrum
     public void transform(){
-    	//N=KM, K=numberParts, M=intervalLength;
+    	//N=KM, 
+    		int K=numberParts, M=intervalLength, L=FFTLength;
+    		
     	//DONE: invers FFT på  Areal och Aimag dividera på N  vilket ger c(n)
-    	//TODO: Applicera fönster på c(n) så att (L=FFTLength)
+    	//DONE: Applicera fönster på c(n) så att 
     	
     			//s=c(m)*w(m)  		0 <= m <= M-1
     			//s= 0 				M <= m <= L-M
@@ -158,13 +168,40 @@ public class PowerSpectrum {
        	}
        	inverseFFT(Areal,Aimag);
        	
+       	spectrum = new double [2][FFTLength];
+       	
+       	//A blir nu covariansfunktionen.
        	for (int i=0; i < Areal.length; i++){
        		Areal[i] = Areal[i]/(numberParts*intervalLength);
        		Aimag[i] = Aimag[i]/(numberParts*intervalLength);
        	}
        	
+       //	printArray(Areal);
+       	//printArray(Aimag);
+      //s=c(m)*w(m)  		0 <= m <= M-1
+       	for (int i=0; i <= M-1; i++){
+       		spectrum[0][i]=Areal[i]*window[i];
+       		spectrum[1][i]=Aimag[i]*window[i];
+       	}
        	
-    	spectrum = new double [FFTLength];
+       	
+      //s= 0 				M <= m <= L-M
+       	for (int i=M; i<=L-M; i++){
+       		spectrum[0][i]=0;
+       		spectrum[1][i]=0;
+       	}
+       	
+      //s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
+       	for (int i=L-M+1; i <= L-1; i++){
+       		spectrum[0][i]=Areal[L-i]*window[L-i];
+       		spectrum[1][i]=Aimag[L-i]*window[L-i];
+       	}
+       	
+       	if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
+       		System.out.println("ERROR, imaginary vector i non-zero");
+       	}
+       	fft.fft(spectrum[0], spectrum[1]);
+       	
     }
     
 }
