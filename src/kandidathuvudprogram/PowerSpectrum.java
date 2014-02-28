@@ -4,6 +4,8 @@
  */
 package kandidathuvudprogram;
 
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -14,20 +16,30 @@ public class PowerSpectrum {
     int numberParts, intervalLength, FFTLength, dataLength;
     
     double yValues[], yValIntervals[][], spectrum[][], window[], complexIntervals[][];
-
+    
+    String windowName;
+    
 	private FFT fft;
     
-    public PowerSpectrum(double [] yValues){
-    	double alpha=0.99;
-    	String windowname="hamming";
+    public PowerSpectrum(double [] yValues, double alpha, String windowName){
+    	this.windowName=windowName;
+    	
         initValues(3, yValues);   
         removeMean();
         filter(yValues,0.9);
         createIntervals();
-        prepTransform(windowname);
-        transform();
+        prepTransform();
+        
+        try {
+			transform();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"ERROR, imaginary vector i non-zero");
+		}
+        
         removeFilter(spectrum[0],alpha);
-        Chart.useChart(spectrum[0],alpha,windowname);
+        
         //---------------
         
         
@@ -44,6 +56,14 @@ public class PowerSpectrum {
         this.yValues = yValues;
         this.dataLength =yValues.length;
         
+    }
+    
+    public void setWindow(String newWindow){
+    	this.windowName=newWindow;
+    }
+    
+    public double[] getSpectrum(){
+    	return spectrum[0];
     }
     // Skapar array:en "yValIntervals" där första fältet är 
     public void createIntervals(){
@@ -89,9 +109,9 @@ public class PowerSpectrum {
     }
     
     // definerar FFTLength etc så vi slipper göra det varje iteration
-    public void prepTransform(String windowType)
+    public void prepTransform()
     {
-        window = Window.createWindow(intervalLength,windowType);
+        window = Window.createWindow(intervalLength,windowName);
         FFT fft = new FFT(FFTLength);
         this.fft = fft;
     }
@@ -153,7 +173,7 @@ public class PowerSpectrum {
     }
     
     //skapar Power spectrum
-    public void transform(){
+    public void transform() throws Exception{
     	//N=KM, 
     		int K=numberParts, M=intervalLength, L=FFTLength;
     		
@@ -215,8 +235,10 @@ public class PowerSpectrum {
        		spectrum[1][i]=Aimag[L-i]*window[L-i];
        	}
        	
+       	
+       	
        	if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
-       		System.out.println("ERROR, imaginary vector i non-zero");
+       		throw new Exception("ERROR, imaginary vector i non-zero");
        	}
        	fft.fft(spectrum[0], spectrum[1]);
        	

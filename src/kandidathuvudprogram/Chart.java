@@ -26,7 +26,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @author Emilio (ish) lite Makkan kanske och Erik (nästan)
  */
 public class Chart {
-    public static void useChart(double [] data, double alpha, String window){
+    public static void useChart(double [] data, String dataname, double alpha, String window){
         
     	//omega=2PI/L*k
         XYSeries dataChart = new XYSeries("Power Spectrum");
@@ -45,7 +45,7 @@ public class Chart {
         chart.setBackgroundPaint(Color.WHITE);
         chart.getPlot().setBackgroundPaint(Color.white);
         try {
-            ChartUtilities.saveChartAsJPEG(new File(alpha + "_" + window + ".jpg"), chart, 500, 300);
+            ChartUtilities.saveChartAsJPEG(new File(dataname + "_" + alpha + "_" + window + ".jpg"), chart, 500, 300);
         } catch (IOException ex) {
             Logger.getLogger(TestChart.class.getName()).log(Level.SEVERE, null, ex);
         }

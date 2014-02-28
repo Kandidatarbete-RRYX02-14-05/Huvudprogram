@@ -56,7 +56,10 @@ public class KandidatHuvudprogram {
         //--------------
         
         //PowerSpectrum
-        PowerSpectrum testPower = new PowerSpectrum(testdata1);
+        double alpha=0.99;
+        String windowName="Hamming";
+        PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName);
+        Chart.useChart(testPower.getSpectrum(),fil.split(".")[0],alpha,windowName);
         
     }
 }
