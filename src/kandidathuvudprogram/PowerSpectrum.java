@@ -18,36 +18,39 @@ public class PowerSpectrum {
 	private FFT fft;
     
     public PowerSpectrum(double [] yValues){
-
-        initValues(1, yValues);    
+    	double alpha=0.99;
+    	String windowname="hamming";
+        initValues(3, yValues);   
         removeMean();
         filter(yValues,0.9);
         createIntervals();
-        prepTransform("Hamming");
+        prepTransform(windowname);
         transform();
-        removeFilter(spectrum[0],0.9);
-        //TODO:removefilter
-        //TODO:apply window
-        Chart.useChart(spectrum[0]);
+        removeFilter(spectrum[0],alpha);
+        Chart.useChart(spectrum[0],alpha,windowname);
         //---------------
         
         
     }
     
     // Sätter inmatade värden
+    /**
+     * 
+     * @param numberParts
+     * @param yValues
+     */
     public void initValues(int numberParts, double yValues[]){
         this.numberParts = numberParts;
         this.yValues = yValues;
         this.dataLength =yValues.length;
         
-    } 
+    }
     // Skapar array:en "yValIntervals" där första fältet är 
     public void createIntervals(){
         intervalLength = yValues.length / numberParts;
         FFTLength = nextPowerOf2(2*intervalLength);
         yValIntervals = new double[numberParts+1][FFTLength];	//vill ha en tom rad för att få Xn+1=0
         complexIntervals = new double[numberParts+1][FFTLength];// för n=numberParts
-        
         for (int i=0; i<numberParts; i++){
             System.arraycopy(yValues, i*intervalLength, yValIntervals[i], 0, intervalLength);
         
@@ -171,14 +174,14 @@ public class PowerSpectrum {
        	double [] temp2 = new double [2];
        	for (int i = 0; i < numberParts; i++){
        		for (int k = 0; k < FFTLength; k++){	
-       		temp1=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
-       				yValIntervals[i][k], complexIntervals[i][k]); //(X_i)(X_i)*
-       		
-       		temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
-       				yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
-       		
-       		Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-       		Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+	       		temp1=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
+	       				yValIntervals[i][k], complexIntervals[i][k]); //(X_i)(X_i)*
+	       		
+	       		temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
+	       				yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
+	       		
+	       		Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+	       		Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
        		}
        	}
        	inverseFFT(Areal,Aimag);

@@ -57,5 +57,6 @@ public class KandidatHuvudprogram {
         
         //PowerSpectrum
         PowerSpectrum testPower = new PowerSpectrum(testdata1);
+        
     }
 }
