@@ -15,7 +15,8 @@ public class PowerSpectrum {
     
     int numberParts, intervalLength, FFTLength, dataLength;
     
-    double yValues[], yValIntervals[][], spectrum[][], window[], complexIntervals[][];
+    double yValues[], yValIntervals[][], spectrum[][], window[], 
+    		complexIntervals[][], covariance[][];
     
     String windowName;
     
@@ -28,16 +29,15 @@ public class PowerSpectrum {
         removeMean();
         filter(yValues,0.9);
         createIntervals();
-        prepTransform();
-        
-        try {
-			transform();
-		} catch (Exception e) {
+        prepTransform();     
+		transform();
+		try {
+				applyWindow();
+        } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,"ERROR, imaginary vector i non-zero");
+			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
-        
         removeFilter(spectrum[0],alpha);
         
         //---------------
@@ -173,21 +173,11 @@ public class PowerSpectrum {
     }
     
     //skapar Power spectrum
-    public void transform() throws Exception{
-    	//N=KM, 
-    		int K=numberParts, M=intervalLength, L=FFTLength;
-    		
-    	//DONE: invers FFT på  Areal och Aimag dividera på N  vilket ger c(n)
-    	//DONE: Applicera fönster på c(n) så att 
-    	
-    			//s=c(m)*w(m)  		0 <= m <= M-1
-    			//s= 0 				M <= m <= L-M
-    			//s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
-    	//TODO: Göra FFT på s(n) och få S(k) där omega=2PI/L*k
-       	double[] transforms = new double[numberParts];
+    public void transform() {
        	for (int i = 0; i < numberParts; i++){
        		fft.fft(yValIntervals[i],complexIntervals[i]);
        	}
+       	
        	double [] Areal = new double [FFTLength];
        	double [] Aimag = new double [FFTLength];
        	double [] temp1 = new double [2];
@@ -206,20 +196,25 @@ public class PowerSpectrum {
        	}
        	inverseFFT(Areal,Aimag);
        	
-       	spectrum = new double [2][FFTLength];
-       	
+       	covariance = new double [2][FFTLength];
        	//A blir nu covariansfunktionen.
        	for (int i=0; i < Areal.length; i++){
-       		Areal[i] = Areal[i]/(numberParts*intervalLength);
-       		Aimag[i] = Aimag[i]/(numberParts*intervalLength);
+       		covariance[0][i] = Areal[i]/(numberParts*intervalLength);
+       		covariance[1][i] = Aimag[i]/(numberParts*intervalLength);
        	}
        	
-       //	printArray(Areal);
-       	//printArray(Aimag);
+
+    }
+    
+    public void applyWindow() throws Exception{
+    	//N=KM, K=numberParts
+		int  M=intervalLength, L=FFTLength;
+	//TODO: Göra FFT på s(n) och få S(k) där omega=2PI/L*k
+		spectrum = new double [2][FFTLength];
       //s=c(m)*w(m)  		0 <= m <= M-1
        	for (int i=0; i <= M-1; i++){
-       		spectrum[0][i]=Areal[i]*window[i];
-       		spectrum[1][i]=Aimag[i]*window[i];
+       		spectrum[0][i]=covariance[0][i]*window[i];
+       		spectrum[1][i]=covariance[1][i]*window[i];
        	}
        	
        	
@@ -231,12 +226,11 @@ public class PowerSpectrum {
        	
       //s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
        	for (int i=L-M+1; i <= L-1; i++){
-       		spectrum[0][i]=Areal[L-i]*window[L-i];
-       		spectrum[1][i]=Aimag[L-i]*window[L-i];
+       		spectrum[0][i]=covariance[1][L-i]*window[L-i];
+       		spectrum[1][i]=covariance[1][L-i]*window[L-i];
        	}
        	
-       	
-       	
+       
        	if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
        		throw new Exception("ERROR, imaginary vector i non-zero");
        	}
