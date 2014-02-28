@@ -8,26 +8,39 @@ import javax.swing.JOptionPane;
 
 
 /**
- *
- * @author Server
+ * 
+ * 
  */
 public class PowerSpectrum {
     
-    int numberParts, intervalLength, FFTLength, dataLength;
+    int intervalLength, FFTLength, dataLength;
+    
+    final int numberParts;
     
     double yValues[], yValIntervals[][], spectrum[][], window[], 
     		complexIntervals[][], covariance[][];
+    
+    final double alpha;
     
     String windowName;
     
 	private FFT fft;
     
-    public PowerSpectrum(double [] yValues, double alpha, String windowName){
+	/**
+	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
+	 * @param yValues Inputdata
+	 * @param alpha Värdet på alpha i filtret
+	 * @param windowName Namnet på fönstret som objektet initialiseras med.
+     * @param numberParts Antal delar som datan splittas upp i för spectrum
+	 */
+    public PowerSpectrum(double [] yValues, double alpha, String windowName, int numberParts){
     	this.windowName=windowName;
+    	this.numberParts=numberParts;
+    	this.alpha=alpha;
     	
-        initValues(3, yValues);   
+        initValues(yValues);   
         removeMean();
-        filter(yValues,0.9);
+        filter(yValues);
         createIntervals();
         prepTransform();     
 		transform();
@@ -38,7 +51,7 @@ public class PowerSpectrum {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
-        removeFilter(spectrum[0],alpha);
+        removeFilter(spectrum[0]);
         
         //---------------
         
@@ -48,11 +61,9 @@ public class PowerSpectrum {
     // SÃ¤tter inmatade vÃ¤rden
     /**
      * Sätter initiala värden på datalängd, antal delar och datavärden
-     * @param numberParts Antal delar som datan splittas upp i för spectrum
      * @param yValues Datan som ska skapas spectrum av
      */
-    public void initValues(int numberParts, double yValues[]){
-        this.numberParts = numberParts;
+    public void initValues(double yValues[]){
         this.yValues = yValues;
         this.dataLength =yValues.length;
         
@@ -62,9 +73,14 @@ public class PowerSpectrum {
     	this.windowName=newWindow;
     }
     
+    /**
+     * @return den reella componenten av vårt spektrum
+     */
     public double[] getSpectrum(){
     	return spectrum[0];
     }
+    
+    
     // Skapar array:en "yValIntervals" dÃ¤r fÃ¶rsta fÃ¤ltet Ã¤r 
     public void createIntervals(){
         intervalLength = yValues.length / numberParts;
@@ -150,7 +166,7 @@ public class PowerSpectrum {
 
     }
 
-    public void filter(double [] array, double alpha ){ //lÃ¤gger pÃ¥ ett filter yi' = yi-ay(i-1)
+    public void filter(double [] array){ //lÃ¤gger pÃ¥ ett filter yi' = yi-ay(i-1)
 		for (int i = 1; i < array.length; i++){
 		    array[i] -= alpha*array[i-1];
 		}
@@ -158,7 +174,7 @@ public class PowerSpectrum {
     
     
     //ofÃ¤rdig
-    public void removeFilter(double [] array, double alpha){
+    public void removeFilter(double [] array){
 		for (int i = 0; i < array.length; i++){
 			array[i] = array[i] / (1 - 2*alpha*Math.cos(2*Math.PI*i/FFTLength) + Math.pow(alpha,2)); 
 	    }

@@ -58,7 +58,7 @@ public class KandidatHuvudprogram {
         //PowerSpectrum
         double alpha=0.99;
         String windowName="Hanning";
-        PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName);
+        PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
         Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName);
         
     }
