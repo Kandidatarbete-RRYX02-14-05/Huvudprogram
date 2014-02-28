@@ -29,6 +29,10 @@ public class Window {
 					wind[i] = Math.sin((Math.PI*i)/(length-1));
 				}
 				return wind;
+			case HANNING:
+				for(int i=0; i<length; i++){
+					wind[i] = 0.5*(1-Math.cos((2*Math.PI*i)/(length-1)));
+				}
 			case GAUSSIAN: 
 				double sigma = 0.4;
 				for(int i=0; i<length; i++){
@@ -46,7 +50,8 @@ public class Window {
 	    RECTANGULAR,
 	    HAMMING,
 	    COSINUS,
-	    GAUSSIAN
+	    GAUSSIAN, 
+	    HANNING
 	  }
 
 }

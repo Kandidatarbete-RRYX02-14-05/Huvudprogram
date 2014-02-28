@@ -47,9 +47,9 @@ public class PowerSpectrum {
     
     // SÃ¤tter inmatade vÃ¤rden
     /**
-     * 
-     * @param numberParts
-     * @param yValues
+     * Sätter initiala värden på datalängd, antal delar och datavärden
+     * @param numberParts Antal delar som datan splittas upp i för spectrum
+     * @param yValues Datan som ska skapas spectrum av
      */
     public void initValues(int numberParts, double yValues[]){
         this.numberParts = numberParts;
