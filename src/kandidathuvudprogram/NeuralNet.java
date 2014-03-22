@@ -1,12 +1,19 @@
 package kandidathuvudprogram;
 
+import java.io.File;
+
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.buffer.BinaryDataLoader;
 import org.encog.ml.data.buffer.BufferedMLDataSet;
-import org.encog.ml.data.buffer.codec.ArrayDataCODEC;
+import org.encog.ml.data.buffer.codec.*;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.util.csv.CSVFormat;
 
+/**
+ * @author hellsten och Emilio 
+ *
+ */
 public class NeuralNet {
 	BasicNetwork network;
 	int inputSize, outputSize,hiddenNeurons;
@@ -21,6 +28,23 @@ public class NeuralNet {
 	
 	}
 	
+	/** Method convertToString
+	 * @param inPath The path to the in CSV file. American standards (changeable).
+	 * @param outPath The path for the binary file created.
+	 * @param inputcount the number of input neurons
+	 * @param outputcount the number of output neurons
+	 * 
+	 * Loads a CSV-file and creates a binary file. The first boolean in the codec
+	 * constructor is if there is a header in the CSV file. The second is unknown, try both. 
+	 *
+	 */
+	public static void convertToBin(String inPath, String outPath, int inputCount, int outputCount){
+		File inFile = new File(inPath);
+		CSVDataCODEC codec = new CSVDataCODEC(inFile, new CSVFormat(), false, inputCount, outputCount, false);
+		BinaryDataLoader loader = new BinaryDataLoader(codec);
+		File outFile = new File(outPath);
+		loader.external2Binary(outFile);	
+	}
 	
 	public void CreateNet(){
 		network = new BasicNetwork();
@@ -31,20 +55,19 @@ public class NeuralNet {
 		network.reset();		//slumpar vikterna
 	}
 	public void Train(){
-		ArrayDataCODEC codec = new ArrayDataCODEC(input, output);
-		BinaryDataLoader loader = new BinaryDataLoader(codec);
-		File file
-		loader.external2Binary(file);		//skapar binärfil från 
+			//skapar binärfil från 
 
-		BufferedMLDataSet set = new BufferedMLDataSet(file);
-		set.BeginLoad(2, 1);
+		/*
+		 * BufferedMLDataSet set = new BufferedMLDataSet(file);
+		 
+		set.beginLoad(2, 1);
 		for (int i = 0; i < XOR.XORInput.Length; i++)
 		{
 		BasicMLData input = new BasicMLData(XOR.XORInput[i]);
 		BasicMLData ideal = new BasicMLData(XOR.XORIdeal[i]);
-		set.Add(input, ideal);
+		set.add(input, ideal);
 		}
-		
+		*/
 	
 	}
 }

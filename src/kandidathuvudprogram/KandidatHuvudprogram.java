@@ -4,10 +4,12 @@
  */
 package kandidathuvudprogram;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.encog.examples.neural.forest.*;
 
 /**
  *
@@ -60,6 +62,13 @@ public class KandidatHuvudprogram {
         String windowName="Hanning";
         PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
         Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName);
+       
+        /* ERIKS OCH EMILIOS
+        File file = new File( " " ); // Stoppa in filväg här 
         
+        TrainNetwork network = new TrainNetwork(new ForestConfig(file));
+        // använd train
+         * 
+         */
     }
 }
