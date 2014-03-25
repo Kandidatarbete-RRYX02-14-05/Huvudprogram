@@ -17,7 +17,8 @@ import org.encog.util.csv.CSVFormat;
 public class NeuralNet {
 	BasicNetwork network;
 	int inputSize, outputSize,hiddenNeurons;
-	public NeuralNet(int inputSize, int outputSize, int hiddenNeurons){
+	
+public NeuralNet(int inputSize, int outputSize, int hiddenNeurons){
 	this.hiddenNeurons = hiddenNeurons;
 	this.inputSize = inputSize;
 	this.outputSize = outputSize;
@@ -44,6 +45,10 @@ public class NeuralNet {
 		BinaryDataLoader loader = new BinaryDataLoader(codec);
 		File outFile = new File(outPath);
 		loader.external2Binary(outFile);	
+	}
+	
+	public BasicNetwork getNetwork(){
+		return this.network;
 	}
 	
 	public void CreateNet(){
