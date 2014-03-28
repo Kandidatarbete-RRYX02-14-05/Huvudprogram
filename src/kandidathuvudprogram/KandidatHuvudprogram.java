@@ -21,12 +21,12 @@ public class KandidatHuvudprogram {
      */
     public static void main(String[] args) {
         
-       // kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-04-10","2010-04-11");
-        String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-04-10","2010-04-15");
-       
+      // kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
+       String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
+ 
    
         // Testar Import.Java--------
-        String fil = "gravidata\\" + dates[0] + ".tsf";
+       String fil = "gravidata\\" + dates[2] + ".tsf";
         Import imp = new Import();
         String dataTime[], dataValue[];  // tid vid varje värde samt värde vid varje tid...
         
@@ -38,8 +38,11 @@ public class KandidatHuvudprogram {
             dataValue[i] = temp[temp.length-1];
             dataTime[i] = temp[0];
         }
-        
 
+        double[] sin = new double[5000];
+        for (int i=0; i<sin.length; i++){
+            sin[i] = Math.sin(i*2*3.141592/1000);
+        }
         
         //--------------------------
         // testar fft
@@ -59,9 +62,11 @@ public class KandidatHuvudprogram {
         
         //PowerSpectrum
         double alpha=0.99;
-        String windowName="Hanning";
-        PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
-        Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName);
+        String windowName="Rectangular";
+        PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
+        //PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
+        Chart.useChart(sin,"Sin",alpha,windowName);
+        //Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName);
        
         // ERIKS OCH EMILIOS
         /*File netFile = new File("/chalmers/users/hellsten/Git/Huvudprogram/Data/Network/"); 
