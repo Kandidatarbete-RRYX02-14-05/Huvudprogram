@@ -4,6 +4,7 @@
  */
 package kandidathuvudprogram;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -60,8 +61,15 @@ public class KandidatHuvudprogram {
         double alpha=0.99;
         String windowName="Hanning";
         PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
-        Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName); 
-        
+        Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName);
+       
+        // ERIKS OCH EMILIOS
+       /* File netFile = new File("/chalmers/users/hellsten/Git/Huvudprogram/Data/Network"); // Stoppa in filväg här 
+        Config config = new Config(netFile);
+        TrainNet network = new TrainNet(config);
+        // använd train
+        network.train(false);
+        */
     }
     
 }
