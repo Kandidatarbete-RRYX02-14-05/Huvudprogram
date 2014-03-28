@@ -27,11 +27,11 @@ public class PowerSpectrum {
 	private FFT fft;
     
 	/**
-	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
+	 * GÃ¶r power spectrum av datan specifierat enligt alpha, windowName och numberParts
 	 * @param yValues Inputdata
-	 * @param alpha Värdet på alpha i filtret
-	 * @param windowName Namnet på fönstret som objektet initialiseras med.
-     * @param numberParts Antal delar som datan splittas upp i för spectrum
+	 * @param alpha VÃ¤rdet pÃ¥ alpha i filtret
+	 * @param windowName Namnet pÃ¥ fÃ¶nstret som objektet initialiseras med.
+     * @param numberParts Antal delar som datan splittas upp i fÃ¶r spectrum
 	 */
     public PowerSpectrum(double [] yValues, double alpha, String windowName, int numberParts){
     	this.windowName=windowName;
@@ -60,7 +60,7 @@ public class PowerSpectrum {
     
     // SÃ¤tter inmatade vÃ¤rden
     /**
-     * Sätter initiala värden på datalängd, antal delar och datavärden
+     * SÃ¤tter initiala vÃ¤rden pÃ¥ datalï¿½ngd, antal delar och datavï¿½rden
      * @param yValues Datan som ska skapas spectrum av
      */
     public void initValues(double yValues[]){
@@ -74,7 +74,7 @@ public class PowerSpectrum {
     }
     
     /**
-     * @return den reella componenten av vårt spektrum
+     * @return den reella componenten av vÃ¥rt spektrum
      */
     public double[] getSpectrum(){
     	return spectrum[0];
