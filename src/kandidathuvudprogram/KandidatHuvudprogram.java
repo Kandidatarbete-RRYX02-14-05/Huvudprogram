@@ -20,30 +20,31 @@ public class KandidatHuvudprogram {
      */
     public static void main(String[] args) {
         
-        
-        
-        // Testar TestChart ---
-        TestChart hej = new TestChart();
-        // ----------------
-        
-        
+       // kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-04-10","2010-04-11");
+        String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-04-10","2010-04-15");
+       
+   
         // Testar Import.Java--------
-        String fil = "Datafil111111.tsf";
+        String fil = "gravidata\\" + dates[0] + ".tsf";
         Import imp = new Import();
-        String data[] = null;
-        try {
-            data = imp.importera(0, 1000, fil);
-        } catch (FileNotFoundException ex) {
-            System.out.println("\n\n--Fil ej funnen: " + fil + " --\n\n");
-            Logger.getLogger(KandidatHuvudprogram.class.getName()).log(Level.SEVERE, null, ex);
+        String dataTime[], dataValue[];  // tid vid varje värde samt värde vid varje tid...
+        
+        dataTime = imp.importWhole(fil);
+        dataValue = new String[dataTime.length];
+        String[] temp;
+        for (int i=0; i<dataTime.length-1; i++){
+            temp = dataTime[i].split(" ");
+            dataValue[i] = temp[temp.length-1];
+            dataTime[i] = temp[0];
         }
+        
+
         
         //--------------------------
         // testar fft
-        double testdata1[] = new double[data.length];
-        double testdata2[] = new double[data.length];
+        double testdata1[] = new double[dataTime.length-1];
         for (int i=0; i<testdata1.length; i++){
-        	testdata1[i]=Double.parseDouble(data[i]);
+        	testdata1[i] = Double.parseDouble(dataValue[i]);
         };
         // System.out.println(data[0].split(" ")[0]);
         
@@ -52,14 +53,15 @@ public class KandidatHuvudprogram {
             testdata2[i] = Double.parseDouble(data[i].split("\t")[6]);
         }
         FFT fft = new FFT(2);
-        fft.fft(testdata1,testdata2);*/
+        fft.fft(testdata1,testdata2); */
         //--------------
         
         //PowerSpectrum
         double alpha=0.99;
         String windowName="Hanning";
         PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
-        Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName);
+        Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],alpha,windowName); 
         
     }
+    
 }
