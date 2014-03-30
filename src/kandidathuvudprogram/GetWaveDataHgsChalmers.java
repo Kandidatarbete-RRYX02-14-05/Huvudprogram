@@ -27,15 +27,16 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadGraviData("2010-04-10","2010-04-15");
+        downloadWaveData("2010-04-10","2010-04-15");
     }
     
     /**
      * Laddar ned all gravimeterdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum.tsf ex: 110514.tsf
      * @param startDate
      * @param endDate 
+     * @param resDeg Upplösning i grader 
      */
-    public static void downloadGraviData(String startDate, String endDate){
+    public static void downloadWaveData(String startDate, String endDate, Int resDeg){
         
         String[] dateArray = generateDateString(startDate, endDate);
         String exec;
