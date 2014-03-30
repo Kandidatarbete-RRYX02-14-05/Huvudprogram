@@ -27,7 +27,7 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2010-04-10","2010-04-15");
+        downloadWaveData("2010-04-10","2010-04-15", 1);
     }
     
     /**
@@ -36,7 +36,7 @@ public class GetWaveDataHgsChalmers {
      * @param endDate 
      * @param resDeg Upplösning i grader 
      */
-    public static void downloadWaveData(String startDate, String endDate, Int resDeg){
+    public static void downloadWaveData(String startDate, String endDate, int resDeg){
         
         String[] dateArray = generateDateString(startDate, endDate);
         String exec;
