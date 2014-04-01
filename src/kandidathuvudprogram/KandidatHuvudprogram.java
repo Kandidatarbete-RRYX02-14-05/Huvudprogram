@@ -21,12 +21,12 @@ public class KandidatHuvudprogram {
 	 */
 	public static void main(String[] args) {
 
-		//kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
+		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
 
 
 		// Testar Import.Java--------
-		String fil = "gravidata\\" + dates[2] + ".tsf";
+		String fil = "gravidata/" + dates[2] + ".tsf"; // bytte för att fungera på linux
 		Import imp = new Import();
 		String dataTime[], dataValue[];  // tid vid varje värde samt värde vid varje tid...
 

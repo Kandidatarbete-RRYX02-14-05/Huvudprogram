@@ -27,7 +27,7 @@ import org.joda.time.LocalDate;
 public class GetDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadGraviData("2010-04-10","2010-04-15");
+        downloadGraviData("2010-05-10","2010-05-15");
     }
     
     /**
