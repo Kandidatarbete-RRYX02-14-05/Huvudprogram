@@ -27,14 +27,14 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2014-02-05","2014-02-07", 1);
+        downloadWaveData("2014-01-07","2014-01-08", 1);
     }
     
     /**
-     * Laddar ned all gravimeterdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum.tsf ex: 110514.tsf
+     * Klipper ut, tar melelvärde och laddar ner vågdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum_tid.tsv ex: 110514_06.tsv
      * @param startDate
      * @param endDate 
-     * @param resDeg Upplösning i grader 
+     * @param resDeg Upplösning i grader för melelvärdena av våghöjden. 
      */
     public static void downloadWaveData(String startDate, String endDate, double resDeg){
         
@@ -48,9 +48,10 @@ public class GetWaveDataHgsChalmers {
         }
  
         String exec;      
-        String dataCo = new String("-70/15/35/75"); // Koordinaterna som plockas ut
+        String dataCo = new String("-70/15/35/75"); // Koordinaterna som plockas ut. 
         String fixPath = new String("export PATH=.:$HOME/bin:/home/hgs/bin:/usr/local/GMT/bin:$PATH "
                 + "\nexport GMTHOME=/usr/local/GMT "); // Så bash hittar GMT
+        String filePath = new String("/home/hgs/ECMWF/WAVEH");
   
         ChannelSftp channelSftp = null;
         Channel channel = null;
@@ -78,17 +79,17 @@ public class GetWaveDataHgsChalmers {
                 
                 try {
                     System.out.println("1");
-                    channelSftp.get("/home/hgs/ECMWF/WAVEH/kandData/20"+ dateHrArray[i] + ".tsv" , "wavedata/20" + dateHrArray[i] + ".tsv");
+                    channelSftp.get( filePath + "/kandData/20"+ dateHrArray[i] + ".tsv" , "wavedata/20" + dateHrArray[i] + ".tsv");
                     System.out.println("2");
                 }
                 catch(SftpException e){
                     System.out.println(e.getMessage());
-                    exec = fixPath +" \n" + "if [ -e /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
-                            + ".grd ]; then " + "grd2xyz /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
-                            + ".grd -R" + dataCo + " > /home/hgs/ECMWF/WAVEH/kandData/temp.tsv"
-                            + " \nblockmean /home/hgs/ECMWF/WAVEH/kandData/temp.tsv"
+                    exec = fixPath +" \n" + "if [ -e " + filePath + "/GRD/wvh_20" + dateHrArray[i]
+                            + ".grd ]; then " + "grd2xyz " + filePath + "/GRD/wvh_20" + dateHrArray[i]
+                            + ".grd -R" + dataCo + " > " + filePath + "/kandData/temp.tsv"
+                            + " \nblockmean " + filePath + "/kandData/temp.tsv"
                             + " -R"+ dataCo +" -I"+ Double.toString(resDeg)+" -C > "
-                            + "/home/hgs/ECMWF/WAVEH/kandData/20" + dateHrArray[i] + ".tsv ; fi";               
+                            + filePath + "/kandData/20" + dateHrArray[i] + ".tsv ; fi";               
                     System.out.println(exec);
                     channelExec.setCommand(exec);
                     //channelExec.setOutputStream(System.out);
@@ -96,7 +97,7 @@ public class GetWaveDataHgsChalmers {
                     
                     
                     try { // Väntar på att kommando skall köras på servern
-                        Thread.sleep(2000);
+                        Thread.sleep(3000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -104,7 +105,7 @@ public class GetWaveDataHgsChalmers {
                 
                 try {
                     System.out.println("3");
-                    channelSftp.get("/home/hgs/ECMWF/WAVEH/kandData/20"
+                    channelSftp.get( filePath + "/kandData/20"
                             + dateHrArray[i] + ".tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
                     System.out.println("4");
                 }catch(SftpException e){
