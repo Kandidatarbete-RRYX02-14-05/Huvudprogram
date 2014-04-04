@@ -112,6 +112,10 @@ public class PowerSpectrum {
 		return spectrum[0];
 	}
 	
+	public double getSpectrum(int i){
+		return spectrum[0][i];
+	}
+	
 	public String getWindowName(){
 		return windowName;
 	}
