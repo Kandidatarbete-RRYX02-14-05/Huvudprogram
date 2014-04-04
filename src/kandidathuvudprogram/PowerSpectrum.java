@@ -81,9 +81,9 @@ public class PowerSpectrum {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
-		removeFilter(spectrum[0]);
 		fft.fft(spectrum[0], spectrum[1]);
-		
+		removeFilter(spectrum[0]);
+
 
 		//---------------
 
