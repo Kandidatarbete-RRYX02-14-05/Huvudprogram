@@ -116,6 +116,16 @@ public class PowerSpectrum {
 		return spectrum[0][i];
 	}
 	
+	public double[] getRelevantSpectrum(){
+		double minfreq=0.03;
+		double maxfreq=0.3;
+		int smallestElement=(int) (minfreq/(2*Math.PI/FFTLength));
+		int largestElement=(int) Math.ceil((maxfreq/(2*Math.PI/FFTLength)));
+		double[] relevantSpectrum = new double [smallestElement-largestElement];
+		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,smallestElement-largestElement);
+		return relevantSpectrum;
+	}
+				
 	public String getWindowName(){
 		return windowName;
 	}
