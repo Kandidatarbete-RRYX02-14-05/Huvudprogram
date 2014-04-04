@@ -2,6 +2,7 @@ package kandidathuvudprogram;
 
 import java.io.File;
 
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.buffer.BinaryDataLoader;
 import org.encog.ml.data.buffer.BufferedMLDataSet;
@@ -30,8 +31,8 @@ public NeuralNet(int inputSize, int outputSize, int hiddenNeurons){
 	}
 	
 	/** Method convertToString
-	 * @param inPath The path to the in CSV file. American standards (changeable).
-	 * @param outPath The path for the binary file created.
+	 * @param inFile The path to the in CSV file. American standards (changeable).
+	 * @param outFile The path for the binary file created.
 	 * @param inputcount the number of input neurons
 	 * @param outputcount the number of output neurons
 	 * 
@@ -39,11 +40,27 @@ public NeuralNet(int inputSize, int outputSize, int hiddenNeurons){
 	 * constructor is if there is a header in the CSV file. The second is unknown, try both. 
 	 *
 	 */
-	public static void convertToBin(String inPath, String outPath, int inputCount, int outputCount){
-		File inFile = new File(inPath);
-		CSVDataCODEC codec = new CSVDataCODEC(inFile, new CSVFormat(), false, inputCount, outputCount, false);
+	public static void convertToBin(File inFile, File outFile, int inputCount, int outputCount){
+		CSVFormat csvFormat = new CSVFormat();
+		
+		if (csvFormat.getDecimal() == CSVFormat.getDecimalCharacter()){
+			System.out.println("ConvertToBin: rätt decimaltecken");
+		}
+		
+		CSVDataCODEC codec = new CSVDataCODEC(inFile, csvFormat, false, inputCount, outputCount, false);
+		
 		BinaryDataLoader loader = new BinaryDataLoader(codec);
-		File outFile = new File(outPath);
+		
+		loader.external2Binary(outFile);	
+	}
+	
+	public static void createBin(MLDataSet set, File outFile){
+	
+				
+		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
+		
+		BinaryDataLoader loader = new BinaryDataLoader(codec);
+		
 		loader.external2Binary(outFile);	
 	}
 	
