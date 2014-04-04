@@ -24,22 +24,34 @@ import org.joda.time.LocalDate;
  *
  * @author Markus
  */
-public class GetDataHgsChalmers {
+public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadGraviData("2010-05-10","2010-05-15");
+        downloadWaveData("2014-02-05","2014-02-07", 1);
     }
     
     /**
      * Laddar ned all gravimeterdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum.tsf ex: 110514.tsf
      * @param startDate
      * @param endDate 
+     * @param resDeg Upplösning i grader 
      */
-    public static void downloadGraviData(String startDate, String endDate){
+    public static void downloadWaveData(String startDate, String endDate, double resDeg){
         
         String[] dateArray = generateDateString(startDate, endDate);
-        String exec;
-        
+        String[] dateHrArray = new String[dateArray.length*4];
+        String[] hrs = new String[]{"00","06","12","18"};
+        for (int n=0; n<dateArray.length; n++){                // skapar en ny String array med datum och klockslag
+            for (int m=0; m<4; m++){
+                dateHrArray[n*4+m] = dateArray[n]+ "_" + hrs[m];
+            }
+        }
+ 
+        String exec;      
+        String dataCo = new String("-70/15/35/75"); // Koordinaterna som plockas ut
+        String fixPath = new String("export PATH=.:$HOME/bin:/home/hgs/bin:/usr/local/GMT/bin:$PATH "
+                + "\nexport GMTHOME=/usr/local/GMT "); // Så bash hittar GMT
+  
         ChannelSftp channelSftp = null;
         Channel channel = null;
         Session sesh = null;
@@ -56,40 +68,47 @@ public class GetDataHgsChalmers {
             channelSftp = (ChannelSftp) channel;
             ChannelExec channelExec;
      
-            System.out.println(dateArray.length);
+            System.out.println(dateHrArray.length);
             // Laddar ned alla datafiler för aktuella datum
-            for (int i=0; i<dateArray.length; i++){
-                System.out.println(dateArray[i]);
+            for (int i=0; i<dateHrArray.length; i++){
+                System.out.println(dateHrArray[i]);
                 
                 //Open shell channel
                 channelExec = (ChannelExec) sesh.openChannel("exec");
                 
                 try {
                     System.out.println("1");
-                    channelSftp.get("/home/hgs/bin/kandidatArbetsMappen/gravidata/" + dateArray[i] + ".tsf", "gravidata/" + dateArray[i] + ".tsf");
+                    channelSftp.get("/home/hgs/ECMWF/WAVEH/kandData/20"+ dateHrArray[i] + ".tsv" , "wavedata/20" + dateHrArray[i] + ".tsv");
                     System.out.println("2");
                 }
                 catch(SftpException e){
                     System.out.println(e.getMessage());
-                    exec = "tslist /home/hgs/TD/d/G1_garb_" + dateArray[i] + "-1s.mc -L'G|B' -Jf14.8,f12.4 -D -qqq -w /home/hgs/bin/kandidatArbetsMappen/gravidata/" + dateArray[i] + ".tsf";               
+                    exec = fixPath +" \n" + "if [ -e /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
+                            + ".grd ]; then " + "grd2xyz /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
+                            + ".grd -R" + dataCo + " > /home/hgs/ECMWF/WAVEH/kandData/temp.tsv"
+                            + " \nblockmean /home/hgs/ECMWF/WAVEH/kandData/temp.tsv"
+                            + " -R"+ dataCo +" -I"+ Double.toString(resDeg)+" -C > "
+                            + "/home/hgs/ECMWF/WAVEH/kandData/20" + dateHrArray[i] + ".tsv ; fi";               
                     System.out.println(exec);
                     channelExec.setCommand(exec);
                     //channelExec.setOutputStream(System.out);
                     channelExec.connect();
                     
+                    
                     try { // Väntar på att kommando skall köras på servern
-                        Thread.sleep(500);
+                        Thread.sleep(2000);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(GetDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 
                 try {
                     System.out.println("3");
-                    channelSftp.get("/home/hgs/bin/kandidatArbetsMappen/gravidata/" + dateArray[i] + ".tsf", "gravidata/" + dateArray[i] + ".tsf");  
+                    channelSftp.get("/home/hgs/ECMWF/WAVEH/kandData/20"
+                            + dateHrArray[i] + ".tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
                     System.out.println("4");
                 }catch(SftpException e){
-                    System.out.println(e.getMessage() + " Totally failed to get: " + dateArray[i]);
+                    System.out.println(e.getMessage() + " Totally failed to get: " + dateHrArray[i]);
                 }
                 
                 channelExec.disconnect();
@@ -102,7 +121,7 @@ public class GetDataHgsChalmers {
 
             
         } catch (JSchException ex) {
-            Logger.getLogger(GetDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (channelSftp.isConnected()) {
                 try {
