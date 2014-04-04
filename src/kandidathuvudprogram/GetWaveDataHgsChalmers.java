@@ -27,7 +27,7 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2014-01-05","2014-01-07", 1);
+        downloadWaveData("2014-02-05","2014-02-07", 1);
     }
     
     /**
@@ -83,11 +83,12 @@ public class GetWaveDataHgsChalmers {
                 }
                 catch(SftpException e){
                     System.out.println(e.getMessage());
-                    exec = fixPath +" \n" + "grd2xyz /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
+                    exec = fixPath +" \n" + "if [ -e /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
+                            + ".grd ]; then " + "grd2xyz /home/hgs/ECMWF/WAVEH/GRD/wvh_20" + dateHrArray[i]
                             + ".grd -R" + dataCo + " > /home/hgs/ECMWF/WAVEH/kandData/temp.tsv"
                             + " \nblockmean /home/hgs/ECMWF/WAVEH/kandData/temp.tsv"
                             + " -R"+ dataCo +" -I"+ Double.toString(resDeg)+" -C > "
-                            + "/home/hgs/ECMWF/WAVEH/kandData/20" + dateHrArray[i] + ".tsv";               
+                            + "/home/hgs/ECMWF/WAVEH/kandData/20" + dateHrArray[i] + ".tsv ; fi";               
                     System.out.println(exec);
                     channelExec.setCommand(exec);
                     //channelExec.setOutputStream(System.out);
