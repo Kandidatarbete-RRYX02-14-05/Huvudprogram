@@ -17,11 +17,36 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.RequiredImprovementStrategy;
 public class WaveCorrTest {
 
+	public static double maxValue(double[] matrix) {
+		double max = 0;
+		for(int i = 0;i<matrix.length;i++){
+			for(int j = 0; j<matrix.length; j++){
+				if (matrix[i] > max)
+					max = matrix[i];
+			}
+		}
+			
+		
+		return max;
+	}
 	
 	
+	public static double maxValue(double[][] matrix) {
+		double max = 0;
+		for(int i = 0;i<matrix.length;i++){
+			for(int j = 0; j<matrix[1].length; j++){
+				if (matrix[i][j] > max)
+					max = matrix[i][j];
+			}
+		}
+			
+		
+		return max;
+	}
 	
 	public static void main(final String args[]) {
 		
+			
 				
 		String[] dates = {"2014-01-06"};
 		Filemanager.createBin(dates, 0.99, "Hanning");
@@ -30,18 +55,32 @@ public class WaveCorrTest {
 		// skapar en "BufferedReader" från .bin-filen
 		BufferedMLDataSet buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
 		
-		Iterator<MLDataPair> itr = buffSet.iterator();
-		MLDataPair tmppair =  (MLDataPair) itr.next();// itr.next() hämtar nästa MLDataPair (en inputarray och en outputarray fast i MLData-format)
+		Iterator<MLDataPair> itr = buffSet.iterator(); 
+		Iterator<MLDataPair> itr2 = buffSet.iterator();
+		Iterator<MLDataPair> itr3 = buffSet.iterator();
 		
+		double[][] tmpInput = new double[4][2607];
+		double[][] tmpIdeal = new double[4][2818];
+		while(itr.hasNext()){
+			int i = 0;
+			tmpInput[i] = itr.next().getInputArray();
+			i++;
+		}
+		while(itr2.hasNext()){
+			int i = 0;
+			tmpIdeal[i] = itr2.next().getIdealArray();
+			System.out.println("TMPIDEAL(1): " + tmpIdeal[i][1]);
+			i++;
+		}
 		
-				
+		System.out.println("InputMax: " + maxValue(tmpInput) + " IdealMax: " + maxValue(tmpIdeal));	
 		
-		
+		MLDataPair tmppair = itr3.next();
 		// Skapar nätverket	
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, tmppair.getInput().size()));
-		network.addLayer(new BasicLayer(new ActivationTANH(), false, 3000));
-		network.addLayer(new BasicLayer(new ActivationTANH(), false, tmppair.getIdeal().size()));
+		network.addLayer(new BasicLayer(new ActivationLinear(), false, 100));
+		network.addLayer(new BasicLayer(new ActivationLinear(), false, tmppair.getIdeal().size()));
 		network.getStructure().finalizeStructure();
 		network.reset();
 		
@@ -56,7 +95,7 @@ public class WaveCorrTest {
 			System.out.println(
 					"Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
-		} while(train.getError() > 173); 
+		} while(train.getError() > 1); 
 		
 		
 		// test the neural network
