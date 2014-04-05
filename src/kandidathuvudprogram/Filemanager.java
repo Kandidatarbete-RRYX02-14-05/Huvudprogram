@@ -77,6 +77,64 @@ public class Filemanager {
 
 	/**
 	 * 
+	 * @param datum t.ex "2014-01-05"
+	 * @param startTid t.ex "06"
+	 * @return
+	 */
+	public static double[] readWaveFile(String datum, String startTid){
+		String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + startTid + ".tsv";
+		Import imp = new Import();
+		String dataTime[], dataValue[];  
+
+		dataTime = imp.importWhole(fil);
+		dataValue = new String[dataTime.length];
+		String[] temp;
+		for (int i=0; i<dataTime.length-1; i++){
+			temp = dataTime[i].split("	");
+			dataValue[i] = temp[temp.length-1];
+			dataTime[i] = temp[0];
+		}
+		
+		
+		double data[] = new double[dataTime.length-1];
+		for (int i=0; i<data.length; i++){
+			data[i] = Double.parseDouble(dataValue[i]);
+		};
+		return data;
+		
+	}
+	
+	/**
+	 * 
+	 * @param datum t.ex "2014-01-05"
+	 * @param startTid t.ex "06"
+	 * @return
+	 */
+	public static double[] readWaveFile(String datum, String startTid){
+		String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + startTid + ".tsv";
+		Import imp = new Import();
+		String dataTime[], dataValue[];  
+
+		dataTime = imp.importWhole(fil);
+		dataValue = new String[dataTime.length];
+		String[] temp;
+		for (int i=0; i<dataTime.length-1; i++){
+			temp = dataTime[i].split("	");
+			dataValue[i] = temp[temp.length-1];
+			dataTime[i] = temp[0];
+		}
+		
+		
+		double data[] = new double[dataTime.length-1];
+		for (int i=0; i<data.length; i++){
+			data[i] = Double.parseDouble(dataValue[i]);
+		};
+		return data;
+		
+	}
+	
+	/**
+	 * 
 	 * @param set
 	 *            MLDataSet som man skapar bin filen ifrån, ex: "2010-05-10"
 	 * @param outFile

@@ -68,16 +68,7 @@ public class KandidatHuvudprogram {
 		//Chart.useChart(sin,"Sin",alpha,windowName);
 		Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],testPower.getAlpha(),testPower.getWindowName());
 
-		// ERIKS OCH EMILIOS
-		/*File netFile = new File("/chalmers/users/hellsten/Git/Huvudprogram/Data/Network/"); 
-        // Sökväg till mappen för filerna för config 
-
-        if (netFile.exists()){
-        	System.out.println("File it exists");
-        } // Försäkring om att mappen existerar
-
-        NeuralNet net = new NeuralNet(2,2,1);
-		 */
+		
 	}
 
 }

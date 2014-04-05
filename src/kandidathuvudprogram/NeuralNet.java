@@ -40,6 +40,8 @@ public NeuralNet(int inputSize, int outputSize, int hiddenNeurons){
 	 * constructor is if there is a header in the CSV file. The second is unknown, try both. 
 	 *
 	 */
+	
+	/*
 	public static void convertToBin(File inFile, File outFile, int inputCount, int outputCount){
 		CSVFormat csvFormat = new CSVFormat();
 		
@@ -53,16 +55,8 @@ public NeuralNet(int inputSize, int outputSize, int hiddenNeurons){
 		
 		loader.external2Binary(outFile);	
 	}
+	*/
 	
-	public static void createBin(MLDataSet set, File outFile){
-	
-				
-		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
-		
-		BinaryDataLoader loader = new BinaryDataLoader(codec);
-		
-		loader.external2Binary(outFile);	
-	}
 	
 	public BasicNetwork getNetwork(){
 		return this.network;

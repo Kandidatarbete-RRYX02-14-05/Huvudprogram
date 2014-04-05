@@ -21,9 +21,6 @@ public class WaveCorrTest {
 	
 	public static void main(final String args[]) {
 		
-		
-		
-	
 		Filemanager.createBin("2010-05-10", 0.99, "Hanning");
 		
 		
@@ -73,7 +70,5 @@ public class WaveCorrTest {
 				System.out.println("ideal=" + pair.getIdeal().getData(i) + ", actual=" + output.getData(i)); // instanceOfMldata.getData(index i) ger utdata nbr i.
 			}
 		}	
-		
-				
 	}
 }
