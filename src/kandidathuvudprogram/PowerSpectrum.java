@@ -121,8 +121,8 @@ public class PowerSpectrum {
 		double maxfreq=0.3;
 		int smallestElement=(int) (minfreq/(2*Math.PI/FFTLength));
 		int largestElement=(int) Math.ceil((maxfreq/(2*Math.PI/FFTLength)));
-		double[] relevantSpectrum = new double [smallestElement-largestElement];
-		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,smallestElement-largestElement);
+		double[] relevantSpectrum = new double [largestElement-smallestElement];
+		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		return relevantSpectrum;
 	}
 				
