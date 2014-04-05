@@ -81,27 +81,37 @@ public class Filemanager {
 	 * @param startTid t.ex "06"
 	 * @return
 	 */
-	public static double[] readWaveFile(String datum, String startTid){
-		String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + startTid + ".tsv";
-		Import imp = new Import();
-		String dataTime[], dataValue[];  
+	public static double[][] readWaveFile(String datum){
 
-		dataTime = imp.importWhole(fil);
-		dataValue = new String[dataTime.length];
-		String[] temp;
-		for (int i=0; i<dataTime.length-1; i++){
-			temp = dataTime[i].split("	");
-			dataValue[i] = temp[temp.length-1];
-			dataTime[i] = temp[0];
+		double data[][]=null; 
+
+		for (int i = 0; i<4; i++){
+			String timestr = "" + (100+6*i) ; // fulhaxxar fram 00, 06, 12 ,18 som strängar
+			String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + timestr.substring(1) + ".tsv";
+			System.out.println("wavedata/" + datum.replaceAll("-", "") + "_" + timestr.substring(1) + ".tsv");
+			Import imp = new Import();
+			String dataTime[], dataValue[];  
+
+			dataTime = imp.importWhole(fil);
+			dataValue = new String[dataTime.length];
+			String[] temp;
+			
+			if(i == 0){
+				data = new double[4][dataTime.length-1];
+			}
+				
+			for (int j=0; j<dataTime.length-1; j++){ // varför -1? 
+				temp = dataTime[j].split("	");
+				dataValue[j] = temp[temp.length-1];
+				dataTime[j] = temp[0];
+			}
+			
+			for (int k=0; k<data[i].length; k++){
+				data[i][k] = Double.parseDouble(dataValue[k]);
+			}
 		}
-		
-		
-		double data[] = new double[dataTime.length-1];
-		for (int i=0; i<data.length; i++){
-			data[i] = Double.parseDouble(dataValue[i]);
-		};
 		return data;
-		
+
 	}
 
 	/**
@@ -116,14 +126,17 @@ public class Filemanager {
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/trainingData.bin");
 		double[][] gravdata;
+		double[][] wavedata; 
+		
 		for (int i = 0; i < datum.length; i++) {
-
+			wavedata = readWaveFile(datum[i]);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
 				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha,
 						win, 4);
-				set.add(new BasicMLData(spectrum.getRelevantSpectrum()),
-						new BasicMLData(spectrum.getRelevantSpectrum()));
+				set.add(new BasicMLData(wavedata[j]),
+						new BasicMLData(spectrum.getRelevantSpectrum())
+						);
 			}
 		}
 		System.out.println("Inputsize:" + set.getInputSize());

@@ -27,7 +27,7 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2014-01-07","2014-01-08", 1);
+        downloadWaveData("2014-01-06","2014-01-06", 1);
     }
     
     /**
