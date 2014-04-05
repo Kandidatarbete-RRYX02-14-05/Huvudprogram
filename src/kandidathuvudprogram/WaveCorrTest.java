@@ -3,18 +3,11 @@ import java.io.File;
 import java.util.Iterator;
 
 import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
-import
-org.encog.neural.networks.BasicNetwork;
+ 
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.propagation.
-resilient.ResilientPropagation;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;

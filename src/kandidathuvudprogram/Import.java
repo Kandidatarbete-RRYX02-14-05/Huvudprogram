@@ -120,7 +120,7 @@ public class Import {
 		return new String[] {""};
 	}
 /**
- * Returnerar en fil 
+ * Tar in en strängarray med data och delar upp den i 4 delar och returnerar strängmatris med 4 strängar.
  * @param filnamn
  * @return String [4][3600*6]
  */
