@@ -124,7 +124,7 @@ public class Import {
  * @param filnamn
  * @return String [4][3600*6]
  */
-	public String[][] splitSixHours(String data){
+	public String[][] splitSixHours(String[] data){
 		String[][] parts = new String [4][3600*6];
 		for (int i=0; i<4; i++){
 			System.arraycopy(data,i*21600,parts[i],0,21600);

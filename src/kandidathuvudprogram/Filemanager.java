@@ -39,6 +39,39 @@ public class Filemanager {
 		return data;
 	}
 	
+	
+	/**
+	 * SKRIV HÄR!
+	 * @param datum
+	 * @return
+	 */
+	
+	public static double[][] readGravFileInParts(String datum){
+		String fil = "gravidata/" + datum.substring(2).replaceAll("-", "") + ".tsf";
+		Import imp = new Import();
+		String dataTime[], dataValue[];  
+
+		dataTime = imp.importWhole(fil);
+		dataValue = new String[dataTime.length];
+		String[] temp;
+		for (int i=0; i<dataTime.length-1; i++){
+			temp = dataTime[i].split(" ");
+			dataValue[i] = temp[temp.length-1];
+			dataTime[i] = temp[0];
+		}
+		
+		String[][] splitDataTime = imp.splitSixHours(dataValue);
+		
+		double data[][] = new double[4][dataTime.length-1];
+		
+		for (int i=0;i<4;i++) {
+			for (int k=0; k<data.length; k++){
+				data[i][k] = Double.parseDouble(splitDataTime[i][k]);
+			}
+		}
+		return data;
+	}
+	
 	/**
 	 * 
 	 * @param set MLDataSet som man skapar bin filen ifrån, ex: "2010-05-10"
@@ -50,10 +83,10 @@ public class Filemanager {
 		File binFile = new File("Data/Network/" + datum.substring(2).replaceAll("-", "") + ".bin");
 		
 		BasicMLDataSet set = new BasicMLDataSet();
-		
-		PowerSpectrum spectrum = new PowerSpectrum(readGravFile(datum),alpha,win,4);
-
+			
+			 double[][] gravdata =  readGravFileInParts(datum);
 		for (int i = 0; i<4; i++){
+			PowerSpectrum spectrum = new PowerSpectrum(gravdata[i],alpha,win,4);
 			set.add(new BasicMLData(spectrum.getRelevantSpectrum()), new BasicMLData(spectrum.getRelevantSpectrum()));
 		}
 		
