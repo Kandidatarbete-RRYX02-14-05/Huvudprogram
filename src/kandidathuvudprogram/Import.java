@@ -127,7 +127,7 @@ public class Import {
 	public String[][] splitSixHours(String data){
 		String[][] parts = new String [4][3600*6];
 		for (int i=0; i<4; i++){
-			System.arraycopy(data,i*5400,parts[i],0,5400);
+			System.arraycopy(data,i*21600,parts[i],0,21600);
 		}
 		return parts;
 	}
