@@ -22,7 +22,8 @@ import org.joda.time.LocalDate;
 
 /**
  *
- * @author Markus
+ * @author Markus, David
+ *
  */
 public class GetWaveDataHgsChalmers {
     
@@ -31,10 +32,10 @@ public class GetWaveDataHgsChalmers {
     }
     
     /**
-     * Klipper ut, tar melelvärde och laddar ner vågdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum_tid.tsv ex: 110514_06.tsv
+     * Klipper ut, tar medelvärde och laddar ner vågdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum_tid.tsv ex: 110514_06.tsv
      * @param startDate
      * @param endDate 
-     * @param resDeg Upplösning i grader för melelvärdena av våghöjden. 
+     * @param resDeg Upplösning i grader för medelvärdena av våghöjden. 
      */
     public static void downloadWaveData(String startDate, String endDate, double resDeg){
         
