@@ -45,6 +45,7 @@ public class PowerSpectrum {
 		String windowName = "Rectangular";
 		PowerSpectrum test = new PowerSpectrum(sin,alpha,windowName,1);
 		Chart.useChart(test.getSpectrum(),"Sin",alpha,windowName);
+		
 	}
 
 	public PowerSpectrum(double [] yValues, double alpha, int numberParts){
