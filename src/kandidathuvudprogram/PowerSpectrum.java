@@ -39,23 +39,23 @@ public class PowerSpectrum {
 	public static void main(String[] args){
 		double[] sin = new double [100000];
 		for (int i=0 ; i<sin.length; i++){
-			sin[i]=Math.sin(i*400*Math.PI/sin.length);
+			sin[i]=2*Math.sin(i*2*Math.PI/sin.length);//+Math.sin(i*100000*Math.PI/sin.length);
 		}
 		double alpha=0.99;
 		String windowName = "Rectangular";
 		PowerSpectrum test = new PowerSpectrum(sin,alpha,windowName,1);
-		Chart.useChart(test.getSpectrum(),"Sin",alpha,windowName);
-		
+		//System.out.println(test.getSpectrum()[10]);
+		Chart.useChart(test.getRelevantSpectrum(),"Sin",alpha, windowName);
 	}
 
-	public PowerSpectrum(double [] yValues, double alpha, int numberParts){
+	/**public PowerSpectrum(double [] yValues, double alpha, int numberParts){
 		this.yValues=yValues;
 		this.alpha=alpha;
 		this.numberParts=numberParts;
 		initValues(yValues);
 		removeMean();
 		filter(yValues);
-	}
+	}**/
 
 	/**
 	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
@@ -71,20 +71,27 @@ public class PowerSpectrum {
 
 		initValues(yValues);   
 		removeMean();
-		filter(yValues);
+		//filter(yValues);
 		createIntervals();
 		prepTransform();     
-		transform();
+		try {
+			transform();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null,e1.getMessage());
+		}
 		try {
 			applyWindow();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
 		fft.fft(spectrum[0], spectrum[1]);
-		removeFilter(spectrum[0]);
+		//removeFilter(spectrum[0]);
 
+		
+		
 
 		//---------------
 
@@ -112,11 +119,11 @@ public class PowerSpectrum {
 	public double[] getSpectrum(){
 		return spectrum[0];
 	}
-	
+
 	public double getSpectrum(int i){
 		return spectrum[0][i];
 	}
-	
+
 	public double[] getRelevantSpectrum(){
 		double minfreq=0.03;
 		double maxfreq=0.3;
@@ -126,11 +133,11 @@ public class PowerSpectrum {
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		return relevantSpectrum;
 	}
-				
+
 	public String getWindowName(){
 		return windowName;
 	}
-	
+
 	public double getAlpha(){
 		return alpha;
 	}
@@ -245,7 +252,7 @@ public class PowerSpectrum {
 	}
 
 	//skapar Power spectrum
-	public void transform() {
+	public void transform() throws Exception {
 		for (int i = 0; i < numberParts; i++){
 			fft.fft(yValIntervals[i],complexIntervals[i]);
 		}
@@ -259,11 +266,16 @@ public class PowerSpectrum {
 				temp1=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
 						yValIntervals[i][k], complexIntervals[i][k]); //(X_i)(X_i)*
 
-						temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
-								yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
+				temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
+						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
 
-						Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-						Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+
+				Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+				if (Areal[k]<0){
+					throw new Exception("Areal is negative");
+				}
+				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+
 			}
 		}
 		inverseFFT(Areal,Aimag);
@@ -271,10 +283,11 @@ public class PowerSpectrum {
 		covariance = new double [2][FFTLength];
 		//A blir nu covariansfunktionen.
 		for (int i=0; i < Areal.length; i++){
-			covariance[0][i] = Areal[i]/(numberParts*intervalLength);
+			covariance[0][i] = Areal[i]/(numberParts*intervalLength);	
 			covariance[1][i] = Aimag[i]/(numberParts*intervalLength);
 		}
 
+		
 
 	}
 
@@ -297,15 +310,14 @@ public class PowerSpectrum {
 
 		//s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
 		for (int i=L-M+1; i <= L-1; i++){
-			spectrum[0][i]=covariance[1][L-i]*window[L-i];
+			spectrum[0][i]=covariance[0][L-i]*window[L-i];
 			spectrum[1][i]=covariance[1][L-i]*window[L-i];
 		}
 
-
+		Chart.useChart(spectrum[0], "test", 0, "test");
 		if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
 			throw new Exception("ERROR, imaginary vector is non-zero");
 		}
-
 	}
 
 }
