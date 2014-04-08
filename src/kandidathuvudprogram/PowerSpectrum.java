@@ -303,18 +303,17 @@ public class PowerSpectrum {
 
 
 		//s= 0 				M <= m <= L-M
-		for (int i=M; i<=L-M; i++){
-			spectrum[0][i]=0;
-			spectrum[1][i]=0;
+		for (int i = M; i<= L - M; i++){
+			spectrum[0][i]= 0;
+			spectrum[1][i]= 0;
 		}
 
 		//s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
-		for (int i=L-M+1; i <= L-1; i++){
+		for (int i = L - M+1; i <= L-1; i++){
 			spectrum[0][i]=covariance[0][L-i]*window[L-i];
 			spectrum[1][i]=covariance[1][L-i]*window[L-i];
 		}
 
-		Chart.useChart(spectrum[0], "test", 0, "test");
 		if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
 			throw new Exception("ERROR, imaginary vector is non-zero");
 		}
