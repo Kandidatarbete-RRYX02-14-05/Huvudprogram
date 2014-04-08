@@ -46,10 +46,10 @@ public class WaveCorrTest {
 	
 	public static void main(final String args[]) {
 		
-			
+		
 				
 		String[] dates = {"2014-01-06"};
-		Filemanager.createBin(dates, 0.99, "Hanning");
+		Filemanager.createBin(dates, 0.99, "rectangular");
 		
 	
 		// skapar en "BufferedReader" från .bin-filen
@@ -57,25 +57,24 @@ public class WaveCorrTest {
 		
 		Iterator<MLDataPair> itr = buffSet.iterator(); 
 		Iterator<MLDataPair> itr2 = buffSet.iterator();
-		Iterator<MLDataPair> itr3 = buffSet.iterator();
 		
-		double[][] tmpInput = new double[4][2607];
 		double[][] tmpIdeal = new double[4][2818];
+		int z = 0;
 		while(itr.hasNext()){
-			int i = 0;
-			tmpInput[i] = itr.next().getInputArray();
-			i++;
-		}
-		while(itr2.hasNext()){
-			int i = 0;
-			tmpIdeal[i] = itr2.next().getIdealArray();
-			System.out.println("TMPIDEAL(1): " + tmpIdeal[i][1]);
-			i++;
+			tmpIdeal[z] = itr.next().getIdealArray();
+			z++;
 		}
 		
-		System.out.println("InputMax: " + maxValue(tmpInput) + " IdealMax: " + maxValue(tmpIdeal));	
+		for (int i = 0; i<tmpIdeal[0].length; i++) {
+			System.out.println(tmpIdeal[0][i]);
+		}
 		
-		MLDataPair tmppair = itr3.next();
+		Chart.useChart(tmpIdeal[0], "dataname", 0.99, "window");
+		System.out.println(" IdealMax: " + maxValue(tmpIdeal));	
+		
+		
+		/*
+		MLDataPair tmppair = itr2.next();
 		// Skapar nätverket	
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, tmppair.getInput().size()));
@@ -112,6 +111,6 @@ public class WaveCorrTest {
 				System.out.println("ideal=" + pair.getIdeal().getData(i) + ", actual=" + output.getData(i)); // instanceOfMldata.getData(index i) ger utdata nbr i.
 			}
 		}
-			
+		*/	
 	}
 }
