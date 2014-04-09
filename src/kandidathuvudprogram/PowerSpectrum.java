@@ -37,15 +37,23 @@ public class PowerSpectrum {
 
 
 	public static void main(String[] args){
-		double[] sin = new double [100000];
+		double[] sin = new double [16384];
 		for (int i=0 ; i<sin.length; i++){
-			sin[i]=2*Math.sin(i*2*Math.PI/sin.length);//+Math.sin(i*100000*Math.PI/sin.length);
-		}
+			sin[i]=10000*Math.sin(i*4600*2*Math.PI/sin.length)+5000*Math.sin(i*1000*2*Math.PI/sin.length);
+			}
 		double alpha=0.99;
+		double[] zeros = new double [16384];
+		FFT fft = new FFT(16384);
+		fft.fft(sin, zeros);
+	
+		
 		String windowName = "Rectangular";
-		PowerSpectrum test = new PowerSpectrum(sin,alpha,windowName,1);
+		double[] bajs = new double [1];
+		PowerSpectrum test = new PowerSpectrum(bajs,alpha,windowName,1);
+		Chart.useChart(sin, "sin", alpha, windowName);
+		test.inverseFFT(sin,zeros);
 		//System.out.println(test.getSpectrum()[10]);
-		Chart.useChart(test.getRelevantSpectrum(),"Sin",alpha, windowName);
+		Chart.useChart(sin,"Sin",alpha, windowName);
 	}
 
 	/**public PowerSpectrum(double [] yValues, double alpha, int numberParts){
@@ -73,7 +81,7 @@ public class PowerSpectrum {
 		removeMean();
 		//filter(yValues);
 		createIntervals();
-		prepTransform();     
+		prepTransform();     	
 		try {
 			transform();
 		} catch (Exception e1) {
@@ -220,7 +228,7 @@ public class PowerSpectrum {
 		fft.fft(reArray,imArray);
 		reverseArray(reArray);
 		reverseArray(imArray);
-		double N=reArray.length;
+		double N=1;//reArray.length;
 		for (int i=0; i < N; i++){
 			reArray[i]=reArray[i]/N;
 			imArray[i]=imArray[i]/N;
@@ -268,20 +276,13 @@ public class PowerSpectrum {
 
 				temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
 						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
+				
 
-				if (k==0){
 					Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-					if (Areal[k]<0){
-						throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
-					}
+					
 					Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
-				}
-				else {
-					Areal[k] += Areal[k-1] + temp1[0] + Math.pow(-1, k)*temp2[0];
-					if (Areal[k]<0){
-						throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
-					}
-					Aimag[k] += Aimag[k-1] + temp1[1] + Math.pow(-1, k)*temp2[1];
+				if (Areal[k]<0){
+					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 				}
 			}
 		}
