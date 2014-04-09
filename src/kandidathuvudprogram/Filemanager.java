@@ -69,10 +69,10 @@ public class Filemanager {
 
 		String[][] splitDataTime = imp.splitSixHours(dataValue);
 
-		double data[][] = new double[4][dataTime.length - 1];
+		double data[][] = new double[splitDataTime.length][splitDataTime[0].length];
 
 		for (int i = 0; i < 4; i++) {
-			for (int k = 0; k < data.length; k++) {
+			for (int k = 0; k < data[i].length; k++) {
 				data[i][k] = Double.parseDouble(splitDataTime[i][k])/divider;
 				System.out.println(data[i][k]);
 			}
