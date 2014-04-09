@@ -43,12 +43,16 @@ public class Filemanager {
 
 	/**
 	 * SKRIV HÄR!
-	 * 
+	 * @param divider Delar alla värden med en faktor eqto divider. Standard är divider = 0 vilket delar med 45000.
 	 * @param datum
 	 * @return
 	 */
 
-	public static double[][] readGravFileInParts(String datum) {
+	public static double[][] readGravFileInParts(String datum, double divider) {
+		
+		if (divider == 0)
+			divider = 1;
+		
 		String fil = "gravidata/" + datum.substring(2).replaceAll("-", "")
 				+ ".tsf";
 		Import imp = new Import();
@@ -69,9 +73,11 @@ public class Filemanager {
 
 		for (int i = 0; i < 4; i++) {
 			for (int k = 0; k < data.length; k++) {
-				data[i][k] = Double.parseDouble(splitDataTime[i][k]);
+				data[i][k] = Double.parseDouble(splitDataTime[i][k])/divider;
+				System.out.println(data[i][k]);
 			}
 		}
+		Chart.useChart(data[0], "GravTest", 0.99, "win");
 		return data;
 	}
 
@@ -79,10 +85,13 @@ public class Filemanager {
 	 * 
 	 * @param datum t.ex "2014-01-05"
 	 * @param startTid t.ex "06"
+	 * @param divider Delar alla värden med en faktor eqto divider. Standard är divider = 0 vilket delar med 20.2.
 	 * @return
 	 */
-	public static double[][] readWaveFile(String datum){
+	public static double[][] readWaveFile(String datum, double divider){
 
+		if (divider == 0)
+			divider = 20.2;
 		double data[][]=null; 
 
 		for (int i = 0; i<4; i++){
@@ -114,6 +123,8 @@ public class Filemanager {
 
 	}
 
+	
+	
 	/**
 	 * 
 	 * @param set
@@ -129,14 +140,11 @@ public class Filemanager {
 		double[][] wavedata; 
 		
 		for (int i = 0; i < datum.length; i++) {
-			wavedata = readWaveFile(datum[i]);
-			gravdata = readGravFileInParts(datum[i]);
+			wavedata = readWaveFile(datum[i],0);
+			gravdata = readGravFileInParts(datum[i],0);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha,
-						win, 4);
-				set.add(new BasicMLData(wavedata[j]),
-						new BasicMLData(spectrum.getRelevantSpectrum())
-						);
+				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 4);
+				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getSpectrum()));
 			}
 		}
 		System.out.println("Inputsize:" + set.getInputSize());

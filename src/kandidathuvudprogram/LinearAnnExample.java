@@ -1,6 +1,7 @@
 package kandidathuvudprogram;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -26,27 +27,20 @@ public class LinearAnnExample {
 		{0.9},{2.2},{2.3},{2.3},{3.4},{2.6},{3.2},{4.2}};
 	
 	// Testdata som används i "Eriks test" 
-	static double[] testIn = {0.4,3.2,0.6};
-
-	/*
-	static double[][] sin;
-	static double[][] freq;
-
-	public static void initsin(int nrFunk, int nrVal){
-		sin = new double[nrFunk][nrVal];
-		freq = new double[nrFunk][1];
-
-		for (int i=0; i<nrFunk; i++){
-			freq[i][0] = i+10;
-			for (int a=0; a<nrVal; a++){
-				sin[i][a] = a*(i+1);
-			}
-		}
-	}
-	 */
+	static double[] testIn = {0.4/4.2,2.1/4.2,0.6/4.2};
 
 
 	public static void main(final String args[]) {
+			
+		for (int i = 0; i < data.length; i++){
+			for(int j = 0; j<3; j++){
+				data[i][j] = data[i][j]/4.2;
+			}
+			
+			ideal[i][0] = ideal[i][0]/4.2;
+			
+		}
+		
 		
 		// nbr of in-neurons
 		int nbrIn = 3;
@@ -54,7 +48,7 @@ public class LinearAnnExample {
 		//Skapar nätverk utan några dolda lager, linjär Act. func.
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, nbrIn));
-		//network.addLayer(new BasicLayer(5));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 22));
 		network.addLayer(new BasicLayer(1));
 		network.getStructure().finalizeStructure();
 		network.reset();
@@ -72,7 +66,7 @@ public class LinearAnnExample {
 			System.out.println(
 					"Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
-		} while(train.getError() > 0.0006); //Bättre än såhär konvergerarden inte. Varför?
+		} while(train.getError() > 0.0001); //Bättre än såhär konvergerarden inte. Varför?
 		
 		
 		// test the neural network
@@ -91,7 +85,7 @@ public class LinearAnnExample {
 		BasicNeuralData ndIn = new BasicNeuralData(testIn);  // Gör basicNeuralDasta av double[] testIn för network.compute behöver MLData för att räkna på. 
 		MLData ndOut = network.compute(ndIn);
 		System.out.println("Eriks test");
-		System.out.println("In: " + ndIn.getData(0) + ", " + ndIn.getData(1) + ", " + ndIn.getData(2));
+		System.out.println("In: " + ndIn.getData(0) + " + " + ndIn.getData(1) + " + " + ndIn.getData(2) + " = " + (ndIn.getData(0)+ ndIn.getData(1)+ ndIn.getData(2)));
 		System.out.println("Ut: " + ndOut.getData(0));
 	}
 }
