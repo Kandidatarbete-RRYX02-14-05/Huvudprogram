@@ -83,15 +83,15 @@ public class PowerSpectrum {
 		try {
 			applyWindow();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
 		fft.fft(spectrum[0], spectrum[1]);
 		//removeFilter(spectrum[0]);
 
-		
-		
+
+
 
 		//---------------
 
@@ -269,13 +269,20 @@ public class PowerSpectrum {
 				temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
 						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
 
-
-				Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-				if (Areal[k]<0){
-					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+				if (k==0){
+					Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+					if (Areal[k]<0){
+						throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+					}
+					Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
 				}
-				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
-
+				else {
+					Areal[k] += Areal[k-1] + temp1[0] + Math.pow(-1, k)*temp2[0];
+					if (Areal[k]<0){
+						throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+					}
+					Aimag[k] += Aimag[k-1] + temp1[1] + Math.pow(-1, k)*temp2[1];
+				}
 			}
 		}
 		inverseFFT(Areal,Aimag);
@@ -287,7 +294,7 @@ public class PowerSpectrum {
 			covariance[1][i] = Aimag[i]/(numberParts*intervalLength);
 		}
 
-		
+
 
 	}
 
