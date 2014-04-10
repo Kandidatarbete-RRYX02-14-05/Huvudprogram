@@ -119,8 +119,8 @@ public class PowerSpectrum {
 	public double[] getRelevantSpectrum(){
 		double minfreq=0.03;
 		double maxfreq=0.3;
-		int smallestElement=(int) (minfreq/(2*Math.PI/FFTLength));
-		int largestElement=(int) Math.ceil((maxfreq/(2*Math.PI/FFTLength)));
+		int smallestElement=(int) (minfreq/FFTLength);
+		int largestElement=(int) Math.ceil((maxfreq/FFTLength));
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		return relevantSpectrum;
