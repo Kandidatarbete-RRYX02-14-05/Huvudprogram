@@ -39,11 +39,11 @@ public class PowerSpectrum {
 	public static void main(String[] args){
 		double[] sin = new double [16384];
 		for (int i=0 ; i<sin.length; i++){
-			sin[i]=10000*Math.sin(i*4600*2*Math.PI/sin.length)+5000*Math.sin(i*1000*2*Math.PI/sin.length);
+			sin[i]=1*Math.cos(i*500*2*Math.PI/sin.length);//+1*Math.sin(i*10*2*Math.PI/sin.length);
 			}
 		double alpha=0.99;
-		double[] zeros = new double [16384];
-		FFT fft = new FFT(16384);
+		double[] zeros = new double [sin.length];
+		FFT fft = new FFT(sin.length);
 		fft.fft(sin, zeros);
 	
 		
@@ -51,7 +51,8 @@ public class PowerSpectrum {
 		double[] bajs = new double [1];
 		PowerSpectrum test = new PowerSpectrum(bajs,alpha,windowName,1);
 		Chart.useChart(sin, "sin", alpha, windowName);
-		test.inverseFFT(sin,zeros);
+		Fft2.inverseTransform(sin, zeros);
+		//test.inverseFFT(sin,zeros);
 		//System.out.println(test.getSpectrum()[10]);
 		Chart.useChart(sin,"Sin",alpha, windowName);
 	}
@@ -225,14 +226,14 @@ public class PowerSpectrum {
 
 	// gör invers fourier
 	public void inverseFFT (double [] reArray, double [] imArray){
-		fft.fft(reArray,imArray);
-		reverseArray(reArray);
-		reverseArray(imArray);
-		double N=1;//reArray.length;
+		fft.fft(imArray,reArray);
+
+		double N=1; //reArray.length;
 		for (int i=0; i < N; i++){
 			reArray[i]=reArray[i]/N;
 			imArray[i]=imArray[i]/N;
 		}
+		Chart.useChart(reArray, "invers", 0, "");
 
 	}
 
