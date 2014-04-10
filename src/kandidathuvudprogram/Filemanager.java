@@ -74,8 +74,8 @@ public class Filemanager {
 		for (int i = 0; i < 4; i++) {
 			for (int k = 0; k < data[i].length; k++) {
 				data[i][k] = Double.parseDouble(splitDataTime[i][k])/divider;
-				System.out.println(data[i][k]);
 			}
+			System.out.println("GraviData " + i  + " är: " + data[i].length + " punkter lång"); // längdtest 1
 		}
 		Chart.useChart(data[0], "GravTest", 0.99, "win");
 		return data;
@@ -139,14 +139,29 @@ public class Filemanager {
 		double[][] gravdata;
 		double[][] wavedata; 
 		
+		
+		//Test
+		
+		double [] testdata =  new double [16384];
+		for(int i = 0; i < testdata.length/2; i++){
+			testdata [i] = Math.cos(0.3*i*2*Math.PI/testdata.length);	
+		}
+ 		
+		//
+		
 		for (int i = 0; i < datum.length; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i],0);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 4);
-				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getSpectrum()));
+				PowerSpectrum spectrum = new PowerSpectrum(testdata, alpha, win, 4);
+				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum()));
+				System.out.println("GraviData " + j  + " är: " + gravdata[j].length + " punkter lång"); // längdtest 2
+				System.out.println("SpectrumData " + j  + " är: " + spectrum.getSpectrum().length + " punkter lång"); // längdtest 1
 			}
 		}
+		
+		
+		
 		System.out.println("Inputsize:" + set.getInputSize());
 		System.out.println("Idealsize:" + set.getIdealSize());
 

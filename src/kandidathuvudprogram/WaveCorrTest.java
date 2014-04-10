@@ -1,5 +1,6 @@
 package kandidathuvudprogram;
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.encog.engine.network.activation.ActivationLinear;
@@ -49,10 +50,9 @@ public class WaveCorrTest {
 		
 				
 		String[] dates = {"2014-01-06"};
-		Filemanager.createBin(dates, 0.99, "rectangular");
+		Filemanager.createBin(dates, 0.99, "hanning");
 		
 		
-	
 		// skapar en "BufferedReader" från .bin-filen
 		BufferedMLDataSet buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
 		
@@ -65,12 +65,8 @@ public class WaveCorrTest {
 			tmpIdeal[z] = itr.next().getIdealArray();
 			z++;
 		}
-		
-		for (int i = 0; i<tmpIdeal[0].length; i++) {
-		//	System.out.println(tmpIdeal[0][i]);
-		}
-		
-		Chart.useChart(tmpIdeal[0], "dataname", 0.99, "window");
+				
+		Chart.useChart(tmpIdeal[1], "dataname", 0.99, "window");
 		System.out.println(" IdealMax: " + maxValue(tmpIdeal));	
 		
 		
