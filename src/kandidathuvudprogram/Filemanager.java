@@ -51,7 +51,7 @@ public class Filemanager {
 	public static double[][] readGravFileInParts(String datum, double divider) {
 		
 		if (divider == 0)
-			divider = 1;
+			divider = 1;	//behövs den? Man vill inte normera innan spektrum...
 		
 		String fil = "gravidata/" + datum.substring(2).replaceAll("-", "")
 				+ ".tsf";
@@ -143,8 +143,8 @@ public class Filemanager {
 		//Test
 		
 		double [] testdata =  new double [16384];
-		for(int i = 0; i < testdata.length/2; i++){
-			testdata [i] = Math.cos(0.3*i*2*Math.PI/testdata.length);	
+		for(int i = 0; i < testdata.length; i++){
+			testdata [i] = Math.cos((2*Math.PI/0.2)*i/testdata.length);	//2pi/x borde ge frekvens x?
 		}
  		
 		//
@@ -153,7 +153,7 @@ public class Filemanager {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i],0);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(testdata, alpha, win, 4);
+				PowerSpectrum spectrum = new PowerSpectrum(gravdata[0], alpha, win, 4);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum()));
 				System.out.println("GraviData " + j  + " är: " + gravdata[j].length + " punkter lång"); // längdtest 2
 				System.out.println("SpectrumData " + j  + " är: " + spectrum.getSpectrum().length + " punkter lång"); // längdtest 1

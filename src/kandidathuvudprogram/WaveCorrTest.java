@@ -59,14 +59,14 @@ public class WaveCorrTest {
 		Iterator<MLDataPair> itr = buffSet.iterator(); 
 		Iterator<MLDataPair> itr2 = buffSet.iterator();
 		
-		double[][] tmpIdeal = new double[4][2818];
-		int z = 0;
+		double[][] tmpIdeal = new double[4][2818];//vad händer här?????
+		int z = 0; //fyller denna någon funktion?
 		while(itr.hasNext()){
 			tmpIdeal[z] = itr.next().getIdealArray();
-			z++;
+			z++;	
 		}
 				
-		Chart.useChart(tmpIdeal[1], "dataname", 0.99, "window");
+		Chart.useRelevantChart(tmpIdeal[0], "dataname", 0.99, "window", 16384);
 		System.out.println(" IdealMax: " + maxValue(tmpIdeal));	
 		
 		
