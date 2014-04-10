@@ -37,24 +37,7 @@ public class PowerSpectrum {
 
 
 	public static void main(String[] args){
-		double[] sin = new double [16384];
-		for (int i=0 ; i<sin.length; i++){
-			sin[i]=1*Math.cos(i*500*2*Math.PI/sin.length);//+1*Math.sin(i*10*2*Math.PI/sin.length);
-			}
-		double alpha=0.99;
-		double[] zeros = new double [sin.length];
-		FFT fft = new FFT(sin.length);
-		fft.fft(sin, zeros);
-	
 		
-		String windowName = "Rectangular";
-		double[] bajs = new double [1];
-		PowerSpectrum test = new PowerSpectrum(bajs,alpha,windowName,1);
-		Chart.useChart(sin, "sin", alpha, windowName);
-		Fft2.inverseTransform(sin, zeros);
-		//test.inverseFFT(sin,zeros);
-		//System.out.println(test.getSpectrum()[10]);
-		Chart.useChart(sin,"Sin",alpha, windowName);
 	}
 
 	/**public PowerSpectrum(double [] yValues, double alpha, int numberParts){
@@ -228,12 +211,11 @@ public class PowerSpectrum {
 	public void inverseFFT (double [] reArray, double [] imArray){
 		fft.fft(imArray,reArray);
 
-		double N=1; //reArray.length;
+		double N=reArray.length;
 		for (int i=0; i < N; i++){
 			reArray[i]=reArray[i]/N;
 			imArray[i]=imArray[i]/N;
 		}
-		Chart.useChart(reArray, "invers", 0, "");
 
 	}
 
