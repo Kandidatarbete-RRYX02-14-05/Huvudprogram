@@ -133,7 +133,7 @@ public class Filemanager {
 	public static void createBin(String[] datum, double alpha, String win, double dividerwave, double dividergrav) {
 
 		if (dividergrav == 0)
-			dividergrav = 400000;
+			dividergrav = 13;
 		
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/trainingData.bin");

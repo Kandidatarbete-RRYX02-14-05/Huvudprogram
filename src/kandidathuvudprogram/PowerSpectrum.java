@@ -124,7 +124,7 @@ public class PowerSpectrum {
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		for(int i = 0; i < relevantSpectrum.length; i++){
-			relevantSpectrum[i] = relevantSpectrum[i]/divider;  //Eriks kod <-- Blame here
+			relevantSpectrum[i] = Math.log(Math.abs(relevantSpectrum[i]))/divider;  //Eriks kod <-- Blame here
 		}
 		return relevantSpectrum;
 	}
