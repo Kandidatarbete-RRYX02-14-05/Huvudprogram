@@ -93,7 +93,7 @@ public class WaveCorrTest {
 					"Epoch #" + epoch + " Error:" + train.getError());
 			error[epoch - 1] = train.getError();
 			epoch++;
-		} while(train.getError() > 0.0005); 
+		} while(train.getError() > 0.0001); 
 		
 		double[] testdata = new double[buffSet.getIdealSize()]; 
 		// test the neural network
