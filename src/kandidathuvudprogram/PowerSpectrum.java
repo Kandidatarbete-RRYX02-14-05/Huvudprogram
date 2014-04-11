@@ -116,13 +116,16 @@ public class PowerSpectrum {
 		return spectrum[0][i];
 	}
 
-	public double[] getRelevantSpectrum(){
+	public double[] getRelevantSpectrum(double divider){
 		double minfreq=0.03;
 		double maxfreq=0.3;
 		int smallestElement=(int) (minfreq*FFTLength);
 		int largestElement=(int) Math.ceil((maxfreq*FFTLength));
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
+		for(int i = 0; i < relevantSpectrum.length; i++){
+			relevantSpectrum[i] = relevantSpectrum[i]/divider;  //Eriks kod <-- Blame here
+		}
 		return relevantSpectrum;
 	}
 

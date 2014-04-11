@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
  
 import org.encog.neural.networks.BasicNetwork;
@@ -50,7 +51,7 @@ public class WaveCorrTest {
 		
 				
 		String[] dates = {"2014-01-06"};
-		Filemanager.createBin(dates, 0.99, "hanning");
+		Filemanager.createBin(dates, 0.99, "hanning",0,0);
 		
 		
 		// skapar en "BufferedReader" från .bin-filen
@@ -58,25 +59,23 @@ public class WaveCorrTest {
 		
 		Iterator<MLDataPair> itr = buffSet.iterator(); 
 		Iterator<MLDataPair> itr2 = buffSet.iterator();
+		double[][] tmpIdeal = new double[(int) buffSet.getRecordCount()][buffSet.getIdealSize()];  //skapar en double[][] att ha för test från buffSet.
 		
-		double[][] tmpIdeal = new double[4][2818];//vad händer här?????
-		int z = 0; //fyller denna någon funktion?
-		while(itr.hasNext()){
-			tmpIdeal[z] = itr.next().getIdealArray();
-			z++;	
+		for(int i = 0; i < buffSet.getRecordCount(); i++){
+			tmpIdeal[i] = itr.next().getIdealArray();
 		}
 				
-		Chart.useRelevantChart(tmpIdeal[0], "dataname", 0.99, "window", 16384);
+		Chart.useRelevantChart(tmpIdeal[3], "dataname", 0.99, "window",16384);
 		System.out.println(" IdealMax: " + maxValue(tmpIdeal));	
 		
 		
-		/*
+		
 		MLDataPair tmppair = itr2.next();
 		// Skapar nätverket	
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, tmppair.getInput().size()));
-		network.addLayer(new BasicLayer(new ActivationLinear(), false, 100));
-		network.addLayer(new BasicLayer(new ActivationLinear(), false, tmppair.getIdeal().size()));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), false, 100));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), false, tmppair.getIdeal().size()));
 		network.getStructure().finalizeStructure();
 		network.reset();
 		
@@ -91,7 +90,7 @@ public class WaveCorrTest {
 			System.out.println(
 					"Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
-		} while(train.getError() > 1); 
+		} while(train.getError() > 0.0000001); 
 		
 		
 		// test the neural network
@@ -108,6 +107,6 @@ public class WaveCorrTest {
 				System.out.println("ideal=" + pair.getIdeal().getData(i) + ", actual=" + output.getData(i)); // instanceOfMldata.getData(index i) ger utdata nbr i.
 			}
 		}
-		*/	
+		
 	}
 }
