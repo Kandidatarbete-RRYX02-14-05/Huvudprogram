@@ -37,25 +37,17 @@ public class PowerSpectrum {
 
 
 	public static void main(String[] args){
-		double[] sin = new double [100000];
-		for (int i=0 ; i<sin.length; i++){
-			sin[i]=Math.sin(i*400*Math.PI/sin.length);
-		}
-		double alpha=0.99;
-		String windowName = "Rectangular";
-		PowerSpectrum test = new PowerSpectrum(sin,alpha,windowName,1);
-		Chart.useChart(test.getSpectrum(),"Sin",alpha,windowName);
 		
 	}
 
-	public PowerSpectrum(double [] yValues, double alpha, int numberParts){
+	/**public PowerSpectrum(double [] yValues, double alpha, int numberParts){
 		this.yValues=yValues;
 		this.alpha=alpha;
 		this.numberParts=numberParts;
 		initValues(yValues);
 		removeMean();
 		filter(yValues);
-	}
+	}**/
 
 	/**
 	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
@@ -71,19 +63,26 @@ public class PowerSpectrum {
 
 		initValues(yValues);   
 		removeMean();
-		filter(yValues);
+		//filter(yValues);
 		createIntervals();
-		prepTransform();     
-		transform();
+		prepTransform();     	
+		try {
+			transform();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null,e1.getMessage());
+		}
 		try {
 			applyWindow();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
 		fft.fft(spectrum[0], spectrum[1]);
-		removeFilter(spectrum[0]);
+		//removeFilter(spectrum[0]);
+
+
 
 
 		//---------------
@@ -112,27 +111,34 @@ public class PowerSpectrum {
 	public double[] getSpectrum(){
 		return spectrum[0];
 	}
-	
+
 	public double getSpectrum(int i){
 		return spectrum[0][i];
 	}
-	
-	public double[] getRelevantSpectrum(){
+
+	public double[] getRelevantSpectrum(double divider){
 		double minfreq=0.03;
 		double maxfreq=0.3;
-		int smallestElement=(int) (minfreq/(2*Math.PI/FFTLength));
-		int largestElement=(int) Math.ceil((maxfreq/(2*Math.PI/FFTLength)));
+		int smallestElement=(int) (minfreq*FFTLength);
+		int largestElement=(int) Math.ceil((maxfreq*FFTLength));
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
+		for(int i = 0; i < relevantSpectrum.length; i++){
+			relevantSpectrum[i] = Math.log(Math.abs(relevantSpectrum[i]))/divider;  //Eriks kod <-- Blame here
+		}
 		return relevantSpectrum;
 	}
-				
+
 	public String getWindowName(){
 		return windowName;
 	}
-	
+
 	public double getAlpha(){
 		return alpha;
+	}
+	
+	public int getFFTLength(){
+		return FFTLength;
 	}
 
 	// Skapar array:en "yValIntervals" där första fältet är 
@@ -210,9 +216,8 @@ public class PowerSpectrum {
 
 	// gör invers fourier
 	public void inverseFFT (double [] reArray, double [] imArray){
-		fft.fft(reArray,imArray);
-		reverseArray(reArray);
-		reverseArray(imArray);
+		fft.fft(imArray,reArray);
+
 		double N=reArray.length;
 		for (int i=0; i < N; i++){
 			reArray[i]=reArray[i]/N;
@@ -245,7 +250,7 @@ public class PowerSpectrum {
 	}
 
 	//skapar Power spectrum
-	public void transform() {
+	public void transform() throws Exception {
 		for (int i = 0; i < numberParts; i++){
 			fft.fft(yValIntervals[i],complexIntervals[i]);
 		}
@@ -259,11 +264,16 @@ public class PowerSpectrum {
 				temp1=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
 						yValIntervals[i][k], complexIntervals[i][k]); //(X_i)(X_i)*
 
-						temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
-								yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
+				temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
+						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
+				
 
-						Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-						Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+					Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+					
+					Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+				if (Areal[k]<0){
+					// throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+				}
 			}
 		}
 		inverseFFT(Areal,Aimag);
@@ -271,9 +281,10 @@ public class PowerSpectrum {
 		covariance = new double [2][FFTLength];
 		//A blir nu covariansfunktionen.
 		for (int i=0; i < Areal.length; i++){
-			covariance[0][i] = Areal[i]/(numberParts*intervalLength);
+			covariance[0][i] = Areal[i]/(numberParts*intervalLength);	
 			covariance[1][i] = Aimag[i]/(numberParts*intervalLength);
 		}
+
 
 
 	}
@@ -290,22 +301,20 @@ public class PowerSpectrum {
 
 
 		//s= 0 				M <= m <= L-M
-		for (int i=M; i<=L-M; i++){
-			spectrum[0][i]=0;
-			spectrum[1][i]=0;
+		for (int i = M; i<= L - M; i++){
+			spectrum[0][i]= 0;
+			spectrum[1][i]= 0;
 		}
 
 		//s= c(L-m)*w(L-m)	L-M+1 <= m <= L-1
-		for (int i=L-M+1; i <= L-1; i++){
-			spectrum[0][i]=covariance[1][L-i]*window[L-i];
+		for (int i = L - M+1; i <= L-1; i++){
+			spectrum[0][i]=covariance[0][L-i]*window[L-i];
 			spectrum[1][i]=covariance[1][L-i]*window[L-i];
 		}
-
 
 		if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
 			throw new Exception("ERROR, imaginary vector is non-zero");
 		}
-
 	}
 
 }
