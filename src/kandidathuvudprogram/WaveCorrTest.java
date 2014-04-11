@@ -1,16 +1,11 @@
 package kandidathuvudprogram;
 import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -165,17 +160,27 @@ public class WaveCorrTest {
 		return train.getError();
 	}
 	
-	public double networkGenErrorTest (String datum, String tid){
+	/**
+	 *  Används innan man kör networkGenErrorTest för att skapa tmpTrain vilket är datan man testar mot.
+	 * @param datum tex "2014-01-06"
+	 * @param tid tex "06"
+	 * @return
+	 */
+	public MLTrain networkGenErrorLoad (String datum, String tid){ 
 		double[][] tmpWave = Filemanager.readSingleWaveFile(datum, tid, 0);
 		double[][] tmpGrav = Filemanager.readGravFileInParts(datum);
 		double[][] tmp1Grav = new double[1][tmpGrav[0].length];
-		tmp1Grav[0] = tmpGrav[0];
+		tmp1Grav[0] = tmpGrav[(int) (Double.parseDouble(tid)+1)/6]; // +1 för att slippa avrundningsfel
 		
 		BasicMLDataSet set = new BasicMLDataSet(tmpWave, tmp1Grav);
 		
 		MLTrain tmpTrain = new ResilientPropagation(network, set);
 		
 		
+		return tmpTrain;
+	}
+	
+	public double networkGenErrorTest (MLTrain tmpTrain){
 		return tmpTrain.getError();
 	}
 

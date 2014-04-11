@@ -2,6 +2,8 @@ package kandidathuvudprogram;
 
 import java.io.IOException;
 
+import org.encog.ml.train.MLTrain;
+
 
 /**
  *
@@ -30,9 +32,9 @@ public class OptimizeNetwork {
 	 * @return minimum of genError
 	 */
 	private double minimizeGenError(double maxError, int maxIteration, int frequancyGenCorr){
-		double[] error = new double[maxIteration];
-		double[] genError = new double[maxIteration/frequancyGenCorr];
-
+		double[] error = new double[maxIteration+1];
+		double[] genError = new double[maxIteration/frequancyGenCorr+1];
+		MLTrain TestTrain = network.networkGenErrorLoad("2014-01-06","00");
 		int step = -1;
 
 		do {
@@ -40,7 +42,7 @@ public class OptimizeNetwork {
 			error[step] = network.networkTrain();
 
 			if ( (step % frequancyGenCorr) == 0){
-				genError[step] = network.networkGenErrorTest("2014-01-06","00");
+				genError[step] = network.networkGenErrorTest(TestTrain);
 			}
 		} while (error[step] > maxError && step < maxIteration);
 
