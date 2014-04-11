@@ -22,7 +22,8 @@ import org.joda.time.LocalDate;
 
 /**
  *
- * @author Markus
+ * @author Markus, David
+ *
  */
 public class GetWaveDataHgsChalmers {
     
