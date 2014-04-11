@@ -121,6 +121,41 @@ public class Filemanager {
 
 	}
 
+	public static double[][] readSingleWaveFile(String datum, String tid, double divider){
+
+		if (divider == 0)
+			divider = 20.2;
+		
+
+		
+			String timestr = tid;
+			String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + timestr + ".tsv";
+			
+			Import imp = new Import();
+			String dataTime[], dataValue[];  
+
+			dataTime = imp.importWhole(fil);
+			dataValue = new String[dataTime.length];
+			String[] temp;
+			
+		
+			double data[][] = new double[1][dataTime.length-1];
+		
+				
+			for (int j=0; j<dataTime.length-1; j++){ // varför -1? 
+				temp = dataTime[j].split("	");
+				dataValue[j] = temp[temp.length-1];
+				dataTime[j] = temp[0];
+			}
+			
+			for (int k=0; k<data.length; k++){
+				data[0][k] = Double.parseDouble(dataValue[k]);
+			}
+			return data;	
+		}
+		
+
+	
 	
 	
 	/**
