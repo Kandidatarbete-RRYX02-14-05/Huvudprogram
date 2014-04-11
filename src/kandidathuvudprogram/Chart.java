@@ -86,7 +86,7 @@ public static void useRelevantChart(double [] data, String dataname, double alph
         int L=data.length;
         for (int i=0; i<L; i++){ // vilka punkter ska plottas?
         	//dataChart.add(i*2*Math.PI/L,Math.log(data[i]));
-                dataChart.add((0.03+i)*1000/maxLength,Math.log(data[i]));
+                dataChart.add((0.03+i)*1000/maxLength,data[i]);
         }
         JFreeChart chart = ChartFactory.createXYLineChart
                      ("Power Spectrum",  // Title
