@@ -16,7 +16,6 @@ public class Utskrift {
 		  if (null != parent_directory)
 		  {
 		      parent_directory.mkdirs();
-		      System.out.println("HERE");
 		  }
 
 		  outputWriter = new BufferedWriter(new FileWriter(file));
@@ -42,7 +41,6 @@ public class Utskrift {
 		  if (null != parent_directory)
 		  {
 		      parent_directory.mkdirs();
-		      System.out.println("HERE");
 		  }
 		  
 		  outputWriter = new BufferedWriter(new FileWriter(file));
