@@ -48,11 +48,9 @@ public class Filemanager {
 	 * @return
 	 */
 
-	public static double[][] readGravFileInParts(String datum, double divider) {
+	public static double[][] readGravFileInParts(String datum) {
 		
-		if (divider == 0)
-			divider = 1;	//behövs den? Man vill inte normera innan spektrum...
-		
+				
 		String fil = "gravidata/" + datum.substring(2).replaceAll("-", "")
 				+ ".tsf";
 		Import imp = new Import();
@@ -73,7 +71,7 @@ public class Filemanager {
 
 		for (int i = 0; i < 4; i++) {
 			for (int k = 0; k < data[i].length; k++) {
-				data[i][k] = Double.parseDouble(splitDataTime[i][k])/divider;
+				data[i][k] = Double.parseDouble(splitDataTime[i][k]);
 			}
 			System.out.println("GraviData " + i  + " är: " + data[i].length + " punkter lång"); // längdtest 1
 		}
@@ -132,8 +130,11 @@ public class Filemanager {
 	 * @param outFile
 	 */
 
-	public static void createBin(String[] datum, double alpha, String win) {
+	public static void createBin(String[] datum, double alpha, String win, double dividerwave, double dividergrav) {
 
+		if (dividergrav == 0)
+			dividergrav = 400000;
+		
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/trainingData.bin");
 		double[][] gravdata;
@@ -141,20 +142,20 @@ public class Filemanager {
 		
 		
 		//Test
-		
+		/*
 		double [] testdata =  new double [16384];
 		for(int i = 0; i < testdata.length; i++){
-			testdata [i] = Math.cos((2*Math.PI/0.2)*i/testdata.length);	//2pi/x borde ge frekvens x?
+			testdata [i] = Math.cos((2*Math.PI*0.2)*i);	//2pi/x borde ge frekvens x?
 		}
- 		
+ 		*/
 		//
 		
 		for (int i = 0; i < datum.length; i++) {
 			wavedata = readWaveFile(datum[i],0);
-			gravdata = readGravFileInParts(datum[i],0);
+			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[0], alpha, win, 4);
-				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum()));
+				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 4);
+				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
 				System.out.println("GraviData " + j  + " är: " + gravdata[j].length + " punkter lång"); // längdtest 2
 				System.out.println("SpectrumData " + j  + " är: " + spectrum.getSpectrum().length + " punkter lång"); // längdtest 1
 			}
