@@ -33,16 +33,15 @@ public class PowerSpectrum {
 
 	String windowName;
 
-	private FFT fft;
 
 
 	public static void main(String[] args){
-		double[] cos = new double[2000000];
+		double[] cos = new double[200000];
 		for (int i =0; i<cos.length; i++)
 		{
 			cos[i]=Math.cos((i+0.0)/cos.length);
 		}
-		PowerSpectrum test = new PowerSpectrum(cos, 0.9, "Rectangular", 1);
+		PowerSpectrum test = new PowerSpectrum(cos, 0.9, "Rectangular", 4);
 		
 		
 	}
@@ -64,9 +63,6 @@ public class PowerSpectrum {
 	 * @param numberParts Antal delar som datan splittas upp i för spectrum
 	 */
 	public PowerSpectrum(double [] yValues, double alpha, String windowName, int numberParts){
-		if(numberParts>1)
-			System.out.println("Kommer inte att fungera");
-		
 		this.windowName=windowName;
 		this.numberParts=numberParts;
 		this.alpha=alpha;
@@ -89,7 +85,7 @@ public class PowerSpectrum {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
-		fft.fft(spectrum[0], spectrum[1]);
+		Fft.transform(spectrum[0], spectrum[1]);
 		removeFilter(spectrum[0]);
 
 
@@ -154,7 +150,7 @@ public class PowerSpectrum {
 	// Skapar array:en "yValIntervals" där första fältet är 
 	public void createIntervals(){
 		intervalLength = yValues.length / numberParts;
-		FFTLength = nextPowerOf2(2*intervalLength);
+		FFTLength = 2*intervalLength;
 		yValIntervals = new double[numberParts+1][FFTLength];	//vill ha en tom rad för att få Xn+1=0
 		complexIntervals = new double[numberParts+1][FFTLength];// för n=numberParts
 		for (int i=0; i<numberParts; i++){
@@ -199,8 +195,6 @@ public class PowerSpectrum {
 	public void prepTransform()
 	{
 		window = Window.createWindow(intervalLength,windowName);
-		FFT fft = new FFT(FFTLength);
-		this.fft = fft;
 	}
 
 	// multiplicerar ett tal med ett annats tals conjugat
@@ -226,7 +220,7 @@ public class PowerSpectrum {
 
 	// gör invers fourier
 	public void inverseFFT (double [] reArray, double [] imArray){
-		fft.fft(imArray,reArray);
+		Fft.transform(imArray,reArray);
 
 		double N=reArray.length;
 		for (int i=0; i < N; i++){
@@ -262,7 +256,7 @@ public class PowerSpectrum {
 	//skapar Power spectrum
 	public void transform() throws Exception {
 		for (int i = 0; i < numberParts; i++){
-			fft.fft(yValIntervals[i],complexIntervals[i]);
+			Fft.transform(yValIntervals[i],complexIntervals[i]);
 		}
 
 		double [] Areal = new double [FFTLength];
