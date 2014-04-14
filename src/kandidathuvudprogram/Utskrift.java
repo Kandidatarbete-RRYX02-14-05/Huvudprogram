@@ -57,5 +57,13 @@ public class Utskrift {
 		  outputWriter.flush();  
 		  outputWriter.close();  
 		}
+	
+	// Skriver ut varje värde i en array
+	public static void printArray(double array[]){
+		for (int i=0; i<array.length; i++){
+			System.out.print("["+i+"]: " + array[i]);
+		}
+		System.out.println("");
+	}
 
 }
