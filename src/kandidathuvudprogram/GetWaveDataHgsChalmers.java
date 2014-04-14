@@ -85,7 +85,7 @@ public class GetWaveDataHgsChalmers {
                 
                 try {
                     System.out.println("1");
-                    channelSftp.get(filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
+                    channelSftp.get(filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/raw/20" + dateHrArray[i] + ".tsv" );
                     System.out.println("2");
                 }
                 catch(SftpException e){                   
@@ -107,7 +107,7 @@ public class GetWaveDataHgsChalmers {
                 }
                 try {
                     System.out.println("3");
-                    channelSftp.get( filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
+                    channelSftp.get( filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/raw/20" + dateHrArray[i] + ".tsv" );
                     System.out.println("4");
                 }catch(SftpException e){
                     System.out.println(e.getMessage() + " Totally failed to get: " + dateHrArray[i]);
