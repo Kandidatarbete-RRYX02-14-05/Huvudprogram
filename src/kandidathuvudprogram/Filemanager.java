@@ -139,7 +139,7 @@ public class Filemanager {
 		double[][] gravdata;
 		double[][] wavedata; 
 
-
+		GetDataHgsChalmers.downloadGraviData(datum);
 		for (int i = 0; i < datum.length; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
