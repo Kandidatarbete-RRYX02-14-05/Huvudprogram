@@ -26,8 +26,8 @@ public class WaveMean {
 
     public static void main(String[] arg){
 
-        fetchMean("2014-01-24","2014-01-28");
-        
+        //removeMissing("2010-01-01","2014-04-01");
+        buildMap();
     }
 
 
@@ -194,7 +194,7 @@ public class WaveMean {
        
         
         Import imp = new Import();
-        String[] stringData = new String[ySize];
+        String[] stringData = new String[ySize]; 
         String[] stringTemp = new String[xSize];
         
         String[] stringMissing = new String[ySize];
@@ -221,11 +221,98 @@ public class WaveMean {
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
+
+    }
+    
+    static void removeMissing(String startDate, String endDate){
+        
+        String[] dateArray = GetWaveDataHgsChalmers.generateDateString(startDate, endDate);
+        String[] dateHrArray = new String[dateArray.length*4];
+        String[] hrs = new String[]{"00","06","12","18"};
+        for (int n=0; n<dateArray.length; n++){                // skapar en ny String array med datum och klockslag
+            for (int m=0; m<4; m++){
+                dateHrArray[n*4+m] = dateArray[n]+ "_" + hrs[m];
+            }
+        }
         
         
+        for(int i = 0; i < dateHrArray.length; i++){
+            File f = new File("wavedata/20" + dateHrArray[i] + ".tsv");
+            File g = new File("wavedata/removedmissing/20" + dateHrArray[i] + ".tsv");
+            int numOfMissing = 0;
+            if(f.exists() && !g.exists()){
+              
+                
+                Import imp = new Import();
+                String[] stringData = new String[ySize]; 
+                String[] stringTemp = new String[xSize];
         
+                String[] stringMissing = new String[ySize];
+                String[] stringMissingTemp = new String[xSize];
         
+                stringData = imp.importWhole("wavedata/20" + dateHrArray[i] + ".tsv");
+                stringMissing = imp.importWhole("missingWave.csv");
+                double[] doubleWOMissing = new double[2003];
         
-    } 
+                for(int n = 0; n <  ySize; n++){
+                    stringTemp = stringData[n].split(",");
+                    stringMissingTemp = stringMissing[n].split(",");
+            
+                    for(int m = 0; m < xSize ; m++){
+                       
+                        if(stringMissingTemp[m].equals("0.0")){
+                            doubleWOMissing[numOfMissing] = Double.parseDouble(stringTemp[m]);
+                            numOfMissing++;
+                            
+                    
+                        }
+                            
+                         
+                    }
+                }
+
+
+                try{                                
+                    Utskrift.write("wavedata/removedmissing/20" + dateHrArray[i] + ".tsv",doubleWOMissing);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                }
+
+            }
+            
+        }
+        
+    }
+    static void buildMap(){
+        
+        int numOfMissing = 0;
+        Import imp = new Import();
+        
+        String[] stringMissing = new String[ySize];
+        String[] stringMissingTemp = new String[xSize];
+        stringMissing = imp.importWhole("missingWave.csv");
+        double[][] doubleWOMissing = new double[2003][2];
+        
+        for(int n = 0; n <  ySize; n++){
+            stringMissingTemp = stringMissing[n].split(",");
+            for(int m = 0; m < xSize ; m++){
+                       
+                if(stringMissingTemp[m].equals("0.0")){
+                    doubleWOMissing[numOfMissing][0] = (-70 + m);
+                    doubleWOMissing[numOfMissing][1] = ( 35 - n);
+                    numOfMissing++;    
+                }                 
+            }
+        }
+
+        try{                                
+            Utskrift.write2Matrix("wavedata/removedmissing/map.tsv",doubleWOMissing, "\t");
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+            
 }
+
 

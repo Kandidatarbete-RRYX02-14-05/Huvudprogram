@@ -21,9 +21,6 @@ public class Utskrift {
 		  outputWriter = new BufferedWriter(new FileWriter(file));
 		  
 		  for (int i = 0; i < x.length; i++) {
-		    // Maybe:
-		   // outputWriter.write(x[i]+"");
-		    // Or:
 		    outputWriter.write(Double.toString(x[i]));
 		    outputWriter.newLine();
 		  }
