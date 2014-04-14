@@ -1,5 +1,8 @@
 package kandidathuvudprogram;
 import java.io.File;
+
+import kandidathuvudprogram.Window.Windows;
+
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
@@ -30,6 +33,7 @@ public class WaveCorrTest {
 	MLTrain train;			
 	BufferedMLDataSet buffSet;
 	BasicNetwork network;
+	public enum TrainingType{resilientpropagation}
 	
 
 	// KONSTRUKTORER
@@ -109,6 +113,7 @@ public class WaveCorrTest {
 		this.alpha = alpha;
 		this.window = window;
 		this.resetParameter = resetParameter;
+		
 
 
 		String[] dates = GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
@@ -121,14 +126,16 @@ public class WaveCorrTest {
 		network = BuildNetwork(buffSet.getInputSize(), buffSet.getIdealSize() , nbrOfHiddenNeurons, threshold);
 
 		// Sätter 'train' till vald metod
-		switch (trainStr.toLowerCase()){
-		case "resilientpropagation":
+		TrainingType type = TrainingType.valueOf(trainStr.toLowerCase());
+		switch (type){
+		case resilientpropagation:
 			train = new ResilientPropagation(network, buffSet);
 			break;
 		default: 
 			train = new ResilientPropagation(network, buffSet);
 			break; 
 		}
+		
 
 
 		if(resetParameter != 0){ // 'resetParameter' = ger att den aldrig börjar om
