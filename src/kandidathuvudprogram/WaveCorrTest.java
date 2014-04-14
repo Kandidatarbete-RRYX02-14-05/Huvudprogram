@@ -25,8 +25,7 @@ public class WaveCorrTest {
 	double dividerWave;		// divierWave är hur mycket vi skalar ned vågdatan med. 0 ger ett defaultvärde på 21.2;
 	double dividerGrav;     // divierGrav är hur mycket vi skalar ned gravimeterdatan med. 0 ger ett defaultvärde på 13;
 	String window;			// window är vilket fönster vi använder till vårat PowerSpectrum;
-	String startDatum;		// StartDatum är det datum då datumföljden med träningsdata startar
-	String slutDatum;		// SlutDatum är det datum då datumföljden med träningsdata slutar
+	String[] datum;		// StartDatum är det datum då datumföljden med träningsdata startar
 	int[] nbrOfHiddenNeurons;//nbrOfHiddenNeurons säger hur många lager och hur många neuroner varje dolt lager har.
 	int resetParameter;		// Nätverket resetar om det inte blir förbättras mer än 1% på resetParameter iterationer. resetParameter = stänger av den funktionen.
 	boolean threshold;		// Är om nätverket ska jobba med threshold
@@ -34,7 +33,8 @@ public class WaveCorrTest {
 	BufferedMLDataSet buffSet;
 	BasicNetwork network;
 	public enum TrainingType{resilientpropagation}
-	
+	Import imp;
+	String datumFilPath;
 
 	// KONSTRUKTORER
 
@@ -45,16 +45,16 @@ public class WaveCorrTest {
 		dividerWave = 0;
 		dividerGrav = 15;
 		window = "rectangular";
-		startDatum = "2014-01-06";
-		slutDatum = "2014-01-06";
 		nbrOfHiddenNeurons = new int[] {150};
 		resetParameter = 0;
 		threshold = false;
-
-
-		String[] dates = GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
-		Filemanager.createBin(dates, alpha, window, dividerWave, dividerGrav);
-
+		imp = new Import();
+		datumFilPath = "datumfil.txt";
+		datum = GetDataHgsChalmers.generateDateString("2014-01-06", "2014-01-06");
+		
+		Filemanager.createBin(datum ,"TrainingData", alpha, window, dividerWave, dividerGrav);
+		
+			
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
 
@@ -76,15 +76,15 @@ public class WaveCorrTest {
 		dividerWave = 0;
 		dividerGrav = 15;
 		window = "rectangular";
-		startDatum = "2014-01-06";
-		slutDatum = "2014-01-06";
 		this.nbrOfHiddenNeurons = nbrOfHiddenNeurons;
 		resetParameter = 0;
 		threshold = false;
+		imp = new Import();
+		datumFilPath = "datumfil.txt";
+		datum = imp.importWhole(datumFilPath);
+		
 
-
-		String[] dates = new String[]{startDatum}; //GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
-		Filemanager.createBin(dates, alpha, window, dividerWave, dividerGrav);
+		Filemanager.createBin(datum ,"TrainingData", alpha, window, dividerWave, dividerGrav);
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -101,23 +101,21 @@ public class WaveCorrTest {
 
 	}
 
-	public WaveCorrTest(String startDatum, String slutDatum, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
+	public WaveCorrTest(String datumFilPath, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
 		   String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr ){
 		
 		this.dividerWave = dividerWave;
 		this.dividerGrav = dividerGrav;
-		this.startDatum = startDatum;
-		this.slutDatum = slutDatum;
 		this.nbrOfHiddenNeurons = nbrOfHiddenNeurons;
 		this.threshold = threshold;
 		this.alpha = alpha;
 		this.window = window;
 		this.resetParameter = resetParameter;
+		imp = new Import();	
+		this.datumFilPath = datumFilPath;
+		datum = imp.importWhole(datumFilPath);
 		
-
-
-		String[] dates = GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
-		Filemanager.createBin(dates, alpha, window, dividerWave, dividerGrav); //VARNING!! HÄR KAN DET BLI JOBBIGT OM GRAVIMETERDATAN ÄR STÖRRE ÄN 15!! 
+		Filemanager.createBin(datum ,"TrainingData", alpha, window, dividerWave, dividerGrav); 
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -192,6 +190,16 @@ public class WaveCorrTest {
 	 * @param tid tex "06"
 	 * @return
 	 */
+	
+	public BufferedMLDataSet networkGenErrorLoad (String filnamn){
+		
+		String[] datum = imp.importWhole(filnamn);
+		Filemanager.createBin(datum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+		BufferedMLDataSet buffGenSet = new BufferedMLDataSet(new File("Data/Network/genErrorData.bin"));
+		return buffGenSet;
+		
+	}
+	
 	public BasicMLDataSet networkGenErrorLoad (String datum, String tid){ 
 		double[][] tmpWave = Filemanager.readWaveFile(datum.substring(2), dividerWave);
 		double[][] tmp1Wave = new double[1][tmpWave[0].length];

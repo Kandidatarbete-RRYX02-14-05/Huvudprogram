@@ -129,13 +129,13 @@ public class Filemanager {
 	 * @param outFile
 	 */
 
-	public static void createBin(String[] datum, double alpha, String win, double dividerwave, double dividergrav) {
+	public static void createBin(String[] datum, String filnamn, double alpha, String win, double dividerwave, double dividergrav) {
 
 		if (dividergrav == 0)
 			dividergrav = 13;
 
 		BasicMLDataSet set = new BasicMLDataSet();
-		File binFile = new File("Data/Network/trainingData.bin");
+		File binFile = new File("Data/Network/" + filnamn + ".bin");
 		double[][] gravdata;
 		double[][] wavedata; 
 
