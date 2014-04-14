@@ -73,7 +73,7 @@ public class Chart {
             XYSeries dataChart = new XYSeries("Power Spectrum");
             XYDataset xyDataset = new XYSeriesCollection(dataChart);
             int L=data.length;
-            for (int i=0; i<L/2; i++){ // vilka punkter ska plottas?
+            for (int i=0; i<L; i++){ // vilka punkter ska plottas?
             	//dataChart.add(i*2*Math.PI/L,Math.log(data[i]));
                     dataChart.add(i,data[i]);
             }
