@@ -13,6 +13,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.
 resilient.ResilientPropagation;
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.train.strategy.RequiredImprovementStrategy;
@@ -31,7 +32,8 @@ public class LinearAnnExample {
 
 
 	public static void main(final String args[]) {
-			
+		
+				
 		for (int i = 0; i < data.length; i++){
 			for(int j = 0; j<3; j++){
 				data[i][j] = data[i][j]/4.2;

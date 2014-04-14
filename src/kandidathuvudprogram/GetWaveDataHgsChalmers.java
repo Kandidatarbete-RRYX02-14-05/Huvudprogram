@@ -28,14 +28,14 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2014-01-05","2014-01-06", false);
+        downloadWaveData("2012-01-09","2012-01-11", true);
     }
     
     /**
      * Klipper ut och laddar ner vågdata från startdatum(ex: 2012-10-15) till slutdatum. Sparas: datum_tid.tsv ex: 110514_06.tsv
      * @param startDate
      * @param endDate 
-     * @param cut Om man ska klippa bort koordinaterna i utdatan. 
+     * @param cut TRUE om man ska klippa bort koordinaterna (första och andra kolumnn)i utdatan. 
      
      */
     public static void downloadWaveData(String startDate, String endDate, boolean cut){
@@ -83,26 +83,31 @@ public class GetWaveDataHgsChalmers {
                 //Open shell channel
                 channelExec = (ChannelExec) sesh.openChannel("exec");
                 
-
-                exec = fixPath +" \n" + "if [ -e " + filePath + "/GRD/wvh_20" + dateHrArray[i]
-                    + ".grd ]; then " + "grd2xyz " + filePath + "/GRD/wvh_20" + dateHrArray[i]
-                    + ".grd -N-1 -R" + dataCo + cutCo + " >  " + filePath + "/kandData/raw_temp.tsv ; fi";               
-                System.out.println(exec);
-                channelExec.setCommand(exec);
-                //channelExec.setOutputStream(System.out);
-                 channelExec.connect();
-                    
-                    
-                try { // Väntar på att kommando skall köras på servern
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
-                
+                try {
+                    System.out.println("1");
+                    channelSftp.get(filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
+                    System.out.println("2");
                 }
+                catch(SftpException e){                   
+                    exec = fixPath +" \n" + "if [ -e " + filePath + "/GRD/wvh_20" + dateHrArray[i]
+                        + ".grd ]; then " + "grd2xyz " + filePath + "/GRD/wvh_20" + dateHrArray[i]
+                        + ".grd -N-1 -R" + dataCo + cutCo + " >  " + filePath + "/kandData/"+ dateHrArray[i] + ".tsv ; fi";               
+                //   System.out.println(exec);
+                    channelExec.setCommand(exec);
+                //channelExec.setOutputStream(System.out);
+                    channelExec.connect();
+                    
+                    
+                    try { // Väntar på att kommando skall köras på servern
+                       Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
                 
+                    }
+                }
                 try {
                     System.out.println("3");
-                    channelSftp.get( filePath + "/kandData/raw_temp.tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
+                    channelSftp.get( filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
                     System.out.println("4");
                 }catch(SftpException e){
                     System.out.println(e.getMessage() + " Totally failed to get: " + dateHrArray[i]);
@@ -111,11 +116,6 @@ public class GetWaveDataHgsChalmers {
                 channelExec.disconnect();
             }
             
-            // kommando som skall köras:
-            // tslist /home/hgs/TD/d/G1_garb_111111-1s.mc -L'G|B' -Jf14.8,f12.4 -D -qqq -w /home/hgs/bin/kandidatArbetsMappen/gravidata/111111.tsf
-            // Jordbäver:
-            // tslist-app -qq -C3 -L'G|B' -w suspect.list ++ -Eeq.tse,E + /home/hgs/TD/d/G1_garb_13090[1-8]-1s.mc
-
             
         } catch (JSchException ex) {
             Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
