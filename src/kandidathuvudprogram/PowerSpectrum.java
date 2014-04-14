@@ -33,22 +33,6 @@ public class PowerSpectrum {
 
 	String windowName;
 
-	private FFT fft;
-
-
-	public static void main(String[] args){
-		
-	}
-
-	/**public PowerSpectrum(double [] yValues, double alpha, int numberParts){
-		this.yValues=yValues;
-		this.alpha=alpha;
-		this.numberParts=numberParts;
-		initValues(yValues);
-		removeMean();
-		filter(yValues);
-	}**/
-
 	/**
 	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
 	 * @param yValues Inputdata
@@ -63,7 +47,7 @@ public class PowerSpectrum {
 
 		initValues(yValues);   
 		removeMean();
-		//filter(yValues);
+		filter(yValues);
 		createIntervals();
 		prepTransform();     	
 		try {
@@ -79,8 +63,8 @@ public class PowerSpectrum {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
-		fft.fft(spectrum[0], spectrum[1]);
-		//removeFilter(spectrum[0]);
+		Fft.transform(spectrum[0], spectrum[1]);
+		removeFilter(spectrum[0]);
 
 
 
@@ -124,7 +108,7 @@ public class PowerSpectrum {
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		for(int i = 0; i < relevantSpectrum.length; i++){
-			relevantSpectrum[i] = Math.log(Math.abs(relevantSpectrum[i]))/divider;  //Eriks kod <-- Blame here
+			relevantSpectrum[i] = Math.log(relevantSpectrum[i])/divider;
 		}
 		return relevantSpectrum;
 	}
@@ -136,7 +120,7 @@ public class PowerSpectrum {
 	public double getAlpha(){
 		return alpha;
 	}
-	
+
 	public int getFFTLength(){
 		return FFTLength;
 	}
@@ -144,7 +128,7 @@ public class PowerSpectrum {
 	// Skapar array:en "yValIntervals" där första fältet är 
 	public void createIntervals(){
 		intervalLength = yValues.length / numberParts;
-		FFTLength = nextPowerOf2(2*intervalLength);
+		FFTLength = 2*intervalLength;
 		yValIntervals = new double[numberParts+1][FFTLength];	//vill ha en tom rad för att få Xn+1=0
 		complexIntervals = new double[numberParts+1][FFTLength];// för n=numberParts
 		for (int i=0; i<numberParts; i++){
@@ -189,8 +173,6 @@ public class PowerSpectrum {
 	public void prepTransform()
 	{
 		window = Window.createWindow(intervalLength,windowName);
-		FFT fft = new FFT(FFTLength);
-		this.fft = fft;
 	}
 
 	// multiplicerar ett tal med ett annats tals conjugat
@@ -216,7 +198,7 @@ public class PowerSpectrum {
 
 	// gör invers fourier
 	public void inverseFFT (double [] reArray, double [] imArray){
-		fft.fft(imArray,reArray);
+		Fft.transform(imArray,reArray);
 
 		double N=reArray.length;
 		for (int i=0; i < N; i++){
@@ -252,7 +234,7 @@ public class PowerSpectrum {
 	//skapar Power spectrum
 	public void transform() throws Exception {
 		for (int i = 0; i < numberParts; i++){
-			fft.fft(yValIntervals[i],complexIntervals[i]);
+			Fft.transform(yValIntervals[i],complexIntervals[i]);
 		}
 
 		double [] Areal = new double [FFTLength];
@@ -266,13 +248,13 @@ public class PowerSpectrum {
 
 				temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
 						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
-				
 
-					Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-					
-					Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+
+				Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+
+				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
 				if (Areal[k]<0){
-					// throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 				}
 			}
 		}
