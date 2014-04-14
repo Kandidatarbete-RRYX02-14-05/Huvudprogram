@@ -64,7 +64,6 @@ public class Filemanager {
 			dataValue[i] = temp[temp.length - 1];
 			dataTime[i] = temp[0];
 		}
-
 		String[][] splitDataTime = imp.splitSixHours(dataValue);
 
 		double data[][] = new double[splitDataTime.length][splitDataTime[0].length];
@@ -93,7 +92,7 @@ public class Filemanager {
 
 		for (int i = 0; i<4; i++){
 			String timestr = "" + (100+6*i) ; // fulhaxxar fram 00, 06, 12 ,18 som strängar
-			String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + timestr.substring(1) + ".tsv";
+			String fil = "wavedata/removedmissing/20" + datum + "_" + timestr.substring(1) + ".tsv"; //.replaceAll("-", "")
 			Import imp = new Import();
 			String dataTime[], dataValue[];  
 
@@ -140,21 +139,14 @@ public class Filemanager {
 		double[][] wavedata; 
 
 		GetDataHgsChalmers.downloadGraviData(datum);
-		for (int i = 0; i < datum.length; i++) {
+		for (int i = 0; i < datum.length-1; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
 				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 1);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
-				Chart.useChart(spectrum.getSpectrum(), "dataname", alpha, win);
 			}
 		}
-
-		
-		
-
-		System.out.println("Inputsize:" + set.getInputSize());
-		System.out.println("Idealsize:" + set.getIdealSize());
 
 		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
 

@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.ml.train.MLTrain;
 
 /**
@@ -26,10 +27,17 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		WaveCorrTest WTC = new WaveCorrTest();
-		System.out.println(WTC.networkMultiTrain(2));
-		BasicMLDataSet set = WTC.networkGenErrorLoad("2014-01-06", "00");
-		System.out.println(WTC.network.calculateError(set));
+		int[] nbrOfNeurons = {150};
+		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
+		BufferedMLDataSet set = WTC.networkGenErrorLoad("genErrorDatumFil.txt");
+		
+		for(int epoch = 0; epoch < 50; epoch++){ 
+			System.out.println(
+					"Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
+				
+		} 
+		
+		
 		
 		
 		

@@ -63,4 +63,11 @@ public class Utskrift {
 		System.out.println("");
 	}
 
+	public static void printArray(double array[], int l){
+		for (int i=0; i<l; i++){
+			System.out.print("["+i+"]: " + array[i]);
+		}
+		System.out.println("");
+	}
+
 }

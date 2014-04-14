@@ -39,8 +39,8 @@ public class GetDataHgsChalmers {
      */
     public static void downloadGraviData(String[] dateArray){
         
-    	for (int i=0; i<dateArray.length; i++){
-    		dateArray[i] = dateArray[i].replaceAll("-", "");
+    	for (int i=0; i<dateArray.length-1; i++){
+    		dateArray[i] = dateArray[i].substring(2).replaceAll("-", "");
     	}
         
         String exec;
@@ -67,8 +67,7 @@ public class GetDataHgsChalmers {
             	
             	if (!(new File("gravidata/" + dateArray[i] + ".tsf").exists())){
 
-	                System.out.println(dateArray[i]);
-	                
+	                        
 	                //Open shell channel
 	                channelExec = (ChannelExec) sesh.openChannel("exec");
 	                

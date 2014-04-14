@@ -253,7 +253,7 @@ public class PowerSpectrum {
 
 				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
 				if (Areal[k]<0){
-					//throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 				}
 			}
 		}
