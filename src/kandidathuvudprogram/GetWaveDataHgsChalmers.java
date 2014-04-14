@@ -28,7 +28,7 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2014-01-05","2014-01-06", true);
+        downloadWaveData("2014-01-05","2014-01-06", false);
     }
     
     /**
@@ -102,7 +102,7 @@ public class GetWaveDataHgsChalmers {
                 
                 try {
                     System.out.println("3");
-                    channelSftp.get( filePath + "/kandData/raw_temp.tsv", "wavedata/raw_20" + dateHrArray[i] + ".tsv" );
+                    channelSftp.get( filePath + "/kandData/raw_temp.tsv", "wavedata/20" + dateHrArray[i] + ".tsv" );
                     System.out.println("4");
                 }catch(SftpException e){
                     System.out.println(e.getMessage() + " Totally failed to get: " + dateHrArray[i]);
