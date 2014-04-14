@@ -17,20 +17,29 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.RequiredImprovementStrategy;
 public class WaveCorrTest {
 
-	double alpha;
-	String window, startDatum, slutDatum;
-	int[] nbrOfHiddenNeurons;
-	int resetParameter;
-	boolean threshold;
-	MLTrain train;
+	
+	double alpha;			// alpha är ett tal som bestämmer hur Powerspectrumet ska göras. Mer specifikt har det med filtret att göra.
+	double dividerWave;		// divierWave är hur mycket vi skalar ned vågdatan med. 0 ger ett defaultvärde på 21.2;
+	double dividerGrav;     // divierGrav är hur mycket vi skalar ned gravimeterdatan med. 0 ger ett defaultvärde på 13;
+	String window;			// window är vilket fönster vi använder till vårat PowerSpectrum;
+	String startDatum;		// StartDatum är det datum då datumföljden med träningsdata startar
+	String slutDatum;		// SlutDatum är det datum då datumföljden med träningsdata slutar
+	int[] nbrOfHiddenNeurons;//nbrOfHiddenNeurons säger hur många lager och hur många neuroner varje dolt lager har.
+	int resetParameter;		// Nätverket resetar om det inte blir förbättras mer än 1% på resetParameter iterationer. resetParameter = stänger av den funktionen.
+	boolean threshold;		// Är om nätverket ska jobba med threshold
+	MLTrain train;			
 	BufferedMLDataSet buffSet;
 	BasicNetwork network;
+	
 
 	// KONSTRUKTORER
 
+	
 	public WaveCorrTest(){
 
 		alpha = 0.99;
+		dividerWave = 0;
+		dividerGrav = 15;
 		window = "rectangular";
 		startDatum = "2014-01-06";
 		slutDatum = "2014-01-06";
@@ -40,7 +49,7 @@ public class WaveCorrTest {
 
 
 		String[] dates = GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
-		Filemanager.createBin(dates, alpha, window,0,15);
+		Filemanager.createBin(dates, alpha, window, dividerWave, dividerGrav);
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -60,6 +69,8 @@ public class WaveCorrTest {
 	public WaveCorrTest(int[] nbrOfHiddenNeurons){
 
 		this.alpha = 0.99;
+		dividerWave = 0;
+		dividerGrav = 15;
 		window = "rectangular";
 		startDatum = "2014-01-06";
 		slutDatum = "2014-01-06";
@@ -69,7 +80,7 @@ public class WaveCorrTest {
 
 
 		String[] dates = new String[]{startDatum}; //GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
-		Filemanager.createBin(dates, alpha, window,0,15);
+		Filemanager.createBin(dates, alpha, window, dividerWave, dividerGrav);
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -86,8 +97,11 @@ public class WaveCorrTest {
 
 	}
 
-	public WaveCorrTest(String startDatum, String slutDatum, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, String window, int resetParameter, String trainStr ){
-
+	public WaveCorrTest(String startDatum, String slutDatum, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
+		   String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr ){
+		
+		this.dividerWave = dividerWave;
+		this.dividerGrav = dividerGrav;
 		this.startDatum = startDatum;
 		this.slutDatum = slutDatum;
 		this.nbrOfHiddenNeurons = nbrOfHiddenNeurons;
@@ -98,7 +112,7 @@ public class WaveCorrTest {
 
 
 		String[] dates = GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
-		Filemanager.createBin(dates, alpha, window,0,15); //VARNING!! HÄR KAN DET BLI JOBBIGT OM GRAVIMETERDATAN ÄR STÖRRE ÄN 15!! 
+		Filemanager.createBin(dates, alpha, window, dividerWave, dividerGrav); //VARNING!! HÄR KAN DET BLI JOBBIGT OM GRAVIMETERDATAN ÄR STÖRRE ÄN 15!! 
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -172,14 +186,14 @@ public class WaveCorrTest {
 	 * @return
 	 */
 	public BasicMLDataSet networkGenErrorLoad (String datum, String tid){ 
-		double[][] tmpWave = Filemanager.readWaveFile(datum.substring(2), 0);
+		double[][] tmpWave = Filemanager.readWaveFile(datum.substring(2), dividerWave);
 		double[][] tmp1Wave = new double[1][tmpWave[0].length];
 		tmp1Wave[0] = tmpWave[(int) (Double.parseDouble(tid)+1)/6];
 		
 		double[][] tmpGrav = Filemanager.readGravFileInParts(datum.substring(2));
 		PowerSpectrum spectrum = new PowerSpectrum(tmpGrav[(int) (Double.parseDouble(tid)+1)/6], alpha, window, 4);
 		double[][] tmp1Grav = new double[1][spectrum.getSpectrum().length];
-		tmp1Grav[0] = spectrum.getRelevantSpectrum(15); // +1 för att slippa avrundningsfel
+		tmp1Grav[0] = spectrum.getRelevantSpectrum(dividerGrav); // +1 för att slippa avrundningsfel
 
 		
 		
