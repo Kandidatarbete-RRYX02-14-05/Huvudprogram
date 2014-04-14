@@ -6,6 +6,12 @@
 
 package kandidathuvudprogram;
 
+import static kandidathuvudprogram.GetWaveDataHgsChalmers.downloadWaveData;
+import static kandidathuvudprogram.GetWaveDataHgsChalmers.generateDateString;
+import java.io.File;
+
+
+
 
 
 
@@ -15,27 +21,60 @@ package kandidathuvudprogram;
  */
 public class WaveMean {
 
+        static int xSize = 85;
+        static int ySize = 35;
 
     public static void main(String[] arg){
-        int xRawSize = 85*8;
-        int yRawSize = 35*8;
-        double[][] dataDouble = new double[yRawSize][xRawSize];
-        importAndFormat("wavedata/raw_20140105_00.tsv");
 
-
-        double[][] dataMean = new double[35][85];
-        dataMean = calculateWaveMean(1,dataDouble);
-
-        try{                                //Sparar doubleArray till CSV
-            Utskrift.write2Matrix("wavedata/test.csv",dataMean,"," );
-        }catch(Exception e){
-            System.out.println(e.getMessage());
-        }
-
-
-
+        fetchMean("2014-01-24","2014-01-28");
+        
     }
 
+
+ 
+    
+    /**
+     * Hämtar data, beräknar medelvärdet och kollar var data saknas. Hämtar all tillgänglig data mellan startDate och endDate. 
+     * @param startDate datum på formen "YYYY-MM-DD", Finns från 201007
+     * @param endDate datum på formen "YYYY-MM-DD"
+     */
+    
+    public static void fetchMean(String startDate, String endDate){
+        
+        GetWaveDataHgsChalmers.downloadWaveData(startDate,endDate, true);
+        String[] dateArray = GetWaveDataHgsChalmers.generateDateString(startDate, endDate);
+        String[] dateHrArray = new String[dateArray.length*4];
+        String[] hrs = new String[]{"00","06","12","18"};
+        for (int n=0; n<dateArray.length; n++){                // skapar en ny String array med datum och klockslag
+            for (int m=0; m<4; m++){
+                dateHrArray[n*4+m] = dateArray[n]+ "_" + hrs[m];
+            }
+        }
+        
+        for(int i = 0; i < dateHrArray.length; i++){
+            File f = new File("wavedata/raw/20" + dateHrArray[i] + ".tsv");
+            File g = new File("wavedata/20" + dateHrArray[i] + ".tsv");
+            if(f.exists() && !g.exists()){
+              
+                double[][] dataDouble = new double[ySize*8][xSize*8];
+                dataDouble = importAndFormat("wavedata/raw/20" + dateHrArray[i] + ".tsv");
+                        
+                double[][] dataMean = new double[35][85];
+                dataMean = calculateWaveMean(1,dataDouble);
+
+                try{                                
+                    Utskrift.write2Matrix("wavedata/20" + dateHrArray[i] + ".tsv",dataMean,"," );
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                }
+
+            addMissing("wavedata/20" + dateHrArray[i] + ".tsv");
+            }
+            
+        }
+        
+    }    
+    
     /** 
      * Beräknar medelvärdet av rutor med storleken 1 kvadratgrad i en 2D double-array. 
      * @param res Upplösning i grader. Används ej , alltid 1. 
@@ -128,8 +167,8 @@ public class WaveMean {
     public static double[][] importAndFormat(String file){
 
 
-        int rawXSize = 85*8;
-        int rawYSize = 35*8;
+        int rawXSize = xSize*8;
+        int rawYSize = ySize*8;
 
 
         String[] dataString = new String[rawXSize*rawYSize]; 
@@ -145,5 +184,48 @@ public class WaveMean {
 
         return dataDouble;
     }
+    
+    /**
+     * Kollar var data saknas och skriver inofrmationen i "missingWave.csv"
+     * @param fileName Sökvägen och filnamnent av filen som ska räknas. Filen ska vara output från calculateWaveMean
+     */
+    
+    static void addMissing(String fileName){
+       
+        
+        Import imp = new Import();
+        String[] stringData = new String[ySize];
+        String[] stringTemp = new String[xSize];
+        
+        String[] stringMissing = new String[ySize];
+        String[] stringMissingTemp = new String[xSize];
+        
+        stringData = imp.importWhole(fileName);
+        stringMissing = imp.importWhole("missingWave.csv");
+        double[][] doubleMissing = new double[ySize][xSize];
+        
+        for(int n = 0; n <  ySize; n++){
+            stringTemp = stringData[n].split(",");
+            stringMissingTemp = stringMissing[n].split(",");
+            
+            for(int m = 0; m < xSize ; m++){
+                doubleMissing[n][m] = Double.parseDouble(stringMissingTemp[m]);
+                if(stringTemp[m].equals("-1.0")){
+                    doubleMissing[n][m]= doubleMissing[n][m] + 1;
+                    
+                } 
+            }
+        }
+        try{                                //Sparar doubleArray till CSV
+            Utskrift.write2Matrix("missingWave.csv",doubleMissing,"," );
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        
+        
+        
+        
+        
+    } 
 }
 
