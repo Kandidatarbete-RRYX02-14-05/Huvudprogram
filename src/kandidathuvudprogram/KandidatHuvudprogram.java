@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.train.MLTrain;
 
 /**
@@ -24,8 +25,8 @@ public class KandidatHuvudprogram {
 	public static void main(String[] args) {
 		WaveCorrTest network = new WaveCorrTest();
 		System.out.println(network.networkTrain());
-		MLTrain testTrain = network.networkGenErrorLoad("2014-01-06", "00");
-		System.out.println(network.networkGenErrorTest(testTrain));
+		BasicMLDataSet set = network.networkGenErrorLoad("2014-01-06", "00");
+		System.out.println(network.networkGenErrorTest(set));
 		
 		
 		

@@ -166,24 +166,21 @@ public class WaveCorrTest {
 	 * @param tid tex "06"
 	 * @return
 	 */
-	public MLTrain networkGenErrorLoad (String datum, String tid){ 
-		double[][] tmpWave = Filemanager.readSingleWaveFile(datum.substring(2), tid, 0);
+	public BasicMLDataSet networkGenErrorLoad (String datum, String tid){ 
+		double[][] tmpWave = Filemanager.readWaveFile(datum.substring(2), 0);
+		double[][] tmp1Wave = new double[1][tmpWave[0].length];
+		tmp1Wave[0] = tmpWave[(int) (Double.parseDouble(tid)+1)/6];
 		double[][] tmpGrav = Filemanager.readGravFileInParts(datum.substring(2));
 		double[][] tmp1Grav = new double[1][tmpGrav[0].length];
 		tmp1Grav[0] = tmpGrav[(int) (Double.parseDouble(tid)+1)/6]; // +1 för att slippa avrundningsfel
 		
-		BasicMLDataSet set = new BasicMLDataSet(tmpWave, tmp1Grav);
+		BasicMLDataSet set = new BasicMLDataSet(tmp1Wave, tmp1Grav);
 		
-		MLTrain tmpTrain = new ResilientPropagation(network, set);
-		
-		PowerSpectrum spectrum = new PowerSpectrum(null, alpha, tid, resetParameter);
-		spectrum.printArray(tmpWave[1]);
-		
-		return tmpTrain;
+		return set;
 	}
 	
-	public double networkGenErrorTest (MLTrain tmpTrain){
-		return tmpTrain.getError();
+	public double networkGenErrorTest (BasicMLDataSet set){
+		return network.calculateError(set);
 	}
 
 }
