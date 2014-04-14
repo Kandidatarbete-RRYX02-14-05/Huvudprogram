@@ -37,6 +37,13 @@ public class PowerSpectrum {
 
 
 	public static void main(String[] args){
+		double[] cos = new double[2000000];
+		for (int i =0; i<cos.length; i++)
+		{
+			cos[i]=Math.cos((i+0.0)/cos.length);
+		}
+		PowerSpectrum test = new PowerSpectrum(cos, 0.9, "Rectangular", 1);
+		
 		
 	}
 
@@ -57,13 +64,16 @@ public class PowerSpectrum {
 	 * @param numberParts Antal delar som datan splittas upp i för spectrum
 	 */
 	public PowerSpectrum(double [] yValues, double alpha, String windowName, int numberParts){
+		if(numberParts>1)
+			System.out.println("Kommer inte att fungera");
+		
 		this.windowName=windowName;
 		this.numberParts=numberParts;
 		this.alpha=alpha;
 
 		initValues(yValues);   
 		removeMean();
-		//filter(yValues);
+		filter(yValues);
 		createIntervals();
 		prepTransform();     	
 		try {
@@ -80,7 +90,7 @@ public class PowerSpectrum {
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
 		fft.fft(spectrum[0], spectrum[1]);
-		//removeFilter(spectrum[0]);
+		removeFilter(spectrum[0]);
 
 
 
@@ -272,7 +282,7 @@ public class PowerSpectrum {
 					
 					Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
 				if (Areal[k]<0){
-					// throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 				}
 			}
 		}
