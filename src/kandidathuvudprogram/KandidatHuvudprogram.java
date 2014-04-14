@@ -7,9 +7,12 @@ package kandidathuvudprogram;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.train.MLTrain;
 
@@ -23,10 +26,10 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		WaveCorrTest network = new WaveCorrTest();
-		System.out.println(network.networkTrain());
-		BasicMLDataSet set = network.networkGenErrorLoad("2014-01-06", "00");
-		System.out.println(network.networkGenErrorTest(set));
+		WaveCorrTest WTC = new WaveCorrTest();
+		System.out.println(WTC.networkMultiTrain(2));
+		BasicMLDataSet set = WTC.networkGenErrorLoad("2014-01-06", "00");
+		System.out.println(WTC.network.calculateError(set));
 		
 		
 		
@@ -80,5 +83,4 @@ public class KandidatHuvudprogram {
 
 		*/
 	}
-
 }

@@ -25,9 +25,9 @@ public class WaveCorrTest {
 	MLTrain train;
 	BufferedMLDataSet buffSet;
 	BasicNetwork network;
-	
+
 	// KONSTRUKTORER
-	
+
 	public WaveCorrTest(){
 
 		alpha = 0.99;
@@ -56,7 +56,7 @@ public class WaveCorrTest {
 		}
 
 	}
-	
+
 	public WaveCorrTest(int[] nbrOfHiddenNeurons){
 
 		this.alpha = 0.99;
@@ -85,7 +85,7 @@ public class WaveCorrTest {
 		}
 
 	}
-	
+
 	public WaveCorrTest(String startDatum, String slutDatum, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, String window, int resetParameter, String trainStr ){
 
 		this.startDatum = startDatum;
@@ -95,7 +95,7 @@ public class WaveCorrTest {
 		this.alpha = alpha;
 		this.window = window;
 		this.resetParameter = resetParameter;
-		
+
 
 		String[] dates = GetDataHgsChalmers.generateDateString(startDatum, slutDatum);
 		Filemanager.createBin(dates, alpha, window,0,15); //VARNING!! HÄR KAN DET BLI JOBBIGT OM GRAVIMETERDATAN ÄR STÖRRE ÄN 15!! 
@@ -115,25 +115,25 @@ public class WaveCorrTest {
 			train = new ResilientPropagation(network, buffSet);
 			break; 
 		}
-			
+
 
 		if(resetParameter != 0){ // 'resetParameter' = ger att den aldrig börjar om
 			train.addStrategy(new RequiredImprovementStrategy(1000)); // reset if improve is less than 1% over 'resetParameter' cycles
 		}
 
 	}
-	
-	
+
+
 	// METODER
 
 	public BasicNetwork BuildNetwork(int inputSize, int idealSize, int[] nbrOfHiddenNeurons, boolean threshold){
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, inputSize));
-		
+
 		for(int i = 0; i < nbrOfHiddenNeurons.length; i++){
-		network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, nbrOfHiddenNeurons[i]));
+			network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, nbrOfHiddenNeurons[i]));
 		}
-		
+
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, idealSize));
 		network.getStructure().finalizeStructure();
 		network.reset();
@@ -154,12 +154,17 @@ public class WaveCorrTest {
 			Chart.useRelevantChart(network.compute(pair.getInput()).getData(), "NetOutPlot", alpha, window, 16384);
 		}
 	}
-	
+
 	public double networkTrain(){
 		train.iteration();
 		return train.getError();
 	}
-	
+
+	public double networkMultiTrain(int m){
+		train.iteration(m);
+		return train.getError();
+	}
+
 	/**
 	 *  Används innan man kör networkGenErrorTest för att skapa tmpTrain vilket är datan man testar mot.
 	 * @param datum tex "2014-01-06"
@@ -170,17 +175,20 @@ public class WaveCorrTest {
 		double[][] tmpWave = Filemanager.readWaveFile(datum.substring(2), 0);
 		double[][] tmp1Wave = new double[1][tmpWave[0].length];
 		tmp1Wave[0] = tmpWave[(int) (Double.parseDouble(tid)+1)/6];
+		
 		double[][] tmpGrav = Filemanager.readGravFileInParts(datum.substring(2));
-		double[][] tmp1Grav = new double[1][tmpGrav[0].length];
-		tmp1Grav[0] = tmpGrav[(int) (Double.parseDouble(tid)+1)/6]; // +1 för att slippa avrundningsfel
+		PowerSpectrum spectrum = new PowerSpectrum(tmpGrav[(int) (Double.parseDouble(tid)+1)/6], alpha, window, 4);
+		double[][] tmp1Grav = new double[1][spectrum.getSpectrum().length];
+		tmp1Grav[0] = spectrum.getRelevantSpectrum(15); // +1 för att slippa avrundningsfel
+
+		
 		
 		BasicMLDataSet set = new BasicMLDataSet(tmp1Wave, tmp1Grav);
-		
+
 		return set;
 	}
-	
+
 	public double networkGenErrorTest (BasicMLDataSet set){
 		return network.calculateError(set);
 	}
-
 }
