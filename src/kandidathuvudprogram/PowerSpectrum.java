@@ -33,28 +33,6 @@ public class PowerSpectrum {
 
 	String windowName;
 
-
-
-	public static void main(String[] args){
-		double[] cos = new double[200000];
-		for (int i =0; i<cos.length; i++)
-		{
-			cos[i]=Math.cos((i+0.0)/cos.length);
-		}
-		PowerSpectrum test = new PowerSpectrum(cos, 0.9, "Rectangular", 4);
-		
-		
-	}
-
-	/**public PowerSpectrum(double [] yValues, double alpha, int numberParts){
-		this.yValues=yValues;
-		this.alpha=alpha;
-		this.numberParts=numberParts;
-		initValues(yValues);
-		removeMean();
-		filter(yValues);
-	}**/
-
 	/**
 	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
 	 * @param yValues Inputdata
@@ -130,7 +108,7 @@ public class PowerSpectrum {
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		for(int i = 0; i < relevantSpectrum.length; i++){
-			relevantSpectrum[i] = Math.log(Math.abs(relevantSpectrum[i]))/divider;  //Eriks kod <-- Blame here
+			relevantSpectrum[i] = Math.log(relevantSpectrum[i])/divider;
 		}
 		return relevantSpectrum;
 	}
@@ -142,7 +120,7 @@ public class PowerSpectrum {
 	public double getAlpha(){
 		return alpha;
 	}
-	
+
 	public int getFFTLength(){
 		return FFTLength;
 	}
@@ -270,11 +248,11 @@ public class PowerSpectrum {
 
 				temp2=multiplyWithConjugate(yValIntervals[i][k], complexIntervals[i][k],
 						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
-				
 
-					Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
-					
-					Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
+
+				Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+
+				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
 				if (Areal[k]<0){
 					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 				}
