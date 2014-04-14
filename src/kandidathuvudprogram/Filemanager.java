@@ -51,7 +51,7 @@ public class Filemanager {
 	public static double[][] readGravFileInParts(String datum) {
 		
 				
-		String fil = "gravidata/" + datum.substring(2).replaceAll("-", "")
+		String fil = "gravidata/" + datum.replaceAll("-", "")
 				+ ".tsf";
 		Import imp = new Import();
 		String dataTime[], dataValue[];

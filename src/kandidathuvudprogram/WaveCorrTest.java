@@ -167,8 +167,8 @@ public class WaveCorrTest {
 	 * @return
 	 */
 	public MLTrain networkGenErrorLoad (String datum, String tid){ 
-		double[][] tmpWave = Filemanager.readSingleWaveFile(datum, tid, 0);
-		double[][] tmpGrav = Filemanager.readGravFileInParts(datum);
+		double[][] tmpWave = Filemanager.readSingleWaveFile(datum.substring(2), tid, 0);
+		double[][] tmpGrav = Filemanager.readGravFileInParts(datum.substring(2));
 		double[][] tmp1Grav = new double[1][tmpGrav[0].length];
 		tmp1Grav[0] = tmpGrav[(int) (Double.parseDouble(tid)+1)/6]; // +1 för att slippa avrundningsfel
 		
@@ -176,6 +176,8 @@ public class WaveCorrTest {
 		
 		MLTrain tmpTrain = new ResilientPropagation(network, set);
 		
+		PowerSpectrum spectrum = new PowerSpectrum(null, alpha, tid, resetParameter);
+		spectrum.printArray(tmpWave[1]);
 		
 		return tmpTrain;
 	}
