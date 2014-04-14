@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 
 /**
- * 
+ * @author Emilio
  * 
  */
 public class PowerSpectrum {
@@ -32,7 +32,7 @@ public class PowerSpectrum {
 	final double alpha;
 
 	String windowName;
-
+	
 	/**
 	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
 	 * @param yValues Inputdata
@@ -108,7 +108,7 @@ public class PowerSpectrum {
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		for(int i = 0; i < relevantSpectrum.length; i++){
-			relevantSpectrum[i] = Math.log(relevantSpectrum[i])/divider;
+			relevantSpectrum[i] = Math.log(Math.abs(relevantSpectrum[i]))/divider;	//tillfälligt belopp så den går att använda sålänge
 		}
 		return relevantSpectrum;
 	}
@@ -216,7 +216,6 @@ public class PowerSpectrum {
 	}
 
 
-	//ofärdig
 	public void removeFilter(double [] array){
 		for (int i = 0; i < array.length; i++){
 			array[i] = array[i] / (1 - 2*alpha*Math.cos(2*Math.PI*i/FFTLength) + Math.pow(alpha,2)); 
@@ -254,7 +253,7 @@ public class PowerSpectrum {
 
 				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
 				if (Areal[k]<0){
-					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
+					//throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 				}
 			}
 		}

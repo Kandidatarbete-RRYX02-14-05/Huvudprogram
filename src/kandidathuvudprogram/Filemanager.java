@@ -129,13 +129,13 @@ public class Filemanager {
 	 * @param outFile
 	 */
 
-	public static void createBin(String[] datum, double alpha, String win, double dividerwave, double dividergrav) {
+	public static void createBin(String[] datum, String filnamn, double alpha, String win, double dividerwave, double dividergrav) {
 
 		if (dividergrav == 0)
 			dividergrav = 13;
 
 		BasicMLDataSet set = new BasicMLDataSet();
-		File binFile = new File("Data/Network/trainingData.bin");
+		File binFile = new File("Data/Network/" + filnamn + ".bin");
 		double[][] gravdata;
 		double[][] wavedata; 
 
@@ -144,13 +144,14 @@ public class Filemanager {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 4);
+				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 1);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
-
+				Chart.useChart(spectrum.getSpectrum(), "dataname", alpha, win);
 			}
 		}
 
-
+		
+		
 
 		System.out.println("Inputsize:" + set.getInputSize());
 		System.out.println("Idealsize:" + set.getIdealSize());
