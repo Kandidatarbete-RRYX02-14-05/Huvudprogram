@@ -49,9 +49,9 @@ public class Filemanager {
 	 */
 
 	public static double[][] readGravFileInParts(String datum) {
-		
-				
-		String fil = "gravidata/" + datum.substring(2).replaceAll("-", "")
+
+
+		String fil = "gravidata/" + datum.replaceAll("-", "")
 				+ ".tsf";
 		Import imp = new Import();
 		String dataTime[], dataValue[];
@@ -73,7 +73,6 @@ public class Filemanager {
 			for (int k = 0; k < data[i].length; k++) {
 				data[i][k] = Double.parseDouble(splitDataTime[i][k]);
 			}
-			System.out.println("GraviData " + i  + " är: " + data[i].length + " punkter lång"); // längdtest 1
 		}
 		Chart.useChart(data[0], "GravTest", 0.99, "win");
 		return data;
@@ -95,24 +94,23 @@ public class Filemanager {
 		for (int i = 0; i<4; i++){
 			String timestr = "" + (100+6*i) ; // fulhaxxar fram 00, 06, 12 ,18 som strängar
 			String fil = "wavedata/" + datum.replaceAll("-", "") + "_" + timestr.substring(1) + ".tsv";
-			System.out.println("wavedata/" + datum.replaceAll("-", "") + "_" + timestr.substring(1) + ".tsv");
 			Import imp = new Import();
 			String dataTime[], dataValue[];  
 
 			dataTime = imp.importWhole(fil);
 			dataValue = new String[dataTime.length];
 			String[] temp;
-			
+
 			if(i == 0){
 				data = new double[4][dataTime.length-1];
 			}
-				
+
 			for (int j=0; j<dataTime.length-1; j++){ // varför -1? 
 				temp = dataTime[j].split("	");
 				dataValue[j] = temp[temp.length-1];
 				dataTime[j] = temp[0];
 			}
-			
+
 			for (int k=0; k<data[i].length; k++){
 				data[i][k] = Double.parseDouble(dataValue[k]);
 			}
@@ -121,8 +119,9 @@ public class Filemanager {
 
 	}
 
-	
-	
+
+
+
 	/**
 	 * 
 	 * @param set
@@ -134,35 +133,25 @@ public class Filemanager {
 
 		if (dividergrav == 0)
 			dividergrav = 13;
-		
+
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/trainingData.bin");
 		double[][] gravdata;
 		double[][] wavedata; 
-		
-		
-		//Test
-		/*
-		double [] testdata =  new double [16384];
-		for(int i = 0; i < testdata.length; i++){
-			testdata [i] = Math.cos((2*Math.PI*0.2)*i);	//2pi/x borde ge frekvens x?
-		}
- 		*/
-		//
-		
+
+
 		for (int i = 0; i < datum.length; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
 				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 4);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
-				System.out.println("GraviData " + j  + " är: " + gravdata[j].length + " punkter lång"); // längdtest 2
-				System.out.println("SpectrumData " + j  + " är: " + spectrum.getSpectrum().length + " punkter lång"); // längdtest 1
+
 			}
 		}
-		
-		
-		
+
+
+
 		System.out.println("Inputsize:" + set.getInputSize());
 		System.out.println("Idealsize:" + set.getIdealSize());
 

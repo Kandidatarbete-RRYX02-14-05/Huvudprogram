@@ -7,8 +7,14 @@ package kandidathuvudprogram;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.MLTrain;
 
 /**
  *
@@ -20,7 +26,14 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-
+		WaveCorrTest WTC = new WaveCorrTest();
+		System.out.println(WTC.networkMultiTrain(2));
+		BasicMLDataSet set = WTC.networkGenErrorLoad("2014-01-06", "00");
+		System.out.println(WTC.network.calculateError(set));
+		
+		
+		
+		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
 
@@ -57,7 +70,7 @@ public class KandidatHuvudprogram {
             testdata2[i] = Double.parseDouble(data[i].split("\t")[6]);
         }
         FFT fft = new FFT(2);
-        fft.fft(testdata1,testdata2); */
+        fft.fft(testdata1,testdata2); 
 		//--------------
 
 		//PowerSpectrum
@@ -68,7 +81,6 @@ public class KandidatHuvudprogram {
 		//Chart.useChart(sin,"Sin",alpha,windowName);
 		Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],testPower.getAlpha(),testPower.getWindowName());
 
-		
+		*/
 	}
-
 }
