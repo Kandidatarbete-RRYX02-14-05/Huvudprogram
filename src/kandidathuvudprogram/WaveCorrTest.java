@@ -20,7 +20,7 @@ import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.RequiredImprovementStrategy;
 public class WaveCorrTest {
 
-	
+
 	double alpha;			// alpha är ett tal som bestämmer hur Powerspectrumet ska göras. Mer specifikt har det med filtret att göra.
 	double dividerWave;		// divierWave är hur mycket vi skalar ned vågdatan med. 0 ger ett defaultvärde på 21.2;
 	double dividerGrav;     // divierGrav är hur mycket vi skalar ned gravimeterdatan med. 0 ger ett defaultvärde på 13;
@@ -38,7 +38,7 @@ public class WaveCorrTest {
 
 	// KONSTRUKTORER
 
-	
+
 	public WaveCorrTest(){
 
 		alpha = 0.99;
@@ -51,10 +51,13 @@ public class WaveCorrTest {
 		imp = new Import();
 		datumFilPath = "datumfil.txt";
 		datum = GetDataHgsChalmers.generateDateString("2014-01-06", "2014-01-06");
+
+		File tmpFile = new File("Data/Network/trainingData.bin");
+		if((tmpFile.exists() == false))
+			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
 		
-		Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
-		
-			
+
+
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
 
@@ -82,9 +85,10 @@ public class WaveCorrTest {
 		imp = new Import();
 		datumFilPath = "indatumfil.txt";
 		datum = imp.importWhole(datumFilPath);
-		
 
-		Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+		File tmpFile = new File("Data/Network/trainingData.bin");
+		if((tmpFile.exists() == false))
+			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -102,8 +106,8 @@ public class WaveCorrTest {
 	}
 
 	public WaveCorrTest(String datumFilPath, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
-		   String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr ){
-		
+			String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr ){
+
 		this.dividerWave = dividerWave;
 		this.dividerGrav = dividerGrav;
 		this.nbrOfHiddenNeurons = nbrOfHiddenNeurons;
@@ -114,8 +118,10 @@ public class WaveCorrTest {
 		imp = new Import();	
 		this.datumFilPath = datumFilPath;
 		datum = imp.importWhole(datumFilPath);
-		
-		Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav); 
+
+		File tmpFile = new File("Data/Network/trainingData.bin");
+		if((tmpFile.exists() == false))
+			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav); 
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -133,7 +139,7 @@ public class WaveCorrTest {
 			train = new ResilientPropagation(network, buffSet);
 			break; 
 		}
-		
+
 
 
 		if(resetParameter != 0){ // 'resetParameter' = ger att den aldrig börjar om
@@ -190,37 +196,26 @@ public class WaveCorrTest {
 	 * @param tid tex "06"
 	 * @return
 	 */
-	
-	public BufferedMLDataSet networkGenErrorLoad (String filnamn){
+
+	public BufferedMLDataSet networkGenErrorLoad (){
 		
-		String[] datum = imp.importWhole(filnamn);	
-		Filemanager.createBin(datum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+		File tmpFile = new File("Data/Network/genErrorData.bin");
+		if((tmpFile.exists() == false)){
+			String[] tmpDatum = imp.importWhole("genErrorDatumFil");	
+			Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+		}
+		
 		BufferedMLDataSet buffGenSet = new BufferedMLDataSet(new File("Data/Network/genErrorData.bin"));
 		return buffGenSet;
 	}
-	
+
 	public double networkGenErrorTest (BufferedMLDataSet set){
 		return network.calculateError(set);
 	}
-	
-	/* public BasicMLDataSet networkGenErrorLoad (String datum, String tid){ 
-		double[][] tmpWave = Filemanager.readWaveFile(datum.substring(2), dividerWave);
-		double[][] tmp1Wave = new double[1][tmpWave[0].length];
-		tmp1Wave[0] = tmpWave[(int) (Double.parseDouble(tid)+1)/6];
-		
-		double[][] tmpGrav = Filemanager.readGravFileInParts(datum.substring(2));
-		PowerSpectrum spectrum = new PowerSpectrum(tmpGrav[(int) (Double.parseDouble(tid)+1)/6], alpha, window, 1);
-		double[][] tmp1Grav = new double[1][spectrum.getSpectrum().length];
-		tmp1Grav[0] = spectrum.getRelevantSpectrum(dividerGrav); // +1 för att slippa avrundningsfel
 
-		BasicMLDataSet set = new BasicMLDataSet(tmp1Wave, tmp1Grav);
-
-		return set;
+	public void updateBin(){
+		String[] tmpDatum = imp.importWhole("genErrorDatumFil");	
+		Filemanager.createBin(datum, "trainingData", alpha, window, dividerWave, dividerGrav);
+		Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 	}
-
-	public double networkGenErrorTest (BasicMLDataSet set){
-		return network.calculateError(set);
-	}*/
-	
-	
 }

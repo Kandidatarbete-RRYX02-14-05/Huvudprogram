@@ -27,11 +27,15 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
+		long time = System.nanoTime(); 
 		int[] nbrOfNeurons = {150};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
-		BufferedMLDataSet set = WTC.networkGenErrorLoad("genErrorDatumFil.txt");
-		
-		for(int epoch = 0; epoch < 50; epoch++){ 
+		long endtaime = System.nanoTime();
+		System.out.println(endtaime - time);
+		BufferedMLDataSet set = WTC.networkGenErrorLoad();
+		long endtaime2 = System.nanoTime();
+		System.out.println(endtaime2-endtaime);
+		for(int epoch = 0; epoch < 5000; epoch++){ 
 			System.out.println(
 					"Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
 				
