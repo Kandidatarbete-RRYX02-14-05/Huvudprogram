@@ -20,7 +20,7 @@ public class OptimizeNetwork {
 
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(); 
-		optNet.numberNeuronTest(140, 160, 50, 0.0);
+		optNet.numberNeuronTest(159, 160, 50, 0.0);
 	}
 	
 	
@@ -39,17 +39,21 @@ public class OptimizeNetwork {
 	private double minimizeGenError(double maxError, int maxIteration, int frequancyGenCorr, int nrNeurons){
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
+                long timeStart, timeStop;
                 
 		BufferedMLDataSet testSet = network.networkGenErrorLoad(); // slumpa dag här!?
 
 		int step = -1;
 
 		do {
-			step++;
-			error[step] = network.networkTrain();
-			if ( (step % frequancyGenCorr) == 0){
-				genError[step] = network.networkGenErrorTest(testSet);
-			}
+                    timeStart = System.nanoTime();
+                    step++;
+                    error[step] = network.networkTrain();
+                    if ( (step % frequancyGenCorr) == 0){
+            		genError[step] = network.networkGenErrorTest(testSet);
+                    }
+                    timeStop = System.nanoTime();
+                    System.out.println("Iteration " + step + ". Tid för iteration: " + (timeStop-timeStart)/1000000000);
 		} while (error[step] > maxError && step < maxIteration);
                 
             try {    // Writes the error for each iteration            
@@ -63,8 +67,9 @@ public class OptimizeNetwork {
 	}
 
 
-        private void numberNeuronTest(int minNeurons, int maxNeurons, int maxIteration, double maxErrorTrain) {
-
+        public void numberNeuronTest(int minNeurons, int maxNeurons, int maxIteration, double maxErrorTrain) {
+            long timeStart, timeStop;
+                    
             int[] neuronNo = new int[maxNeurons - minNeurons + 1];
             for (int i = 0; i < (maxNeurons - minNeurons + 1); i++) {
                 neuronNo[i] = minNeurons + i;
@@ -72,9 +77,11 @@ public class OptimizeNetwork {
             double[] neuronError = new double[neuronNo.length];
 
             for (int i = 0; i < neuronNo.length; i++) {
+                timeStart = System.nanoTime(); 
                 network = new WaveCorrTest(new int[]{neuronNo[i]});
                 neuronError[i] = minimizeGenError(maxErrorTrain, maxIteration, 1, neuronNo[i]);
-                System.out.println("Antal neuroner: " + neuronNo[i]);
+                timeStop = System.nanoTime();
+                System.out.println("Antal neuroner: " + neuronNo[i] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000);
             }
 
             try { // skriver ut genError vs nbrNeurons

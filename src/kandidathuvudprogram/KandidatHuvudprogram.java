@@ -27,7 +27,10 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		long time = System.nanoTime(); 
+		OptimizeNetwork optNet = new OptimizeNetwork(); 
+		optNet.numberNeuronTest(159, 160, 50, 0.0);
+                
+            /*
 		int[] nbrOfNeurons = {150};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
 		long endtaime = System.nanoTime();
@@ -39,7 +42,7 @@ public class KandidatHuvudprogram {
 			System.out.println(
 					"Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
 				
-		} 
+		} */
 		
 		
 		
