@@ -201,7 +201,7 @@ public class WaveCorrTest {
 		
 		File tmpFile = new File("Data/Network/genErrorData.bin");
 		if((tmpFile.exists() == false)){
-			String[] tmpDatum = imp.importWhole("genErrorDatumFil");	
+			String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
 			Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 		}
 		
@@ -214,7 +214,7 @@ public class WaveCorrTest {
 	}
 
 	public void updateBin(){
-		String[] tmpDatum = imp.importWhole("genErrorDatumFil");	
+		String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
 		Filemanager.createBin(datum, "trainingData", alpha, window, dividerWave, dividerGrav);
 		Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 	}
