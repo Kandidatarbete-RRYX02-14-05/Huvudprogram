@@ -1,8 +1,11 @@
 package kandidathuvudprogram;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.data.buffer.BufferedMLDataSet;
 import org.encog.ml.train.MLTrain;
 
 
@@ -17,7 +20,7 @@ public class OptimizeNetwork {
 
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(); 
-		optNet.numberNeuronTest(140, 150, 50, 0.0);
+		optNet.numberNeuronTest(140, 160, 50, 0.0);
 	}
 	
 	
@@ -37,7 +40,7 @@ public class OptimizeNetwork {
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
                 
-		BasicMLDataSet testSet = network.networkGenErrorLoad("2014-01-06","00"); // slumpa dag här!?
+		BufferedMLDataSet testSet = network.networkGenErrorLoad(); // slumpa dag här!?
 
 		int step = -1;
 
