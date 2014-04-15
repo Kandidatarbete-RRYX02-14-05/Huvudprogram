@@ -17,7 +17,7 @@ public class OptimizeNetwork {
 
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(); 
-		optNet.numberNeuronTest(150,160);
+		optNet.numberNeuronTest(140, 150, 50, 0.0);
 	}
 	
 	
@@ -26,54 +26,79 @@ public class OptimizeNetwork {
 	}
 
 	/**
-	 *
-	 * @param maxError
-	 * @param maxIteration
-	 * @param frequancyGenCorr
-	 * @return minimum of genError
-	 */
-	private double minimizeGenError(double maxError, int maxIteration, int frequancyGenCorr){
+         * Mycket trevlig funktion;)
+         * @param maxError
+         * @param maxIteration
+         * @param frequancyGenCorr
+         * @param nrNeurons
+         * @return minimum of genError
+         */
+	private double minimizeGenError(double maxError, int maxIteration, int frequancyGenCorr, int nrNeurons){
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
-		BasicMLDataSet testSet = network.networkGenErrorLoad("2014-01-06","00");
+                
+		BasicMLDataSet testSet = network.networkGenErrorLoad("2014-01-06","00"); // slumpa dag här!?
+
 		int step = -1;
 
 		do {
 			step++;
 			error[step] = network.networkTrain();
-
 			if ( (step % frequancyGenCorr) == 0){
 				genError[step] = network.networkGenErrorTest(testSet);
 			}
 		} while (error[step] > maxError && step < maxIteration);
+                
+            try {    // Writes the error for each iteration            
+                Utskrift.write("Data/Matlabfiler/NeuronConvergence/NeuronTrainError-" + nrNeurons + ".txt" , error);
+                Utskrift.write("Data/Matlabfiler/NeuronConvergence/NeuronGenError-" + nrNeurons + ".txt" , genError);
+            } catch (IOException ex) {
+                Logger.getLogger(OptimizeNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
 		return getMin(genError)[1]; // returns minimum of genError
 	}
 
 
-	private void numberNeuronTest(int minNeurons, int maxNeurons){
+        private void numberNeuronTest(int minNeurons, int maxNeurons, int maxIteration, double maxErrorTrain) {
 
-		int[] neuronNo = new int[maxNeurons - minNeurons + 1];
-		for (int i = 0; i < (maxNeurons-minNeurons); i++){
-			neuronNo[i] = minNeurons + i;
-		}
-		double[] neuronError = new double[neuronNo.length];
+            int[] neuronNo = new int[maxNeurons - minNeurons + 1];
+            for (int i = 0; i < (maxNeurons - minNeurons + 1); i++) {
+                neuronNo[i] = minNeurons + i;
+            }
+            double[] neuronError = new double[neuronNo.length];
 
-		for (int i=0; i<neuronNo.length; i++){
-			network = new WaveCorrTest(new int[]  {neuronNo[i]});
-			neuronError[i] = minimizeGenError(0,100,1);
-		}
+            for (int i = 0; i < neuronNo.length; i++) {
+                network = new WaveCorrTest(new int[]{neuronNo[i]});
+                neuronError[i] = minimizeGenError(maxErrorTrain, maxIteration, 1, neuronNo[i]);
+                System.out.println("Antal neuroner: " + neuronNo[i]);
+            }
 
-		try {
-			Utskrift.write("Data/Matlabfiler/neuronErrorTest.txt", neuronError);
-		} catch (IOException e) {
+            try { // skriver ut genError vs nbrNeurons
+                Utskrift.write("Data/Matlabfiler/neuronErrorTest-" + neuronNo[0] + "-" + neuronNo[neuronNo.length-1] + ".txt", neuronError);
+            } catch (IOException e) {
 
-		}
-	}
-
-
+            }
+    }
 
 
+
+
+        private String generateRandomDate(){
+            
+            return "2014-01-06";
+        }
+        private String generateRandomTime(){
+            double rand = Math.random();
+            
+            if (rand < 0.25)
+                return "00";
+            else if (rand >= 0.25 && rand < 0.5)
+                return "06";
+            else if (rand >= 0.5 && rand < 0.75)
+                return "12";    
+            else return "18";
+        }
 
 	/**
 	 * gets minimum value of array

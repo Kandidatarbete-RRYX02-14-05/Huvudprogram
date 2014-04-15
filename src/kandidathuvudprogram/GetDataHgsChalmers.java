@@ -42,7 +42,7 @@ public class GetDataHgsChalmers {
     	for (int i=0; i<dateArray.length-1; i++){
     		dateArray[i] = dateArray[i].substring(2).replaceAll("-", "");
     	}
-        
+        File tempfile;
         String exec;
         
         ChannelSftp channelSftp = null;
@@ -61,11 +61,11 @@ public class GetDataHgsChalmers {
             channelSftp = (ChannelSftp) channel;
             ChannelExec channelExec;
      
-            System.out.println(dateArray.length);
+            System.out.println("Amount of days: "+ dateArray.length);
             // Laddar ned alla datafiler för aktuella datum
             for (int i=0; i<dateArray.length; i++){
-            	
-            	if (!(new File("gravidata/" + dateArray[i] + ".tsf").exists())){
+            	tempfile =new File("gravidata/" + dateArray[i] + ".tsf");
+            	if (!(tempfile.exists())){
 
 	                        
 	                //Open shell channel
