@@ -27,6 +27,8 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
+            
+                long time = System.nanoTime();
 		int[] nbrOfNeurons = {150};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
 		long endtaime = System.nanoTime();

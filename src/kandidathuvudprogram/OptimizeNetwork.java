@@ -17,10 +17,11 @@ import org.encog.ml.train.MLTrain;
 public class OptimizeNetwork {
 
 	WaveCorrTest network;
+        double iterationTime[];
 
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(); 
-		optNet.numberNeuronTest(159, 160, 50, 0.0);
+		optNet.numberNeuronTest(200, 400, 50, 0.0);            
 	}
 	
 	
@@ -53,7 +54,7 @@ public class OptimizeNetwork {
             		genError[step] = network.networkGenErrorTest(testSet);
                     }
                     timeStop = System.nanoTime();
-                    System.out.println("Iteration " + step + ". Tid för iteration: " + (timeStop-timeStart)/1000000000);
+                    System.out.println("Iteration " + step + ". Tid för iteration: " + (timeStop-timeStart)/1000000000.0);
 		} while (error[step] > maxError && step < maxIteration);
                 
             try {    // Writes the error for each iteration            
@@ -68,27 +69,34 @@ public class OptimizeNetwork {
 
 
         public void numberNeuronTest(int minNeurons, int maxNeurons, int maxIteration, double maxErrorTrain) {
-            long timeStart, timeStop;
+            long timeStart, timeStop, totTimeStart, totTimeStop;
+            totTimeStart = System.nanoTime();
                     
+            iterationTime = new double[maxNeurons - minNeurons + 1];
             int[] neuronNo = new int[maxNeurons - minNeurons + 1];
             for (int i = 0; i < (maxNeurons - minNeurons + 1); i++) {
                 neuronNo[i] = minNeurons + i;
             }
             double[] neuronError = new double[neuronNo.length];
-
+                      
             for (int i = 0; i < neuronNo.length; i++) {
                 timeStart = System.nanoTime(); 
                 network = new WaveCorrTest(new int[]{neuronNo[i]});
                 neuronError[i] = minimizeGenError(maxErrorTrain, maxIteration, 1, neuronNo[i]);
                 timeStop = System.nanoTime();
-                System.out.println("Antal neuroner: " + neuronNo[i] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000);
+                System.out.println("Antal neuroner: " + neuronNo[i] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder");
+                iterationTime[i] = (timeStop-timeStart)/1000000000.0;
             }
+            totTimeStop = System.nanoTime();
+            System.out.println("Total tid för körning: " + (totTimeStop-totTimeStart)/1000000000.0 + " Sekunder");
 
             try { // skriver ut genError vs nbrNeurons
                 Utskrift.write("Data/Matlabfiler/neuronErrorTest-" + neuronNo[0] + "-" + neuronNo[neuronNo.length-1] + ".txt", neuronError);
+                Utskrift.write("Data/Matlabfiler/neuronErrorTestTime-" + neuronNo[0] + "-" + neuronNo[neuronNo.length-1] + ".txt", iterationTime);
             } catch (IOException e) {
 
             }
+            System.exit(0);
     }
 
 
