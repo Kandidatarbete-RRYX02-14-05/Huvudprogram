@@ -32,7 +32,7 @@ public class PowerSpectrum {
 	final double alpha;
 
 	String windowName;
-	
+
 	/**
 	 * Gör power spectrum av datan specifierat enligt alpha, windowName och numberParts
 	 * @param yValues Inputdata
@@ -40,16 +40,18 @@ public class PowerSpectrum {
 	 * @param windowName Namnet på fönstret som objektet initialiseras med.
 	 * @param numberParts Antal delar som datan splittas upp i för spectrum
 	 */
+
+
 	public PowerSpectrum(double [] yValues, double alpha, String windowName, int numberParts){
 		this.windowName=windowName;
 		this.numberParts=numberParts;
 		this.alpha=alpha;
+		this.yValues = yValues;
+		this.dataLength =yValues.length;
 
-		initValues(yValues);   
 		removeMean();
 		filter(yValues);
 		createIntervals();
-		prepTransform();     	
 		try {
 			transform();
 		} catch (Exception e1) {
@@ -59,18 +61,23 @@ public class PowerSpectrum {
 		try {
 			applyWindow();
 		} catch (Exception e) {
-
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
 		Fft.transform(spectrum[0], spectrum[1]);
+		/**for (int i=0; i<spectrum[0].length; i++){
+			if (spectrum[0][i]<0){
+				try {
+					throw new Exception("PowerSpectrum: spectrum is negative. Element "+ i +" has value " + spectrum[0][i]);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null,e.getMessage());
+				}
+			}		
+		}
+		*/
 		removeFilter(spectrum[0]);
-
-
-
-
-		//---------------
-
 
 	}
 
@@ -79,11 +86,6 @@ public class PowerSpectrum {
 	 * Sätter initiala värden på datal�ngd, antal delar och datav�rden
 	 * @param yValues Datan som ska skapas spectrum av
 	 */
-	public void initValues(double yValues[]){
-		this.yValues = yValues;
-		this.dataLength =yValues.length;
-
-	}
 
 	public void setWindow(String newWindow){
 		this.windowName=newWindow;
@@ -149,31 +151,6 @@ public class PowerSpectrum {
 		}
 	}
 
-	// Skriver ut varje värde i en array
-	public void printArray(double array[]){
-		for (int i=0; i<array.length; i++){
-			System.out.print("["+i+"]: " + array[i]);
-		}
-		System.out.println("");
-	}
-
-	//behöver räkna ut närmaste tvåpotens för FFT << är bitvis operation som i 
-	//pricip fördubblar värdet i vårt fall.
-	public static int nextPowerOf2(final int a)
-	{
-		int b = 1;
-		while (b < a)
-		{
-			b = b << 1;
-		}
-		return b;
-	}
-
-	// definerar FFTLength etc så vi slipper göra det varje iteration
-	public void prepTransform()
-	{
-		window = Window.createWindow(intervalLength,windowName);
-	}
 
 	// multiplicerar ett tal med ett annats tals conjugat
 	public double [] multiplyWithConjugate(double reOne, double imOne, 
@@ -182,18 +159,6 @@ public class PowerSpectrum {
 		temp[0]=reOne*reTwo + imOne*imTwo;
 		temp[1]=imOne*reTwo - reOne*imTwo;
 		return temp;
-	}
-
-	// inverterar en double array
-	public void reverseArray(double [] array){
-
-		for(int i = 0; i < array.length/2; i++)
-		{
-			double temp = array[i];
-			array[i] = array[array.length - i - 1];
-			array[array.length - i - 1] = temp;
-		}
-
 	}
 
 	// gör invers fourier
@@ -249,16 +214,20 @@ public class PowerSpectrum {
 						yValIntervals[i+1][k], complexIntervals[i+1][k]); //(X_i)(X_{i+1})*
 
 
-				Areal[k] += temp1[0] + Math.pow(-1, k)*temp2[0];
+				Areal[k] += (temp1[0] + Math.pow(-1, k)*temp2[0]);
 
-				Aimag[k] += temp1[1] + Math.pow(-1, k)*temp2[1];
-				if (Areal[k]<0){
-					throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
-				}
+				Aimag[k] += (temp1[1] + Math.pow(-1, k)*temp2[1]);
+
+			}
+
+		}
+		for(int k = 0; k < FFTLength; k++){
+			if (Areal[k]<0){
+				throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 			}
 		}
-		inverseFFT(Areal,Aimag);
 
+		inverseFFT(Areal,Aimag);
 		covariance = new double [2][FFTLength];
 		//A blir nu covariansfunktionen.
 		for (int i=0; i < Areal.length; i++){
@@ -266,16 +235,16 @@ public class PowerSpectrum {
 			covariance[1][i] = Aimag[i]/(numberParts*intervalLength);
 		}
 
-
-
 	}
 
 	public void applyWindow() throws Exception{
+
+		window = Window.createWindow(intervalLength,windowName);
 		//N=KM, K=numberParts
 		int  M=intervalLength, L=FFTLength;
-		spectrum = new double [2][FFTLength];
+		spectrum = new double [2][L];
 		//s=c(m)*w(m)  		0 <= m <= M-1
-		for (int i=0; i <= M-1; i++){
+		for (int i=0; i < M; i++){
 			spectrum[0][i]=covariance[0][i]*window[i];
 			spectrum[1][i]=covariance[1][i]*window[i];
 		}
@@ -297,5 +266,9 @@ public class PowerSpectrum {
 			throw new Exception("ERROR, imaginary vector is non-zero");
 		}
 	}
+
+
+
+
 
 }
