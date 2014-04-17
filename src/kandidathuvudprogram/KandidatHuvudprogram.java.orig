@@ -28,30 +28,35 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
+<<<<<<< HEAD
+	
+=======
             
-        int[] nbrOfNeurons = {150};
+                long time = System.nanoTime();
+		int[] nbrOfNeurons = {150};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
-		System.out.println("" + WTC.inputSize);
-		
+		long endtaime = System.nanoTime();
+		System.out.println(endtaime - time);
 		BufferedMLDataSet set = WTC.networkGenErrorLoad();
-		for(int epoch = 0; epoch < 2; epoch++){ 
-			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
-			System.out.println(WTC.network.getWeight(1,5,6));
+		long endtaime2 = System.nanoTime();
+		System.out.println(endtaime2-endtaime);
+		for(int epoch = 0; epoch < 5000; epoch++){ 
+			System.out.println(
+					"Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
+				
 		} 
-		int a = 150;
-		int b =150;
-		Point[] testPoints = new Point[a*b];
+>>>>>>> 4da9a8c1a3209ba6da582c08e5ae1f0fd1ad7482
 		
-		for (int i = 0; i < a; i++){
-			for (int j = 0; j < b; j++){
-				testPoints[i*b +j] = new Point(j-50, i-50);
-			}
-		}
-
-		Utskrift.printArray(Filemanager.choosePoints(testPoints));
-		System.out.println(Filemanager.choosePoints(testPoints).length);
-		double[] tmp = WTC.fakeWaveTest(Filemanager.choosePoints(testPoints), 20);
-		Chart.NormalChart(tmp, "TESTDATA");
+		Point[] points = new Point[5];
+		
+		for (int i=0; i<5;i++)
+			points[i] = new Point(2*i,5*i);
+		
+		Utskrift.printArray(Filemanager.choosePoints(points));
+		
+		
+		
+		
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");

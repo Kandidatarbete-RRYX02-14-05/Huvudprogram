@@ -179,12 +179,9 @@ public class Filemanager {
 				list.add(i);
 			}
 		}
-		
-		  
-		 
 		int[] output = new int[list.size()];
 		for(int i = 0; i < list.size(); i++){
-			output[i] = list.get(i).intValue();
+			output[i] = list.get(i).intValue(); // Vet inte exakt varför men blir rätt
 		}
 		return output;
 		

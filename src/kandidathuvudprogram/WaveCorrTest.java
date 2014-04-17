@@ -105,7 +105,7 @@ public class WaveCorrTest {
 		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
 
 		// train the neural network
-		train = new ResilientPropagation(network, buffSet);
+		train = new ResilientPropagation(network, buffSet,0.01,0.01);
 
 		if(resetParameter != 0){ // 'resetParameter' = ger att den aldrig börjar om
 			train.addStrategy(new RequiredImprovementStrategy(1000)); // reset if improve is less than 1% over 'resetParameter' cycles
@@ -172,23 +172,9 @@ public class WaveCorrTest {
 
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, idealSize));
 		network.getStructure().finalizeStructure();
-		network.reset();
+		network.reset(3435345);
+		System.out.println(network.getWeight(0,0,0));
 		return network;
-	}
-
-	public void printInfo(BufferedMLDataSet buffSet, BasicNetwork network) {
-		// test the neural network
-		System.out.println("Neural Network Results:");
-		for(MLDataPair pair: buffSet ) {
-			final MLData output = network.compute(pair.getInput()); // network.compute(MlData) använder nätverket
-
-			System.out.println();
-			System.out.println();
-			for (int i = 0;i<5;i++){
-				System.out.println("ideal=" + pair.getIdeal().getData(i) + ", actual=" + output.getData(i)); // instanceOfMldata.getData(index i) ger utdata nbr i.
-			}
-			Chart.useRelevantChart(network.compute(pair.getInput()).getData(), "NetOutPlot", alpha, window, 16384);
-		}
 	}
 
 	public double networkTrain(){
