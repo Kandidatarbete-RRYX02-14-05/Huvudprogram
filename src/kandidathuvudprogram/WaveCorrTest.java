@@ -35,6 +35,8 @@ public class WaveCorrTest {
 	public enum TrainingType{resilientpropagation}
 	Import imp;
 	String datumFilPath;
+	int inputSize; //antalet datapunkter i vågdatan 
+	int idealSize; //antalet datapunkter i gravimeterdatan
 
 	// KONSTRUKTORER
 
@@ -56,13 +58,16 @@ public class WaveCorrTest {
 		if((tmpFile.exists() == false))
 			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
 		
-
+		
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
-
+		
+		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
+		idealSize = buffSet.getIdealSize(); //
+		
 		// Skapar nätverket	
-		network = BuildNetwork(buffSet.getInputSize(), buffSet.getIdealSize() , nbrOfHiddenNeurons, threshold);
+		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
 
 		// train the neural network
 		train = new ResilientPropagation(network, buffSet);
@@ -93,8 +98,11 @@ public class WaveCorrTest {
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
 
+		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
+		idealSize = buffSet.getIdealSize(); //
+		
 		// Skapar nätverket	
-		network = BuildNetwork(buffSet.getInputSize(), buffSet.getIdealSize() , nbrOfHiddenNeurons, threshold);
+		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
 
 		// train the neural network
 		train = new ResilientPropagation(network, buffSet);
@@ -126,8 +134,11 @@ public class WaveCorrTest {
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
 
+		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
+		idealSize = buffSet.getIdealSize(); //
+		
 		// Skapar nätverket	
-		network = BuildNetwork(buffSet.getInputSize(), buffSet.getIdealSize() , nbrOfHiddenNeurons, threshold);
+		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
 
 		// Sätter 'train' till vald metod
 		TrainingType type = TrainingType.valueOf(trainStr.toLowerCase());
@@ -151,7 +162,7 @@ public class WaveCorrTest {
 
 	// METODER
 
-	public BasicNetwork BuildNetwork(int inputSize, int idealSize, int[] nbrOfHiddenNeurons, boolean threshold){
+	public BasicNetwork BuildNetwork(int[] nbrOfHiddenNeurons, boolean threshold){
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, inputSize));
 
@@ -217,5 +228,21 @@ public class WaveCorrTest {
 		String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
 		Filemanager.createBin(datum, "trainingData", alpha, window, dividerWave, dividerGrav);
 		Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+	}
+	
+	public double[] fakeWaveTest(int[] nbrsToTry, double waveHeight){ 
+
+		double[] tmp = new double[inputSize];
+
+		for ( int i = 0; i < nbrsToTry.length ; i++){
+			if (nbrsToTry[i] >= inputSize || nbrsToTry[i] < 0){
+				throw new IllegalArgumentException("All the numbers in the input arry to fakeWaveTest need to be within [0, idealSize-1] ; nbr " + i + " is not. :(");
+			}
+			else{
+				tmp[nbrsToTry[i]] = waveHeight; 
+			}
+		}
+		BasicMLData tmpML = new BasicMLData(tmp); 
+		return network.compute(tmpML).getData();
 	}
 }

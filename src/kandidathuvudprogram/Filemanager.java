@@ -1,6 +1,8 @@
 package kandidathuvudprogram;
 
+import java.awt.Point;
 import java.io.File;
+import java.util.ArrayList;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
@@ -154,5 +156,38 @@ public class Filemanager {
 
 		loader.external2Binary(binFile);
 	}
-
+	
+	
+	public static Point[] createPointRepresentation(String mapName){
+		Import imp = new Import();
+		String[] tmpString = imp.importWhole(mapName);
+		Point[] point = new Point[tmpString.length];
+		for (int i = 0 ; i < tmpString.length - 1; i++ ){
+			point[i] = new Point((int)Double.parseDouble(tmpString[i].split("	")[0]),(int)Double.parseDouble(tmpString[i].split("	")[1]));
+		}
+		return point;
+	}
+	
+	public static int[] choosePoints( Point[] targetPoints ){
+		
+		Point[] data = createPointRepresentation("wavedata/removedmissing/map.tsv");
+		 
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for(int i = 0; i < data.length-1; i++){
+			for(int j = 0; j < targetPoints.length; j++){
+				if(data[i].equals(targetPoints[j]))
+				list.add(i);
+			}
+		}
+		
+		  
+		 
+		int[] output = new int[list.size()];
+		for(int i = 0; i < list.size(); i++){
+			output[i] = list.get(i).intValue();
+		}
+		return output;
+		
+		
+	}
 }
