@@ -16,7 +16,7 @@ import org.encog.ml.train.MLTrain;
  */
 public class OptimizeNetwork {
 
-	//WaveCorrTest network;
+	
         
         protected double iterationTime[], neuronError[]; 
         protected int[] numberNeurons;
@@ -27,8 +27,9 @@ public class OptimizeNetwork {
         
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(50, 0.0); 
-                optNet.setNumberNeurons(100, 101);
-		optNet.multiThreadNeuronTest(2);
+                //optNet.numberNeuronTest(1, 2);
+                optNet.setNumberNeurons(50, 60);
+		optNet.multiThreadNeuronTest(3);  
 	}
 	
 	
@@ -151,6 +152,7 @@ public class OptimizeNetwork {
                 try { // skriver ut genError vs nbrNeurons
                     Utskrift.write("Data/Matlabfiler/neuronErrorTest-" + numberNeurons[0] + "-" + numberNeurons[numberNeurons.length-1] + ".txt", neuronError);
                     Utskrift.write("Data/Matlabfiler/neuronErrorTestTime-" + numberNeurons[0] + "-" + numberNeurons[numberNeurons.length-1] + ".txt", iterationTime);
+                    System.exit(0);
                 } catch (IOException e) {
 
                 }
