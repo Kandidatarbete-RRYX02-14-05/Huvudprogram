@@ -16,7 +16,7 @@ import org.encog.ml.train.MLTrain;
  */
 public class OptimizeNetwork {
 
-	WaveCorrTest network;
+	//WaveCorrTest network;
         
         protected double iterationTime[], neuronError[]; 
         protected int[] numberNeurons;
@@ -27,8 +27,8 @@ public class OptimizeNetwork {
         
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(50, 0.0); 
-                optNet.setNumberNeurons(100, 105);
-		optNet.multiThreadNeuronTest(1);
+                optNet.setNumberNeurons(100, 101);
+		optNet.multiThreadNeuronTest(2);
 	}
 	
 	
@@ -45,7 +45,7 @@ public class OptimizeNetwork {
          * @param nrNeurons
          * @return minimum of genError
          */
-	private double minimizeGenError(double maxError, int frequancyGenCorr, int nrNeurons){
+	private double minimizeGenError(double maxError, int frequancyGenCorr, int nrNeurons, WaveCorrTest network){
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
                 long timeStart, timeStop;
@@ -79,6 +79,7 @@ public class OptimizeNetwork {
         public void numberNeuronTest(int minNeurons, int maxNeurons) {
             long timeStart, timeStop, totTimeStart, totTimeStop;
             totTimeStart = System.nanoTime();
+            WaveCorrTest network;
                     
             iterationTime = new double[maxNeurons - minNeurons + 1];
             int[] neuronNo = new int[maxNeurons - minNeurons + 1];
@@ -90,7 +91,7 @@ public class OptimizeNetwork {
             for (int i = 0; i < neuronNo.length; i++) {
                 timeStart = System.nanoTime(); 
                 network = new WaveCorrTest(new int[]{neuronNo[i]});
-                neuronError[i] = minimizeGenError(maxErrorTrain, 1, neuronNo[i]);
+                neuronError[i] = minimizeGenError(maxErrorTrain, 1, neuronNo[i], network);
                 timeStop = System.nanoTime();
                 System.out.println("Antal neuroner: " + neuronNo[i] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder");
                 iterationTime[i] = (timeStop-timeStart)/1000000000.0;
@@ -111,6 +112,7 @@ public class OptimizeNetwork {
         public void neuronThread(int maxIteration, double maxErrorTrain){
             long timeStart, timeStop, totTimeStart, totTimeStop;
             totTimeStart = System.nanoTime();
+            WaveCorrTest network;
                     
             boolean finished = false;
             int index = -1, alive = 0;     
@@ -130,7 +132,7 @@ public class OptimizeNetwork {
                 if (index!=-1){
                     timeStart = System.nanoTime(); 
                     network = new WaveCorrTest(new int[]{numberNeurons[index]});
-                    neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index]);
+                    neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index], network);
                     timeStop = System.nanoTime();
                     System.out.println("Antal neuroner: " + numberNeurons[index] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder");
                     iterationTime[index] = (timeStop-timeStart)/1000000000.0;
