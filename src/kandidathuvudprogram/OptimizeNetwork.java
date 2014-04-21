@@ -20,15 +20,14 @@ public class OptimizeNetwork {
 
 	protected double iterationTime[], neuronError[]; 
 	protected int[] numberNeurons;
-	boolean doneNeurons[];
+	volatile boolean doneNeurons[];
 	final int maxIteration;
 	final double maxErrorTrain;
 	Thread thread[];
-	int threadsAlive;
 	public static void main(String args[]){
-		OptimizeNetwork optNet = new OptimizeNetwork(50, 0.0); 
+		OptimizeNetwork optNet = new OptimizeNetwork(5, 0.0); 
 		optNet.setNumberNeurons(50, 60);
-		optNet.multiThreadNeuronTest(4);  
+		optNet.multiThreadNeuronTest(1);  
 	}
 
 
@@ -49,9 +48,7 @@ public class OptimizeNetwork {
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
 		long timeStart, timeStop;
-
 		BufferedMLDataSet testSet = network.networkGenErrorLoad(); // slumpa dag här!?
-
 		int step = -1;
 
 		do {
@@ -116,15 +113,6 @@ public class OptimizeNetwork {
 		else return false;
 	}
 
-	private synchronized boolean permissionToDie(){
-		if (threadsAlive==1){
-			return false;}
-		else {
-			threadsAlive--;
-			return true;
-		}
-	}
-
 	public void neuronThread(int maxIteration, double maxErrorTrain){
 		long timeStart, timeStop, totTimeStart, totTimeStop;
 
@@ -138,7 +126,7 @@ public class OptimizeNetwork {
 			for (int i=0; i<doneNeurons.length; i++){
 				if(grabDoneNeurons(i)){
 					index = i;
-					i = doneNeurons.length;
+					break;
 				}
 				else if (index == -1 && i == doneNeurons.length - 1){
 					finished = true;
