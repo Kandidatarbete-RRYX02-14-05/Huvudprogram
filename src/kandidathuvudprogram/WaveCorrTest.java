@@ -29,10 +29,11 @@ public class WaveCorrTest {
 	int[] nbrOfHiddenNeurons;//nbrOfHiddenNeurons säger hur många lager och hur många neuroner varje dolt lager har.
 	int resetParameter;		// Nätverket resetar om det inte blir förbättras mer än 1% på resetParameter iterationer. resetParameter = stänger av den funktionen.
 	boolean threshold;		// Är om nätverket ska jobba med threshold
+	public enum TrainingFunction{activationsigmoid, activationtanh}; //vilken av dessa träningsfunktioner som ska användas
 	MLTrain train;			
 	BufferedMLDataSet buffSet;
 	BasicNetwork network;
-	public enum TrainingType{resilientpropagation}
+	public enum TrainingType{resilientpropagation}	//använda resilientpropagation (enda alternativet)
 	Import imp;
 	String datumFilPath;
 	int inputSize; //antalet datapunkter i vågdatan 
@@ -67,7 +68,7 @@ public class WaveCorrTest {
 		idealSize = buffSet.getIdealSize(); //
 		
 		// Skapar nätverket	
-		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
+		network = BuildNetwork(nbrOfHiddenNeurons, threshold, "activationSigmoid");
 
 		// train the neural network
 		train = new ResilientPropagation(network, buffSet);
@@ -102,7 +103,7 @@ public class WaveCorrTest {
 		idealSize = buffSet.getIdealSize(); //
 		
 		// Skapar nätverket	
-		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
+		network = BuildNetwork(nbrOfHiddenNeurons, threshold, "ActivationSigmoid");
 
 		// train the neural network
 		train = new ResilientPropagation(network, buffSet,0.01,0.01);
@@ -114,7 +115,7 @@ public class WaveCorrTest {
 	}
 
 	public WaveCorrTest(String datumFilPath, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
-			String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr ){
+			String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr, String functionStr ){
 
 		this.dividerWave = dividerWave;
 		this.dividerGrav = dividerGrav;
@@ -138,8 +139,8 @@ public class WaveCorrTest {
 		idealSize = buffSet.getIdealSize(); //
 		
 		// Skapar nätverket	
-		network = BuildNetwork(nbrOfHiddenNeurons, threshold);
-
+		network = BuildNetwork(nbrOfHiddenNeurons, threshold, functionStr);
+		
 		// Sätter 'train' till vald metod
 		TrainingType type = TrainingType.valueOf(trainStr.toLowerCase());
 		switch (type){
@@ -150,6 +151,9 @@ public class WaveCorrTest {
 			train = new ResilientPropagation(network, buffSet);
 			break; 
 		}
+		
+
+		
 
 
 
@@ -162,12 +166,27 @@ public class WaveCorrTest {
 
 	// METODER
 
-	public BasicNetwork BuildNetwork(int[] nbrOfHiddenNeurons, boolean threshold){
+	public BasicNetwork BuildNetwork(int[] nbrOfHiddenNeurons, boolean threshold, String functionStr){
+		
+		
+		TrainingFunction fun = TrainingFunction.valueOf(functionStr.toLowerCase());
+
+		
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, inputSize));
 
 		for(int i = 0; i < nbrOfHiddenNeurons.length; i++){
-			network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, nbrOfHiddenNeurons[i]));
+			switch (fun){
+			case activationsigmoid:
+				network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, nbrOfHiddenNeurons[i]));
+				break;
+			case activationtanh:
+				network.addLayer(new BasicLayer(new ActivationTANH(), threshold, nbrOfHiddenNeurons[i]));
+				break;
+			default: 
+				throw new IllegalArgumentException("Error: illegal activationFunction");	
+			}
+			
 		}
 
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, idealSize));
