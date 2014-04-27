@@ -25,9 +25,9 @@ public class OptimizeNetwork {
 	final double maxErrorTrain;
 	Thread thread[];
 	public static void main(String args[]){
-		OptimizeNetwork optNet = new OptimizeNetwork(5, 0.0); 
+		OptimizeNetwork optNet = new OptimizeNetwork(1500, 0.0); 
 		optNet.setNumberNeurons(50, 60);
-		optNet.multiThreadNeuronTest(1);  
+		optNet.multiThreadNeuronTest(4);  
 	}
 
 
@@ -47,19 +47,15 @@ public class OptimizeNetwork {
 	private double minimizeGenError(double maxError, int frequancyGenCorr, int nrNeurons, WaveCorrTest network){
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
-		long timeStart, timeStop;
 		BufferedMLDataSet testSet = network.networkGenErrorLoad(); // slumpa dag h�r!?
 		int step = -1;
 
 		do {
-			timeStart = System.nanoTime();
 			step++;
 			error[step] = network.networkTrain();
 			if ( (step % frequancyGenCorr) == 0){
 				genError[step] = network.networkGenErrorTest(testSet);
 			}
-			timeStop = System.nanoTime();
-			System.out.println("Iteration " + step + ". Tid för iteration: " + (timeStop-timeStart)/1000000000.0);
 		} while (error[step] > maxError && step < maxIteration);
 
 		try {    // Writes the error for each iteration            

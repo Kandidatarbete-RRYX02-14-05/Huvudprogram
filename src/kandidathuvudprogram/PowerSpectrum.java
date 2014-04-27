@@ -107,7 +107,7 @@ public class PowerSpectrum {
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		for(int i = 0; i < relevantSpectrum.length; i++){
-			relevantSpectrum[i] = (Math.abs(relevantSpectrum[i]))/divider;
+			relevantSpectrum[i] = (Math.log(Math.abs(relevantSpectrum[i]))/divider);
 		}
 		return relevantSpectrum;
 	}
