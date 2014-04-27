@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kandidathuvudprogram;
 
 import javax.swing.JOptionPane;
@@ -48,9 +44,10 @@ public class PowerSpectrum {
 		this.alpha=alpha;
 		this.yValues = yValues;
 		this.dataLength =yValues.length;
-
-		removeMean();
+		
 		filter(yValues);
+		removeMean();
+
 		createIntervals();
 		try {
 			transform();
@@ -110,7 +107,7 @@ public class PowerSpectrum {
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
 		for(int i = 0; i < relevantSpectrum.length; i++){
-			relevantSpectrum[i] = Math.log(Math.abs(relevantSpectrum[i]))/divider;	//tillfälligt belopp så den går att använda sålänge
+			relevantSpectrum[i] = (Math.abs(relevantSpectrum[i]))/divider;
 		}
 		return relevantSpectrum;
 	}

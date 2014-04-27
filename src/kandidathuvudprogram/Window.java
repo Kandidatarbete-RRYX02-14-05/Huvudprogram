@@ -40,8 +40,12 @@ public class Window {
 				wind[i] = Math.pow(Math.E, -2*Math.pow((i-((length-1)/2))/(sigma*(length-1)),2));
 			}
 			return wind;
-
-
+		case BESSEL: 
+			for (int i = 0; i<length; i++){
+				wind[i] = ModBesselFunctions.bessi0(Math.PI*1.8*Math.sqrt(1.0-Math.pow(2*i/(length-1)-1, 2)))/ModBesselFunctions.bessi0(Math.PI*1.8);
+			}
+			return wind;
+		
 		default: 
 			throw new IllegalArgumentException("INVALID WINDOW :( - Du har antagligen glömt att ange alpha");
 		}

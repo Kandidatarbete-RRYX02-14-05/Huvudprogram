@@ -191,8 +191,7 @@ public class WaveCorrTest {
 
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, idealSize));
 		network.getStructure().finalizeStructure();
-		network.reset(3435345);
-		System.out.println(network.getWeight(0,0,0));
+		network.reset();
 		return network;
 	}
 

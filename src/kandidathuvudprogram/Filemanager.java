@@ -145,7 +145,7 @@ public class Filemanager {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 1);
+				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 80);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
 			}
 		}

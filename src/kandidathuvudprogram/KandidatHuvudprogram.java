@@ -28,7 +28,7 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-            
+        /*    
         int[] nbrOfNeurons = {150};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
 		System.out.println("" + WTC.inputSize);
@@ -52,6 +52,7 @@ public class KandidatHuvudprogram {
 		System.out.println(Filemanager.choosePoints(testPoints).length);
 		double[] tmp = WTC.fakeWaveTest(Filemanager.choosePoints(testPoints), 20);
 		Chart.NormalChart(tmp, "TESTDATA");
+		*/
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
@@ -91,15 +92,18 @@ public class KandidatHuvudprogram {
         FFT fft = new FFT(2);
         fft.fft(testdata1,testdata2); 
 		//--------------
-
+		*/
 		//PowerSpectrum
 		double alpha=0.99;
-		String windowName="Rectangular";
-		// PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
-		PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
-		//Chart.useChart(sin,"Sin",alpha,windowName);
-		Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],testPower.getAlpha(),testPower.getWindowName());
-
-		*/
+		String windowName="rectangular";
+		
+		String[] date ={"100510","100511","100512","100513","100514"};
+		//PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
+		for(int i=0; i<4; i++){
+		PowerSpectrum testPower = new PowerSpectrum(Filemanager.readGravFileInParts(date[i])[0],alpha,windowName,100);
+		System.out.println(testPower.getRelevantSpectrum(1).length);
+		Chart.useChart(testPower.getSpectrum(),date[i],testPower.getAlpha(),testPower.getWindowName());
+		}
+		
 	}
 }
