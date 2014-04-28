@@ -59,19 +59,15 @@ public class OptimizeNetwork {
 	private double minimizeGenError(double maxError, int frequancyGenCorr, int nrNeurons, WaveCorrTest network){
 		double[] error = new double[maxIteration+1];
 		double[] genError = new double[maxIteration/frequancyGenCorr+1];
-		long timeStart, timeStop;
 		BufferedMLDataSet testSet = network.networkGenErrorLoad(); // slumpa dag h�r!?
 		int step = -1;
 
 		do {
-			timeStart = System.nanoTime();
 			step++;
 			error[step] = network.networkTrain();
 			if ( (step % frequancyGenCorr) == 0){
 				genError[step] = network.networkGenErrorTest(testSet);
 			}
-			timeStop = System.nanoTime();
-			System.out.println("Iteration " + step + ". Tid f�r iteration: " + (timeStop-timeStart)/1000000000.0);
 		} while (error[step] > maxError && step < maxIteration);
 
 		try {    // Writes the error for each iteration            
@@ -102,11 +98,11 @@ public class OptimizeNetwork {
 			network = new WaveCorrTest(new int[]{neuronNo[i]});
 			neuronError[i] = minimizeGenError(maxErrorTrain, 1, neuronNo[i], network);
 			timeStop = System.nanoTime();
-			System.out.println("Antal neuroner: " + neuronNo[i] + ".  Tid f�r tr�ning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder");
+			System.out.println("Antal neuroner: " + neuronNo[i] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder");
 			iterationTime[i] = (timeStop-timeStart)/1000000000.0;
 		}
 		totTimeStop = System.nanoTime();
-		System.out.println("Total tid f�r k�rning: " + (totTimeStop-totTimeStart)/1000000000.0 + " Sekunder");
+		System.out.println("Total tid för körning: " + (totTimeStop-totTimeStart)/1000000000.0 + " Sekunder");
 
 		try { // skriver ut genError vs nbrNeurons
 			Utskrift.write("Data/Matlabfiler/neuronErrorTest-" + neuronNo[0] + "-" + neuronNo[neuronNo.length-1] + ".txt", neuronError);
@@ -152,7 +148,7 @@ public class OptimizeNetwork {
                                 
 				neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index], network);
 				timeStop = System.nanoTime();
-				System.out.println("Antal neuroner: " + numberNeurons[index] + ".  Tid f�r tr�ning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder"); //�r detta intressant? Kanske bara 
+				System.out.println("Antal neuroner: " + numberNeurons[index] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder"); //�r detta intressant? Kanske bara 
 				//print f�r att visa att det �r klart?
 				iterationTime[index] = (timeStop-timeStart)/1000000000.0;
 			}      
@@ -163,7 +159,7 @@ public class OptimizeNetwork {
 
 
 	/**
-	 * Bara att s�tta f�ltet "numberNeurons" med de antal neuroner man vill testa innan denna metod k�rs!  
+	 * Bara att sätta fältet "numberNeurons" med de antal neuroner man vill testa innan denna metod körs!  
 	 * @param numberThreads 
 	 */
 	public void multiThreadNeuronTest(int numberThreads){
@@ -184,7 +180,7 @@ public class OptimizeNetwork {
 		}
 		for(int i=0; i<numberThreads; i++){
 			try {
-				thread[i].join();	//v�ntar p� att varje tr�d blir klar
+				thread[i].join();	//väntar på att varje tråd blir klar
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
@@ -196,8 +192,8 @@ public class OptimizeNetwork {
 
 		}
 		totTimeStop = System.nanoTime();
-		System.out.println("Total tid f�r k�rning: " + (totTimeStop-totTimeStart)/1000000000.0 + " Sekunder");
-		System.exit(0);	//Detta �r nog inte ett helt korrekt s�tt att avsluta...
+		System.out.println("Total tid för körning: " + (totTimeStop-totTimeStart)/1000000000.0 + " Sekunder");
+		System.exit(0);	//Detta är nog inte ett helt korrekt sätt att avsluta...
 	}
 
 
@@ -226,7 +222,7 @@ public class OptimizeNetwork {
 		else return "18";
 	}
 
-	/**
+	/**t
 	 * gets minimum value of array
 	 * @param array
 	 * @return a double array --> array[0] = indexOfSmallest, array[1] = smallestValue.

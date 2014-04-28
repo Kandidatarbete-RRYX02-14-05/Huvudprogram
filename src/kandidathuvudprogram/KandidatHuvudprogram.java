@@ -29,29 +29,22 @@ public class KandidatHuvudprogram {
 	 */
 	public static void main(String[] args) {
             
-        int[] nbrOfNeurons = {150};
+        int[] nbrOfNeurons = {40};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
 		System.out.println("" + WTC.inputSize);
 		
-		BufferedMLDataSet set = WTC.networkGenErrorLoad();
-		for(int epoch = 0; epoch < 2; epoch++){ 
-			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
-			System.out.println(WTC.network.getWeight(1,5,6));
-		} 
-		int a = 150;
-		int b =150;
-		Point[] testPoints = new Point[a*b];
 		
-		for (int i = 0; i < a; i++){
-			for (int j = 0; j < b; j++){
-				testPoints[i*b +j] = new Point(j-50, i-50);
-			}
+		BufferedMLDataSet set = WTC.networkGenErrorLoad();
+		for(int epoch = 0; epoch < 15000; epoch++){ 
+			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
+			
 		}
-
-		Utskrift.printArray(Filemanager.choosePoints(testPoints));
-		System.out.println(Filemanager.choosePoints(testPoints).length);
-		double[] tmp = WTC.fakeWaveTest(Filemanager.choosePoints(testPoints), 20);
-		Chart.NormalChart(tmp, "TESTDATA");
+		Chart.useRelevantChart(WTC.fakeWaveTest(-30,-45,10,20,12),"TestF", 0.99, "rect", 135);
+		for (int i = 0; i<50; i++){
+		Chart.useRelevantChart((WTC.buffSet.get(i).getIdeal()).getData(),"Test" + 2*i, 0.99, "rect", 135);
+		Chart.useRelevantChart(WTC.network.compute(WTC.buffSet.get(i).getInput()).getData(),"Test" + (2*i+1), 0.99, "rect", 135);
+		}
+		
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
@@ -91,15 +84,18 @@ public class KandidatHuvudprogram {
         FFT fft = new FFT(2);
         fft.fft(testdata1,testdata2); 
 		//--------------
-
+		*/
 		//PowerSpectrum
 		double alpha=0.99;
-		String windowName="Rectangular";
-		// PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
-		PowerSpectrum testPower = new PowerSpectrum(testdata1,alpha,windowName,4);
-		//Chart.useChart(sin,"Sin",alpha,windowName);
-		Chart.useChart(testPower.getSpectrum(),fil.split("\\.")[0],testPower.getAlpha(),testPower.getWindowName());
-
-		*/
+		String windowName="rectangular";
+		
+		String[] date ={"100510","100511","100512","100513","100514"};
+		//PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
+		for(int i=0; i<4; i++){
+		PowerSpectrum testPower = new PowerSpectrum(Filemanager.readGravFileInParts(date[i])[0],alpha,windowName,160);
+		System.out.println(testPower.getRelevantSpectrum(1).length);
+		Chart.useChart(testPower.getSpectrum(),date[i],testPower.getAlpha(),testPower.getWindowName());
+		}
+		
 	}
 }

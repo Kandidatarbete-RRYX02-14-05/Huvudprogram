@@ -140,12 +140,12 @@ public class Filemanager {
 		double[][] gravdata;
 		double[][] wavedata; 
 
-		GetDataHgsChalmers.downloadGraviData(datum);
+	//	GetDataHgsChalmers.downloadGraviData(datum);
 		for (int i = 0; i < datum.length-1; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 1);
+				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 15);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
                                 Chart.NormalChart(spectrum.getRelevantSpectrum(dividergrav),"nychart");
 			}
