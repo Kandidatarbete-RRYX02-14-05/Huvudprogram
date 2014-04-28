@@ -88,7 +88,7 @@ public class WaveCorrTest {
 		window = "rectangular";
 		this.nbrOfHiddenNeurons = nbrOfHiddenNeurons;
 		resetParameter = 0;
-		threshold = false;
+		threshold = true;
 		imp = new Import();
 		datumFilPath = "indatumfil.txt";
 		datum = imp.importWhole(datumFilPath);
@@ -227,12 +227,6 @@ public class WaveCorrTest {
 
 	public double networkGenErrorTest (BufferedMLDataSet set){
 		return network.calculateError(set);
-	}
-
-	public void updateBin(){
-		String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
-		Filemanager.createBin(datum, "trainingData", alpha, window, dividerWave, dividerGrav);
-		Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 	}
 
 	public double[] fakeWaveTest(int[] nbrsToTry, double waveHeight){ 

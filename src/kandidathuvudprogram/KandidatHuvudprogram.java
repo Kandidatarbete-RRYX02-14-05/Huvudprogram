@@ -28,23 +28,52 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-            
-        int[] nbrOfNeurons = {40};
+
+		
+		int[] nbrOfNeurons = {70};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
 		System.out.println("" + WTC.inputSize);
-		
-		
+
+
 		BufferedMLDataSet set = WTC.networkGenErrorLoad();
-		for(int epoch = 0; epoch < 15000; epoch++){ 
+		for(int epoch = 0; epoch < 200; epoch++){ 
 			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
-			
+
 		}
+		int IdealDataSize = (WTC.buffSet.get(0).getIdeal()).getData().length;
+		double[] mse = new double[(int) WTC.buffSet.getRecordCount()];
 		Chart.useRelevantChart(WTC.fakeWaveTest(-30,-45,10,20,12),"TestF", 0.99, "rect", 135);
-		for (int i = 0; i<50; i++){
-		Chart.useRelevantChart((WTC.buffSet.get(i).getIdeal()).getData(),"Test" + 2*i, 0.99, "rect", 135);
-		Chart.useRelevantChart(WTC.network.compute(WTC.buffSet.get(i).getInput()).getData(),"Test" + (2*i+1), 0.99, "rect", 135);
+		for (int i = 0; i<(int) WTC.buffSet.getRecordCount(); i++){
+			
+			for (int j = 0; j < IdealDataSize; j++){
+				mse[i] += Math.pow(((WTC.buffSet.get(i).getIdeal()).getData()[j]-WTC.network.compute(WTC.buffSet.get(i).getInput()).getData()[j]),2);
+			}
+
+			mse[i] = mse[i]/IdealDataSize;
 		}
 		
+		for (int i = 0; i < 40; i++){
+			try {
+				Utskrift.write("Data/Matlabfiler/Test" + 2*i, (WTC.buffSet.get(i).getIdeal()).getData());
+				Utskrift.write("Data/Matlabfiler/Test" + (2*i+1), WTC.network.compute(WTC.buffSet.get(i).getInput()).getData());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//Chart.useRelevantChart((WTC.buffSet.get(i).getIdeal()).getData(),"Test" + 2*i, 0.99, "rect", 135);
+			//Chart.useRelevantChart(WTC.network.compute(WTC.buffSet.get(i).getInput()).getData(),"Test" + (2*i+1), 0.99, "rect", 135);
+		}
+		
+		Chart.NormalChart(mse, "mse");
+		
+		for(int i = 0; i < mse.length; i++){
+			if (mse[i] > 0.001)
+				System.out.print( " " + i);
+		}
+
+
+
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
@@ -84,18 +113,18 @@ public class KandidatHuvudprogram {
         FFT fft = new FFT(2);
         fft.fft(testdata1,testdata2); 
 		//--------------
-		*/
+		 */
 		//PowerSpectrum
 		double alpha=0.99;
 		String windowName="rectangular";
-		
+
 		String[] date ={"100510","100511","100512","100513","100514"};
 		//PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
 		for(int i=0; i<4; i++){
-		PowerSpectrum testPower = new PowerSpectrum(Filemanager.readGravFileInParts(date[i])[0],alpha,windowName,160);
-		System.out.println(testPower.getRelevantSpectrum(1).length);
-		Chart.useChart(testPower.getSpectrum(),date[i],testPower.getAlpha(),testPower.getWindowName());
+			PowerSpectrum testPower = new PowerSpectrum(Filemanager.readGravFileInParts(date[i])[0],alpha,windowName,160);
+			System.out.println(testPower.getRelevantSpectrum(1).length);
+			Chart.useChart(testPower.getSpectrum(),date[i],testPower.getAlpha(),testPower.getWindowName());
 		}
-		
+
 	}
 }
