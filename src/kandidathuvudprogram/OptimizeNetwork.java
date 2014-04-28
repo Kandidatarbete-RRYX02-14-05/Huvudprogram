@@ -25,11 +25,23 @@ public class OptimizeNetwork {
 	final double maxErrorTrain;
 	Thread thread[];
 	public static void main(String args[]){
-		OptimizeNetwork optNet = new OptimizeNetwork(1500, 0.0); 
-		optNet.setNumberNeurons(50, 60);
-		optNet.multiThreadNeuronTest(4);  
+		OptimizeNetwork optNet = new OptimizeNetwork(200, 0.0); 
+		optNet.setNumberNeurons(1, 150, 2);
+                //optNet.manualNumberNeurons();
+                
+		optNet.multiThreadNeuronTest(2);  
 	}
 
+        public void manualNumberNeurons(){
+            numberNeurons = new int[5];
+            numberNeurons[0] = 50;
+            numberNeurons[1] = 100;
+            numberNeurons[2] = 150;
+            numberNeurons[3] = 200;
+            numberNeurons[4] = 250;
+            numberNeurons = new int[1];
+            numberNeurons[0] = 200;
+        }
 
 	public OptimizeNetwork(int maxIteration, double maxErrorTrain){
 		this.maxIteration = maxIteration;
@@ -130,7 +142,10 @@ public class OptimizeNetwork {
 			}
 			if (index!=-1){
 				timeStart = System.nanoTime(); 
-				network = new WaveCorrTest(new int[]{numberNeurons[index]});
+				//network = new WaveCorrTest(new int[]{numberNeurons[index]});
+                                network = new WaveCorrTest("indatumfil.txt", new int[]{numberNeurons[index]}, false,
+                                        0.99, "rectangular", 0, 15, 0, "resilientpropagation");
+                                
 				neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index], network);
 				timeStop = System.nanoTime();
 				System.out.println("Antal neuroner: " + numberNeurons[index] + ".  Tid för träning: " + (timeStop-timeStart)/1000000000.0 + " Sekunder"); //�r detta intressant? Kanske bara 
@@ -182,10 +197,10 @@ public class OptimizeNetwork {
 	}
 
 
-	private void setNumberNeurons(int start, int stop){
+	private void setNumberNeurons(int start, int stop, int steplength){
 		numberNeurons = new int[stop - start + 1];
 		for (int i=0; i< numberNeurons.length; i++){
-			numberNeurons[i] = start + i;
+			numberNeurons[i] = start + i*steplength;
 		}
 	}
 

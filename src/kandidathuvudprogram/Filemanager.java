@@ -147,6 +147,7 @@ public class Filemanager {
 			for (int j = 0; j < 4; j++) {
 				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 80);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
+                                Chart.NormalChart(spectrum.getRelevantSpectrum(dividergrav),"nychart");
 			}
 		}
 
