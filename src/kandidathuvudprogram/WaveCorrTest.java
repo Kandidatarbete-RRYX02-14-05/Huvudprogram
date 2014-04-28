@@ -1,4 +1,5 @@
 package kandidathuvudprogram;
+import java.awt.Point;
 import java.io.File;
 
 import kandidathuvudprogram.Window.Windows;
@@ -58,15 +59,15 @@ public class WaveCorrTest {
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
 			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
-		
-		
+
+
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
-		
+
 		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
 		idealSize = buffSet.getIdealSize(); //
-		
+
 		// Skapar nätverket	
 		network = BuildNetwork(nbrOfHiddenNeurons, threshold, "activationSigmoid");
 
@@ -101,7 +102,7 @@ public class WaveCorrTest {
 
 		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
 		idealSize = buffSet.getIdealSize(); //
-		
+
 		// Skapar nätverket	
 		network = BuildNetwork(nbrOfHiddenNeurons, threshold, "ActivationSigmoid");
 
@@ -137,10 +138,10 @@ public class WaveCorrTest {
 
 		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
 		idealSize = buffSet.getIdealSize(); //
-		
+
 		// Skapar nätverket	
 		network = BuildNetwork(nbrOfHiddenNeurons, threshold, functionStr);
-		
+
 		// Sätter 'train' till vald metod
 		TrainingType type = TrainingType.valueOf(trainStr.toLowerCase());
 		switch (type){
@@ -151,9 +152,9 @@ public class WaveCorrTest {
 			train = new ResilientPropagation(network, buffSet);
 			break; 
 		}
-		
 
-		
+
+
 
 
 
@@ -167,11 +168,11 @@ public class WaveCorrTest {
 	// METODER
 
 	public BasicNetwork BuildNetwork(int[] nbrOfHiddenNeurons, boolean threshold, String functionStr){
-		
-		
+
+
 		TrainingFunction fun = TrainingFunction.valueOf(functionStr.toLowerCase());
 
-		
+
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null, false, inputSize));
 
@@ -186,7 +187,7 @@ public class WaveCorrTest {
 			default: 
 				throw new IllegalArgumentException("Error: illegal activationFunction");	
 			}
-			
+
 		}
 
 		network.addLayer(new BasicLayer(new ActivationSigmoid(), threshold, idealSize));
@@ -213,13 +214,13 @@ public class WaveCorrTest {
 	 */
 
 	public BufferedMLDataSet networkGenErrorLoad (){
-		
+
 		File tmpFile = new File("Data/Network/genErrorData.bin");
 		if((tmpFile.exists() == false)){
 			String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
 			Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 		}
-		
+
 		BufferedMLDataSet buffGenSet = new BufferedMLDataSet(new File("Data/Network/genErrorData.bin"));
 		return buffGenSet;
 	}
@@ -233,7 +234,7 @@ public class WaveCorrTest {
 		Filemanager.createBin(datum, "trainingData", alpha, window, dividerWave, dividerGrav);
 		Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 	}
-	
+
 	public double[] fakeWaveTest(int[] nbrsToTry, double waveHeight){ 
 
 		double[] tmp = new double[inputSize];
@@ -248,5 +249,17 @@ public class WaveCorrTest {
 		}
 		BasicMLData tmpML = new BasicMLData(tmp); 
 		return network.compute(tmpML).getData();
+	}
+
+	public double[] fakeWaveTest(int X1, int X2, int Y1, int Y2, double waveHeight){
+
+		Point[] testPoints = new Point[Math.abs((X2-X1)*(Y2-Y1))];
+
+		for (int i = 0; i < Math.abs(X2-X1); i++){
+			for (int j = 0; j < Math.abs(Y2-Y1); j++){
+				testPoints[i*Math.abs(Y2-Y1) +j] = new Point(X1+i, Y1+j);
+			}
+		}
+		return fakeWaveTest(Filemanager.choosePoints(testPoints),waveHeight);
 	}
 }
