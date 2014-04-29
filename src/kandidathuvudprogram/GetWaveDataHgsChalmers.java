@@ -79,7 +79,7 @@ public class GetWaveDataHgsChalmers {
             // Laddar ned alla datafiler för aktuella datum
             for (int i=0; i<dateHrArray.length; i++){
                 System.out.println(dateHrArray[i]);
-                
+                String fileCheck = "if [ -e " + filePath + "/GRD/wvh_20" + dateHrArray[i]+ ".grd ]; then echo 1; else echo 0; fi;"; 
                 //Open shell channel
                 channelExec = (ChannelExec) sesh.openChannel("exec");
                 
