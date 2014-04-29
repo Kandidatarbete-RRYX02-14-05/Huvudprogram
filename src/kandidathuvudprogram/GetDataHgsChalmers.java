@@ -29,7 +29,15 @@ import org.joda.time.LocalDate;
 public class GetDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadGraviData("2014-01-06","2014-01-06");
+        //downloadGraviData("2014-01-06","2014-01-06");
+        Import imp = new Import();	
+	String[] datum = imp.importWhole("Days.txt");
+        checkEarthcake(datum);
+        datum = imp.importWhole("earthcake/Earthquakes.txt");
+        for (int i=0; i<datum.length; i++){
+            if (!datum[i].equals(">"))
+                System.out.println(datum[i]);
+        }
     }
     
     /**
@@ -207,6 +215,103 @@ public class GetDataHgsChalmers {
             }
         }
     } 
+    
+    public static void checkEarthcake(String[] dateArray){
+        
+    	for (int i=0; i<dateArray.length-1; i++){
+    		dateArray[i] = dateArray[i].substring(2).replaceAll("-", "");
+    	}
+        File tempfile;
+        String exec;
+        
+        ChannelSftp channelSftp = null;
+        Channel channel = null;
+        Session sesh = null;
+        
+        try {
+            String user = "karb", host = "holt.oso.chalmers.se";
+            JSch jsch = new JSch();
+            sesh = jsch.getSession(user, host, 22);     
+            //sesh.setPassword(JOptionPane.showInputDialog("Enter password"));
+            sesh.setPassword("tyngd4!ever"); 
+            sesh.setConfig("StrictHostKeyChecking", "no");
+            sesh.connect();
+            channel = sesh.openChannel("sftp");      
+            channel.connect();
+            channelSftp = (ChannelSftp) channel;
+            ChannelExec channelExec;
+     
+            System.out.println("Amount of days: "+ dateArray.length);
+            // Laddar ned alla datafiler för aktuella datum
+              
+            channelExec = (ChannelExec) sesh.openChannel("exec");
+            exec = "rm /home/hgs/bin/kandidatArbetsMappen/dayswithrumble/Earthquakes.list";
+            channelExec.setCommand(exec);
+            //channelExec.setOutputStream(System.out);
+            channelExec.connect();
+            channelExec.disconnect();
+            
+            for (int i=0; i<dateArray.length; i++){
+  
+	                //Open shell channel
+	                channelExec = (ChannelExec) sesh.openChannel("exec");
+                        System.out.println("--" + dateArray[i] + "--");
+	                
+                            exec = "tslist-app -qq -C3 -L'G|B' -w /home/hgs/bin/kandidatArbetsMappen/dayswithrumble/" + dateArray[i] + ".list ++ -E//home/hgs/bin/kandidatArbetsMappen/dayswithrumble/eq.tse,E + /home/hgs/TD/d/G1_garb_" + dateArray[i] + "-1s.mc";
+	                    System.out.println(exec);
+	                    channelExec.setCommand(exec);
+	                    //channelExec.setOutputStream(System.out);
+	                    channelExec.connect();
+                          
+                            
+                            try { // Väntar på att kommando skall köras på servern
+	                        Thread.sleep(250);
+	                    } catch (InterruptedException ex) {
+	                        Logger.getLogger(GetDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);  
+	                    }
+                            channelExec.disconnect();
+                            
+                            channelExec = (ChannelExec) sesh.openChannel("exec");
+                            exec = "cat /home/hgs/bin/kandidatArbetsMappen/dayswithrumble/" + dateArray[i] + ".list >> /home/hgs/bin/kandidatArbetsMappen/dayswithrumble/Earthquakes.list";
+	                    System.out.println(exec);
+	                    channelExec.setCommand(exec);
+	                    //channelExec.setOutputStream(System.out);
+	                    channelExec.connect();
+                            channelExec.disconnect();
+                            
+                            try { // Väntar på att kommando skall köras på servern
+	                        Thread.sleep(250);
+	                    } catch (InterruptedException ex) {
+	                        Logger.getLogger(GetDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);  
+	                    }
+	                  
+            	}
+            
+             try {
+                    channelSftp.get("/home/hgs/bin/kandidatArbetsMappen/dayswithrumble/Earthquakes.list", "earthcake/Earthquakes.txt");  
+                }catch(SftpException e){
+                    System.out.println(e.getMessage() + " Totally failed to get: Earthquakes.list");
+                }
+            
+            // kommando som skall köras:
+            // tslist /home/hgs/TD/d/G1_garb_111111-1s.mc -L'G|B' -Jf14.8,f12.4 -D -qqq -w /home/hgs/bin/kandidatArbetsMappen/gravidata/111111.tsf
+            // Jordbäver:
+            // tslist-app -qq -C3 -L'G|B' -w suspect.list ++ -Eeq.tse,E + /home/hgs/TD/d/G1_garb_13090[1-8]-1s.mc
+
+            
+        } catch (JSchException ex) {
+            Logger.getLogger(GetDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (channelSftp.isConnected()) {
+                try {
+                    sesh.disconnect();
+                    channel.disconnect();
+                    channelSftp.quit();
+                } catch (Exception ioe) {
+                }
+            }
+        }
+    }
     
     // Hämtar en lista av datum mellan det valda start- och slutdatum
     public static String[] generateDateString(String start, String end){
