@@ -143,8 +143,7 @@ public class OptimizeNetwork {
 			if (index!=-1){
 				timeStart = System.nanoTime(); 
 				//network = new WaveCorrTest(new int[]{numberNeurons[index]});
-                                network = new WaveCorrTest("indatumfil.txt", new int[]{numberNeurons[index]}, false,
-                                        0.99, "rectangular", 0, 15, 0, "resilientpropagation");
+                                network = new WaveCorrTest("indatumfil.txt", new int[]{numberNeurons[index]}, false,0.99, "rectangular", 0, 15, 0, "resilientpropagation","activationsigmoid");
                                 
 				neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index], network);
 				timeStop = System.nanoTime();
