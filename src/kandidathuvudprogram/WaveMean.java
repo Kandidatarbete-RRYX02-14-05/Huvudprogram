@@ -299,7 +299,7 @@ public class WaveMean {
                        
                 if(stringMissingTemp[m].equals("0.0")){
                     doubleWOMissing[numOfMissing][0] = (-70 + m);
-                    doubleWOMissing[numOfMissing][1] = ( 35 - n);
+                    doubleWOMissing[numOfMissing][1] = ( 70 - n);
                     numOfMissing++;    
                 }                 
             }
