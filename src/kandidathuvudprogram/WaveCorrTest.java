@@ -39,6 +39,7 @@ public class WaveCorrTest {
 	String datumFilPath;
 	int inputSize; //antalet datapunkter i vågdatan 
 	int idealSize; //antalet datapunkter i gravimeterdatan
+	String datumFil="Days-200.txt";
 
 	// KONSTRUKTORER
 
@@ -53,7 +54,7 @@ public class WaveCorrTest {
 		resetParameter = 0;
 		threshold = false;
 		imp = new Import();
-		datumFilPath = "datumfil.txt";
+		datumFilPath = datumFil;
 		datum = GetDataHgsChalmers.generateDateString("2014-01-06", "2014-01-06");
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
@@ -90,7 +91,7 @@ public class WaveCorrTest {
 		resetParameter = 0;
 		threshold = true;
 		imp = new Import();
-		datumFilPath = "indatumfil.txt";
+		datumFilPath = datumFil;
 		datum = imp.importWhole(datumFilPath);
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
@@ -126,7 +127,7 @@ public class WaveCorrTest {
 		this.window = window;
 		this.resetParameter = resetParameter;
 		imp = new Import();	
-		this.datumFilPath = datumFilPath;
+		this.datumFilPath = datumFil;
 		datum = imp.importWhole(datumFilPath);
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
