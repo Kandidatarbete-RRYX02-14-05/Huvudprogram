@@ -18,8 +18,8 @@ public class useNetwork {
 		
 		for (int i = 0; i < WTC.buffSet.getRecordCount(); i++){
 			try {
-				Utskrift.write("Data/Matlabfiler/Test" + 2*i, (WTC.buffSet.get(i).getIdeal()).getData());
-				Utskrift.write("Data/Matlabfiler/Test" + (2*i+1), WTC.network.compute(WTC.buffSet.get(i).getInput()).getData());
+				Utskrift.write("Data/Matlabfiler/Test" + i + "fromGravimeter", (WTC.buffSet.get(i).getIdeal()).getData());
+				Utskrift.write("Data/Matlabfiler/Test" + i + "fromNet", WTC.network.compute(WTC.buffSet.get(i).getInput()).getData());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
