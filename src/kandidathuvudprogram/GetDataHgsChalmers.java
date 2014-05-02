@@ -232,8 +232,7 @@ public class GetDataHgsChalmers {
             String user = "karb", host = "holt.oso.chalmers.se";
             JSch jsch = new JSch();
             sesh = jsch.getSession(user, host, 22);     
-            //sesh.setPassword(JOptionPane.showInputDialog("Enter password"));
-            sesh.setPassword("tyngd4!ever"); 
+            sesh.setPassword(JOptionPane.showInputDialog("Enter password"));
             sesh.setConfig("StrictHostKeyChecking", "no");
             sesh.connect();
             channel = sesh.openChannel("sftp");      
