@@ -41,7 +41,7 @@ public class KandidatHuvudprogram {
 		}
 		
 		WTC.saveNetwork();
-		WaveCorrTest WTC2 = new WaveCorrTest(3);
+		WaveCorrTest WTC2 = new WaveCorrTest(1);
 		BufferedMLDataSet set2 = WTC2.networkGenErrorLoad();
 		System.out.println(WTC2.networkGenErrorTest(set2));
 
