@@ -1,16 +1,16 @@
 package kandidathuvudprogram;
 
 import java.awt.Point;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.data.buffer.BinaryDataLoader;
 import org.encog.ml.data.buffer.codec.NeuralDataSetCODEC;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 public class Filemanager {
 
@@ -128,28 +128,44 @@ public class Filemanager {
 	 * @param set
 	 *            MLDataSet som man skapar bin filen ifr√•n, ex: "2010-05-10"
 	 * @param outFile
+	 * @throws IOException 
 	 */
 
-	public static void createBin(String[] datum, String filnamn, double alpha, String win, double dividerwave, double dividergrav) {
+	public static void createBin(String[] datum, String filnamn, double alpha, String win, double dividerwave, double dividergrav) throws IOException {
 
 		if (dividergrav == 0)
-			dividergrav = 6;
+			dividergrav = 13;
 
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/" + filnamn + ".bin");
 		double[][] gravdata;
 		double[][] wavedata; 
+		final File file = new File("EarthquakeData.txt");
+		final File parent_directory = file.getParentFile();
 
-	//	GetDataHgsChalmers.downloadGraviData(datum);
+		if (null != parent_directory)
+		{
+			parent_directory.mkdirs();
+		}
+		BufferedWriter outputWriter = new BufferedWriter(new FileWriter(file));
+		
+		//GetDataHgsChalmers.downloadGraviData(datum);
 		for (int i = 0; i < datum.length-1; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
+				if(!isEarthquake(gravdata[j])){
 				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 80);
 				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
-                                Chart.NormalChart(spectrum.getRelevantSpectrum(dividergrav),"nychart");
+				}
+				else{
+					outputWriter.write(datum[i] + j*6);
+					outputWriter.newLine();
+				}
 			}
 		}
+		outputWriter.flush();  
+		outputWriter.close();  
 
 		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
 
@@ -187,5 +203,33 @@ public class Filemanager {
 		return output;
 		
 		
+	}
+	/**
+	 * Checks if data has earthquakes by comparing by checking two consecutive 
+	 * 10 minute RMS that overlap with half their data
+	 * and sees if RMS changes drastically.
+	 * @param data Data to be checked for earthquakes.
+	 * @return isEarthquake
+	 */
+	public static boolean isEarthquake(double[] data){
+		if (data.length<=300)
+				throw new IllegalArgumentException("Empty/Too small RMS data");
+		double temp1=rms(data,0,600-1);
+		double temp2;
+		for (int i = 300; i<data.length-600; i += 300){
+			temp2=rms(data,i,i+599);
+			if(temp2/temp1<4&&temp1/temp2<4){	//ser till att kvoten inte ‰r fˆr stor
+				return true;
+			}
+			temp1=temp2;
+		}
+		return false;
+	}
+	public static double rms(double[] data, int start, int end){
+		double sum=0;
+		for(int i=start; i<=end; i++){
+			sum+=Math.pow(data[i], 2);
+		}
+		return Math.sqrt(sum/data.length);
 	}
 }

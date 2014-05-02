@@ -1,6 +1,7 @@
 package kandidathuvudprogram;
 import java.awt.Point;
 import java.io.File;
+import java.io.IOException;
 
 import kandidathuvudprogram.Window.Windows;
 
@@ -60,7 +61,11 @@ public class WaveCorrTest {
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
-			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			try {
+				Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 
 
@@ -96,7 +101,11 @@ public class WaveCorrTest {
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
-			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			try {
+				Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 
 
@@ -137,7 +146,11 @@ public class WaveCorrTest {
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
-			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			try {
+				Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 
 
@@ -180,7 +193,11 @@ public class WaveCorrTest {
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
-			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			try {
+				Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -216,7 +233,11 @@ public class WaveCorrTest {
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
-			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav); 
+			try {
+				Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
 
 		// skapar en "BufferedReader" från .bin-filen
 		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
@@ -303,7 +324,11 @@ public class WaveCorrTest {
 		File tmpFile = new File("Data/Network/genErrorData.bin");
 		if((tmpFile.exists() == false)){
 			String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
-			Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+			try {
+				Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		BufferedMLDataSet buffGenSet = new BufferedMLDataSet(new File("Data/Network/genErrorData.bin"));
