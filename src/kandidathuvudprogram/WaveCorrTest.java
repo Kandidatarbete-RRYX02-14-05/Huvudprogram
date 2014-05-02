@@ -11,6 +11,7 @@ import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
@@ -81,6 +82,89 @@ public class WaveCorrTest {
 
 	}
 
+	public WaveCorrTest(int networkNbr){
+
+		alpha = 0.99;
+		dividerWave = 0;
+		dividerGrav = 15;
+		window = "rectangular";
+		resetParameter = 0;
+		threshold = false;
+		imp = new Import();
+		datumFilPath = datumFil;
+		datum = GetDataHgsChalmers.generateDateString("2014-01-06", "2014-01-06");
+
+		File tmpFile = new File("Data/Network/trainingData.bin");
+		if((tmpFile.exists() == false))
+			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+
+
+
+		// skapar en "BufferedReader" från .bin-filen
+		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
+
+		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
+		idealSize = buffSet.getIdealSize(); //
+
+		// Skapar nätverket	
+		// network = BuildNetwork(nbrOfHiddenNeurons, threshold, "activationSigmoid");
+		network = (BasicNetwork) EncogDirectoryPersistence.loadObject(new File("Data/Network/savedNetwork" + networkNbr));
+		nbrOfHiddenNeurons = new int[network.getLayerCount()-2];
+		for (int i = 0; i <nbrOfHiddenNeurons.length; i++){
+			nbrOfHiddenNeurons[i] = network.getLayerNeuronCount(i);
+		}
+ 		
+		// train the neural network
+		train = new ResilientPropagation(network, buffSet);
+
+		if(resetParameter != 0){ // 'resetParameter' = ger att den aldrig börjar om
+			train.addStrategy(new RequiredImprovementStrategy(1000)); // reset if improve is less than 1% over 'resetParameter' cycles
+		}
+
+	}
+
+	public WaveCorrTest(File loadFile){
+
+		alpha = 0.99;
+		dividerWave = 0;
+		dividerGrav = 15;
+		window = "rectangular";
+		resetParameter = 0;
+		threshold = false;
+		imp = new Import();
+		datumFilPath = datumFil;
+		datum = GetDataHgsChalmers.generateDateString("2014-01-06", "2014-01-06");
+
+		File tmpFile = new File("Data/Network/trainingData.bin");
+		if((tmpFile.exists() == false))
+			Filemanager.createBin(datum ,"trainingData", alpha, window, dividerWave, dividerGrav);
+
+
+
+		// skapar en "BufferedReader" från .bin-filen
+		buffSet = new BufferedMLDataSet(new File("Data/Network/trainingData.bin"));
+
+		inputSize = buffSet.getInputSize(); // sätter storlekar på in och utdata som kan användas i olika tillämpningar
+		idealSize = buffSet.getIdealSize(); //
+
+		// Skapar nätverket	
+		// network = BuildNetwork(nbrOfHiddenNeurons, threshold, "activationSigmoid");
+		network = (BasicNetwork) EncogDirectoryPersistence.loadObject(loadFile);
+		nbrOfHiddenNeurons = new int[network.getLayerCount()-2];
+		for (int i = 0; i <nbrOfHiddenNeurons.length; i++){
+			nbrOfHiddenNeurons[i] = network.getLayerNeuronCount(i);
+		}
+ 		
+		// train the neural network
+		train = new ResilientPropagation(network, buffSet);
+
+		if(resetParameter != 0){ // 'resetParameter' = ger att den aldrig börjar om
+			train.addStrategy(new RequiredImprovementStrategy(1000)); // reset if improve is less than 1% over 'resetParameter' cycles
+		}
+
+	}
+
+	
 	public WaveCorrTest(int[] nbrOfHiddenNeurons){
 
 		this.alpha = 0.99;
@@ -256,5 +340,21 @@ public class WaveCorrTest {
 			}
 		}
 		return fakeWaveTest(Filemanager.choosePoints(testPoints),waveHeight);
+	}
+	public void saveNetwork(){
+		
+		int networkNbr = 1;
+		while(new File("Data/Network/savedNetwork" + networkNbr).exists()){
+			networkNbr++;
+		} 
+		EncogDirectoryPersistence.saveObject(new File("Data/Network/savedNetwork"+networkNbr), network);
+	}
+public void saveNetwork(File saveFile){
+		
+		int networkNbr = 1;
+		while(new File("Data/Network/savedNetwork" + networkNbr).exists()){
+			networkNbr++;
+		} 
+		EncogDirectoryPersistence.saveObject(saveFile, network);
 	}
 }

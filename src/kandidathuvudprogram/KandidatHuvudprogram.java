@@ -36,12 +36,14 @@ public class KandidatHuvudprogram {
 
 
 		BufferedMLDataSet set = WTC.networkGenErrorLoad();
-		for(int epoch = 0; epoch < 200; epoch++){ 
+		for(int epoch = 0; epoch < 15; epoch++){ 
 			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
-
 		}
-		useNetwork.createFilesForAllDays(WTC);
-
+		
+		WTC.saveNetwork();
+		WaveCorrTest WTC2 = new WaveCorrTest(3);
+		BufferedMLDataSet set2 = WTC2.networkGenErrorLoad();
+		System.out.println(WTC2.networkGenErrorTest(set2));
 
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
