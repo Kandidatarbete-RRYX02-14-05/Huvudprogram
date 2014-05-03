@@ -28,7 +28,7 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-
+		
 		
 		int[] nbrOfNeurons = {70};
 		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
@@ -36,7 +36,7 @@ public class KandidatHuvudprogram {
 
 
 		BufferedMLDataSet set = WTC.networkGenErrorLoad();
-		for(int epoch = 0; epoch < 15; epoch++){ 
+		for(int epoch = 0; epoch < 150; epoch++){ 
 			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
 		}
 		
@@ -44,7 +44,7 @@ public class KandidatHuvudprogram {
 		WaveCorrTest WTC2 = new WaveCorrTest(1);
 		BufferedMLDataSet set2 = WTC2.networkGenErrorLoad();
 		System.out.println(WTC2.networkGenErrorTest(set2));
-
+		
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
@@ -84,7 +84,7 @@ public class KandidatHuvudprogram {
         FFT fft = new FFT(2);
         fft.fft(testdata1,testdata2); 
 		//--------------
-		 */
+		 
 		//PowerSpectrum
 		double alpha=0.99;
 		String windowName="rectangular";
@@ -96,6 +96,6 @@ public class KandidatHuvudprogram {
 			System.out.println(testPower.getRelevantSpectrum(1).length);
 			Chart.useChart(testPower.getSpectrum(),date[i],testPower.getAlpha(),testPower.getWindowName());
 		}
-
+		*/
 	}
 }
