@@ -94,7 +94,7 @@ public class Filemanager {
 
 		for (int i = 0; i<4; i++){
 			String timestr = "" + (100+6*i) ; // fulhaxxar fram 00, 06, 12 ,18 som strÃ¤ngar
-			String fil = "wavedata/removedmissing/20" + datum + "_" + timestr.substring(1) + ".tsv"; //.replaceAll("-", "")
+			String fil = "C:\\Users\\Emilio\\git\\Huvudprogram\\wavedata\\removedmissing\\20" + datum + "_" + timestr.substring(1) + ".tsv"; //.replaceAll("-", "")
 			Import imp = new Import();
 			String dataTime[], dataValue[];  
 
@@ -140,31 +140,32 @@ public class Filemanager {
 		File binFile = new File("Data/Network/" + filnamn + ".bin");
 		double[][] gravdata;
 		double[][] wavedata; 
-		final File file = new File("EarthquakeData.txt");
+		final File file = new File("EarthquakeData_" + filnamn + ".txt");
 		final File parent_directory = file.getParentFile();
 
 		if (null != parent_directory)
 		{
 			parent_directory.mkdirs();
 		}
-		BufferedWriter outputWriter = new BufferedWriter(new FileWriter(file));
-		
+		BufferedWriter outputWriter = null;
+		outputWriter = new BufferedWriter(new FileWriter(file));
+
 		//GetDataHgsChalmers.downloadGraviData(datum);
 		for (int i = 0; i < datum.length-1; i++) {
 			wavedata = readWaveFile(datum[i],0);
 			gravdata = readGravFileInParts(datum[i]);
 			for (int j = 0; j < 4; j++) {
 				if(!isEarthquake(gravdata[j])){
-				PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 80);
-				set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
+					PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 80);
+					set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
 				}
 				else{
-					outputWriter.write(datum[i] + j*6);
+					outputWriter.write(datum[i] +" " + j*6);
 					outputWriter.newLine();
+					System.out.println(datum[i] +" " + j*6 + " has earthquake");
 				}
 			}
 		}
-		outputWriter.flush();  
 		outputWriter.close();  
 
 		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
@@ -173,8 +174,8 @@ public class Filemanager {
 
 		loader.external2Binary(binFile);
 	}
-	
-	
+
+
 	public static Point[] createPointRepresentation(String mapName){
 		Import imp = new Import();
 		String[] tmpString = imp.importWhole(mapName);
@@ -184,16 +185,16 @@ public class Filemanager {
 		}
 		return point;
 	}
-	
+
 	public static int[] choosePoints( Point[] targetPoints ){
-		
+
 		Point[] data = createPointRepresentation("wavedata/removedmissing/map.tsv");
-		 
+
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for(int i = 0; i < data.length-1; i++){
 			for(int j = 0; j < targetPoints.length; j++){
 				if(data[i].equals(targetPoints[j]))
-				list.add(i);
+					list.add(i);
 			}
 		}
 		int[] output = new int[list.size()];
@@ -201,8 +202,8 @@ public class Filemanager {
 			output[i] = list.get(i).intValue(); // Vet inte exakt varfÃ¶r men blir rÃ¤tt
 		}
 		return output;
-		
-		
+
+
 	}
 	/**
 	 * Checks if data has earthquakes by comparing by checking two consecutive 
@@ -213,17 +214,28 @@ public class Filemanager {
 	 */
 	public static boolean isEarthquake(double[] data){
 		if (data.length<=300)
-				throw new IllegalArgumentException("Empty/Too small RMS data");
+			throw new IllegalArgumentException("Empty/Too small RMS data");
 		double temp1=rms(data,0,600-1);
 		double temp2;
-		for (int i = 300; i<data.length-600; i += 300){
+		if(max(data)>700){		//stora värden innebär j-bavning
+			return true;}
+		for (int i = 20; i<data.length-600; i += 600){
 			temp2=rms(data,i,i+599);
-			if(temp2/temp1<4&&temp1/temp2<4){	//ser till att kvoten inte är för stor
+			if(temp2>temp1*3||temp1>temp2*3||temp2>175){	//ser till att kvoten inte är för stor eller att rms är för stor
 				return true;
 			}
 			temp1=temp2;
 		}
 		return false;
+	}
+	public static double max(double[] data){
+		double maximum=0;
+		for(double val:data){
+			if (Math.abs(val)>maximum){
+				maximum=Math.abs(val);
+			}	
+		}
+		return maximum;
 	}
 	public static double rms(double[] data, int start, int end){
 		double sum=0;
