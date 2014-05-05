@@ -28,7 +28,7 @@ import org.joda.time.LocalDate;
 public class GetWaveDataHgsChalmers {
     
     public static void main(String[] arg){
-        downloadWaveData("2012-01-09","2012-01-11", true);
+        downloadWaveData("2014-01-24","2014-01-27", true);
     }
     
     /**
@@ -84,9 +84,9 @@ public class GetWaveDataHgsChalmers {
                 channelExec = (ChannelExec) sesh.openChannel("exec");
                 
                 try {
-                    System.out.println("1");
+                 //   System.out.println("1");
                     channelSftp.get(filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/raw/20" + dateHrArray[i] + ".tsv" );
-                    System.out.println("2");
+                 //   System.out.println("2");
                 }
                 catch(SftpException e){                   
                     exec = fixPath +" \n" + "if [ -e " + filePath + "/GRD/wvh_20" + dateHrArray[i]
@@ -99,16 +99,16 @@ public class GetWaveDataHgsChalmers {
                     
                     
                     try { // Väntar på att kommando skall köras på servern
-                       Thread.sleep(1000);
+                       Thread.sleep(250);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GetWaveDataHgsChalmers.class.getName()).log(Level.SEVERE, null, ex);
                 
                     }
                 }
                 try {
-                    System.out.println("3");
+                   // System.out.println("3");
                     channelSftp.get( filePath + "/kandData/"+ dateHrArray[i] + ".tsv", "wavedata/raw/20" + dateHrArray[i] + ".tsv" );
-                    System.out.println("4");
+                 //   System.out.println("4");
                 }catch(SftpException e){
                     System.out.println(e.getMessage() + " Totally failed to get: " + dateHrArray[i]);
                 }

@@ -26,8 +26,10 @@ public class WaveMean {
 
     public static void main(String[] arg){
 
-        //removeMissing("2010-01-01","2014-04-01");
-        buildMap();
+    	
+    	//fetchMean("2011-01-01","2014-03-15");
+        removeMissing("2010-01-01","2014-03-15");
+    	buildMap();
     }
 
 
@@ -55,7 +57,7 @@ public class WaveMean {
             File f = new File("wavedata/raw/20" + dateHrArray[i] + ".tsv");
             File g = new File("wavedata/20" + dateHrArray[i] + ".tsv");
             if(f.exists() && !g.exists()){
-              
+            //if(g.exists() ){ 
                 double[][] dataDouble = new double[ySize*8][xSize*8];
                 dataDouble = importAndFormat("wavedata/raw/20" + dateHrArray[i] + ".tsv");
                         
@@ -70,10 +72,10 @@ public class WaveMean {
 
             addMissing("wavedata/20" + dateHrArray[i] + ".tsv");
             }
-            
+        }
         }
         
-    }
+    
     
     /**
 * Beräknar medelvärdet av rutor med storleken 1 kvadratgrad i en 2D double-array.
@@ -252,7 +254,7 @@ public class WaveMean {
         
                 stringData = imp.importWhole("wavedata/20" + dateHrArray[i] + ".tsv");
                 stringMissing = imp.importWhole("missingWave.csv");
-                double[] doubleWOMissing = new double[2003];
+                double[] doubleWOMissing = new double[2124];
         
                 for(int n = 0; n < ySize; n++){
                     stringTemp = stringData[n].split(",");
@@ -291,7 +293,7 @@ public class WaveMean {
         String[] stringMissing = new String[ySize];
         String[] stringMissingTemp = new String[xSize];
         stringMissing = imp.importWhole("missingWave.csv");
-        double[][] doubleWOMissing = new double[2003][2];
+        double[][] doubleWOMissing = new double[2124][2];
         
         for(int n = 0; n < ySize; n++){
             stringMissingTemp = stringMissing[n].split(",");
