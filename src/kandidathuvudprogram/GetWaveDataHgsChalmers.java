@@ -50,7 +50,7 @@ public class GetWaveDataHgsChalmers {
         }
  
         String exec;      
-        String dataCo = new String("-70/15/35/75"); // Koordinaterna som plockas ut. 
+        String dataCo = new String("-70/15/35/70"); // Koordinaterna som plockas ut. 
         String fixPath = new String("export PATH=.:$HOME/bin:/home/hgs/bin:/usr/local/GMT/bin:$PATH "
                 + "\nexport GMTHOME=/usr/local/GMT "); // Så bash hittar GMT
         String filePath = new String("/home/hgs/ECMWF/WAVEH");

@@ -108,7 +108,7 @@ public class WaveMean {
             }
             for(int i = 0;i < tempData[1].length; i++ ){
 
-                if(tempData[1][i] > 0){
+                if(tempData[1][i] > 7){
                     meanWaveData[a/(8*res)][i] = tempData[0][i]/tempData[1][i];
 
                 }else{
