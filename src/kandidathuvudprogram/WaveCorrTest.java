@@ -41,7 +41,7 @@ public class WaveCorrTest {
 	String datumFilPath;
 	int inputSize; //antalet datapunkter i vågdatan 
 	int idealSize; //antalet datapunkter i gravimeterdatan
-	String datumFil="newDays.txt";
+	String datumFil="indatumfil.txt";
 
 	// KONSTRUKTORER
 
