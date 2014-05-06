@@ -29,7 +29,7 @@ public class OptimizeNetwork {
 		optNet.setNumberNeurons(50,60, 2);
                 //optNet.manualNumberNeurons();
                 
-		optNet.multiThreadNeuronTest(1, "TrainDates1.txt","genDatum1.txt");  
+		optNet.multiThreadNeuronTest(1, "TrainDatum1.txt","genDatum1.txt");  
 	}
 
         public void manualNumberNeurons(){
