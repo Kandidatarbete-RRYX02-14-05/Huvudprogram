@@ -162,7 +162,6 @@ public class Filemanager {
 				else{
 					outputWriter.write(datum[i] +" " + j*6);
 					outputWriter.newLine();
-					System.out.println(datum[i] +" " + j*6 + " has earthquake");
 				}
 			}
 		}

@@ -41,7 +41,7 @@ public class WaveCorrTest {
 	String datumFilPath;
 	int inputSize; //antalet datapunkter i vågdatan 
 	int idealSize; //antalet datapunkter i gravimeterdatan
-	String datumFil="TrainDatum1.txt";
+	String datumFil="TrainDatum2.txt";
 
 	// KONSTRUKTORERf
 
@@ -190,7 +190,9 @@ public class WaveCorrTest {
 		imp = new Import();
 		datumFilPath = datumFil;
 		datum = imp.importWhole(datumFilPath);
-
+		for(int i=0; i<datum.length; i++){
+			datum[i]=datum[i].replace("\n", "").replace("\r", "");
+		}
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
 			try {
@@ -217,7 +219,7 @@ public class WaveCorrTest {
 
 	}
 
-	public WaveCorrTest(String datumFilPath, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
+	public WaveCorrTest(String datumFilPath, String genDatumFilPath, int[] nbrOfHiddenNeurons, boolean threshold, double alpha, 
 			String window, double dividerWave, double dividerGrav, int resetParameter, String trainStr, String functionStr ){
 
 		this.dividerWave = dividerWave;
@@ -228,8 +230,11 @@ public class WaveCorrTest {
 		this.window = window;
 		this.resetParameter = resetParameter;
 		imp = new Import();	
-		this.datumFilPath = datumFil;
+		this.datumFilPath = datumFilPath;
 		datum = imp.importWhole(datumFilPath);
+		for(int i=0; i<datum.length; i++){
+			datum[i]=datum[i].replace("\n", "").replace("\r", "");
+		}
 
 		File tmpFile = new File("Data/Network/trainingData.bin");
 		if((tmpFile.exists() == false))
@@ -335,6 +340,22 @@ public class WaveCorrTest {
 		return buffGenSet;
 	}
 
+
+	public BufferedMLDataSet networkGenErrorLoad (String genDates){
+
+		File tmpFile = new File("Data/Network/genErrorData.bin");
+		if((tmpFile.exists() == false)){
+			String[] tmpDatum = imp.importWhole(genDates);	
+			try {
+				Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		BufferedMLDataSet buffGenSet = new BufferedMLDataSet(new File("Data/Network/genErrorData.bin"));
+		return buffGenSet;
+	}
 	public double networkGenErrorTest (BufferedMLDataSet set){
 		return network.calculateError(set);
 	}
