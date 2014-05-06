@@ -160,7 +160,7 @@ public class Filemanager {
 					set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
 				}
 				else{
-					outputWriter.write(datum[i] +" " + j*6 + "h");
+					outputWriter.write(datum[i] +" " + j*6);
 					outputWriter.newLine();
 					System.out.println(datum[i] +" " + j*6 + " has earthquake");
 				}
@@ -222,12 +222,11 @@ public class Filemanager {
 		for (int i = 20; i<data.length-600; i += 600){
 			temp2=rms(data,i,i+599);
 			if(temp2>temp1*3||temp1>temp2*3||temp2>175){	//ser till att kvoten inte är för stor eller att rms är för stor
-			if(temp2/temp1<4&&temp1/temp2<4){	//ser till att kvoten inte ï¿½r fï¿½r stor
 				return true;
 			}
 			temp1=temp2;
 		}
-		return false;}
+		return false;
 	}
 	public static double max(double[] data){
 		double maximum=0;
