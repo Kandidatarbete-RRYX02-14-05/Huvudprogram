@@ -29,7 +29,7 @@ public class OptimizeNetwork {
 		optNet.setNumberNeurons(50,60, 2);
                 //optNet.manualNumberNeurons();
                 
-		optNet.multiThreadNeuronTest(1, "genDatum1.txt");  
+		optNet.multiThreadNeuronTest(1, "TrainDates1.txt","genDatum1.txt");  
 	}
 
         public void manualNumberNeurons(){
@@ -145,7 +145,7 @@ public class OptimizeNetwork {
 		else return false;
 	}
 
-	public void neuronThread(int maxIteration, double maxErrorTrain, String genDates){
+	public void neuronThread(int maxIteration, double maxErrorTrain, String TrainDates, String genDates){
 		long timeStart, timeStop;
 
 		WaveCorrTest network;
@@ -167,7 +167,7 @@ public class OptimizeNetwork {
 			if (index!=-1){
 				timeStart = System.nanoTime(); 
 				//network = new WaveCorrTest(new int[]{numberNeurons[index]});
-                                network = new WaveCorrTest("TrainDatum1.txt","genDatum1.txt", new int[]{numberNeurons[index]}, false,0.99, "rectangular", 0, 15, 0, "resilientpropagation","activationsigmoid");
+                                network = new WaveCorrTest(TrainDates,genDates, new int[]{numberNeurons[index]}, false,0.99, "rectangular", 0, 15, 0, "resilientpropagation","activationsigmoid");
                                 
 				neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index], network, genDates);
 				timeStop = System.nanoTime();
@@ -185,7 +185,7 @@ public class OptimizeNetwork {
 	 * Bara att sätta fältet "numberNeurons" med de antal neuroner man vill testa innan denna metod körs!  
 	 * @param numberThreads 
 	 */
-	public void multiThreadNeuronTest(int numberThreads, final String genDates){
+	public void multiThreadNeuronTest(int numberThreads, final String TrainDates,final String genDates){
 		long totTimeStart, totTimeStop;
 		totTimeStart = System.nanoTime();
 		thread = new Thread[numberThreads];
@@ -196,7 +196,7 @@ public class OptimizeNetwork {
 		for (int i=0; i<numberThreads; i++){
 			thread[i] = new Thread() {
 				public void run() {
-					neuronThread(maxIteration, maxErrorTrain, genDates);
+					neuronThread(maxIteration, maxErrorTrain, TrainDates, genDates);
 				}
 			};
 			thread[i].start();
