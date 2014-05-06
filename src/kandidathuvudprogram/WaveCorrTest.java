@@ -41,9 +41,9 @@ public class WaveCorrTest {
 	String datumFilPath;
 	int inputSize; //antalet datapunkter i vågdatan 
 	int idealSize; //antalet datapunkter i gravimeterdatan
-	String datumFil="indatumfil.txt";
+	String datumFil="TrainDatum1.txt";
 
-	// KONSTRUKTORER
+	// KONSTRUKTORERf
 
 
 	public WaveCorrTest(){
@@ -323,7 +323,7 @@ public class WaveCorrTest {
 
 		File tmpFile = new File("Data/Network/genErrorData.bin");
 		if((tmpFile.exists() == false)){
-			String[] tmpDatum = imp.importWhole("genErrorDatumFil.txt");	
+			String[] tmpDatum = imp.importWhole("genDatum1.txt");	
 			try {
 				Filemanager.createBin(tmpDatum, "genErrorData", alpha, window, dividerWave, dividerGrav);
 			} catch (IOException e) {
