@@ -76,5 +76,19 @@ public class Utskrift {
 		}
 		System.out.println("");
 	}
+	
+	public static void printArray(String array[]){
+		for (int i=0; i<array.length; i++){
+			System.out.print("["+i+"]: " + array[i]);
+		}
+		System.out.println("");
+	}
+	
+	public static void printArray(char array[]){
+		for (int i=0; i<array.length; i++){
+			System.out.print("["+i+"]: " + (int)array[i]);
+		}
+		System.out.println("");
+	}
 
 }

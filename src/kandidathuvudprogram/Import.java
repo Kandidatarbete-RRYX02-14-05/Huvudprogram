@@ -105,7 +105,10 @@ public class Import {
 			fis.read(data);
 			fis.close();
 
-			return new String(data, "UTF-8").split("\n",-1);
+			String temp = new String(data, "UTF-8");
+			temp = temp.replaceAll("\r", "\n").replaceAll("\n\n","\n");
+			
+			return temp.split("\n",-1);
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (IOException ex) {

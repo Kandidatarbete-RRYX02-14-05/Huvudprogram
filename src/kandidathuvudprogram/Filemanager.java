@@ -101,19 +101,13 @@ public class Filemanager {
 			dataTime = imp.importWhole(fil);
 			dataValue = new String[dataTime.length];
 			String[] temp;
-
 			if(i == 0){
 				data = new double[4][dataTime.length-1];
 			}
 
-			for (int j=0; j<dataTime.length-1; j++){ // varför -1? 
-				temp = dataTime[j].split("	");
-				dataValue[j] = temp[temp.length-1];
-				dataTime[j] = temp[0];
-			}
-
 			for (int k=0; k<data[i].length; k++){
-				data[i][k] = Double.parseDouble(dataValue[k]);
+				data[i][k] = Double.parseDouble(dataTime[k]);
+				
 			}
 		}
 		return data;
