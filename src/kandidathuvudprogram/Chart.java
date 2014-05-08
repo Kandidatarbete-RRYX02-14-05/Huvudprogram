@@ -97,7 +97,7 @@ public class Chart {
     /**
      * Used when plotting data that goes between 0.03hz and 0.3hz that comes from getRelevantSpectrum
      * Frequency on x-axis is adjusted to comply with a sampling distribution of 1Hz and length of maxLength double
-
+	
      * 
      * @param data is the double [] of data to be printed
      * @param dataname is the name of the data and is used for naming the file
