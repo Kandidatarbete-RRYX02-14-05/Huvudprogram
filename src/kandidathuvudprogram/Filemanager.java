@@ -129,9 +129,6 @@ public class Filemanager {
 
 		if (dividergrav == 0)
 			dividergrav = 10;
-	
-		int nbr = 0;
-		int tot = 0;
 
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/" + filnamn + ".bin");
@@ -154,17 +151,7 @@ public class Filemanager {
 			for (int j = 0; j < 4; j++) {
 				if(!isEarthquake(gravdata[j])){
 					PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 40);
-					set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
-					
-					for(int k = 0; k<wavedata[j].length;k++){
-						tot++;
-						if (wavedata[j][k]>15){
-							System.out.println(wavedata[j][k]);
-							nbr++;
-						}
-					}
-					
-					
+					set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));	
 				}
 				else{
 					outputWriter.write(datum[i] +" " + j*6);
@@ -172,7 +159,7 @@ public class Filemanager {
 				}
 			}
 		}
-		System.out.println("NBR: " + nbr + " TOT: " + tot);
+
 		outputWriter.close();  
 
 		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
