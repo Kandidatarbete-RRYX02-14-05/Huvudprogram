@@ -105,15 +105,17 @@ public class Chart {
      * @param window is the window used and is used for naming the file
      * @param maxLength is the FFTlength that is used to correct the frequency of the plot
      */
-public static void useRelevantChart(double [] data, String dataname, double alpha, String window, double maxLength){
+public static void useRelevantChart(double [] data, String dataname, double alpha, String window){
         
     	//omega=2PI/L*k
         XYSeries dataChart = new XYSeries("Power Spectrum");
         XYDataset xyDataset = new XYSeriesCollection(dataChart);
         int L=data.length;
+        int maxLength=data.length;
+        
         for (int i=0; i<L; i++){ // vilka punkter ska plottas?
         	//dataChart.add(i*2*Math.PI/L,Math.log(data[i]));
-                dataChart.add((0.03+i)*1000/maxLength,data[i]);
+                dataChart.add(1000*(0.03+i*(0.3-0.03)/(maxLength-1)),data[i]);
         }
         JFreeChart chart = ChartFactory.createXYLineChart
                      ("Power Spectrum",  // Title
