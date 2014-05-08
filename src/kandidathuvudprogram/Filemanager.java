@@ -89,7 +89,7 @@ public class Filemanager {
 	public static double[][] readWaveFile(String datum, double divider){
 
 		if (divider == 0)
-			divider = 20.2;
+			divider = 14;
 		double data[][]=null; 
 
 		for (int i = 0; i<4; i++){
@@ -106,7 +106,7 @@ public class Filemanager {
 			}
 
 			for (int k=0; k<data[i].length; k++){
-				data[i][k] = Double.parseDouble(dataTime[k]);
+				data[i][k] = Double.parseDouble(dataTime[k])/divider;
 
 			}
 		}
@@ -130,6 +130,8 @@ public class Filemanager {
 		if (dividergrav == 0)
 			dividergrav = 10;
 	
+		int nbr = 0;
+		int tot = 0;
 
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/" + filnamn + ".bin");
@@ -153,6 +155,16 @@ public class Filemanager {
 				if(!isEarthquake(gravdata[j])){
 					PowerSpectrum spectrum = new PowerSpectrum(gravdata[j], alpha, win, 40);
 					set.add(new BasicMLData(wavedata[j]), new BasicMLData(spectrum.getRelevantSpectrum(dividergrav)));
+					
+					for(int k = 0; k<wavedata[j].length;k++){
+						tot++;
+						if (wavedata[j][k]>15){
+							System.out.println(wavedata[j][k]);
+							nbr++;
+						}
+					}
+					
+					
 				}
 				else{
 					outputWriter.write(datum[i] +" " + j*6);
@@ -160,7 +172,7 @@ public class Filemanager {
 				}
 			}
 		}
-
+		System.out.println("NBR: " + nbr + " TOT: " + tot);
 		outputWriter.close();  
 
 		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
