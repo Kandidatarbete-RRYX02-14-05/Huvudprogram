@@ -37,15 +37,16 @@ public class KandidatHuvudprogram {
 		WaveCorrTest WTC = new WaveCorrTest("TrainDatum1.txt","genDatum.txt", nbrOfNeurons, threshold, alpha, 
 				"Bessel", 0,  0,0 , "resilientpropagation", "activationsigmoid" );
 		System.out.println("" + WTC.inputSize);
+		
+		
 
-
+/*
 		BufferedMLDataSet set = WTC.networkGenErrorLoad();
 		for(int epoch = 0; epoch < 150; epoch++){ 
 			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
 		}
-
-		useNetwork.createFilesForAllDays(WTC);
-		 
+*/
+			 
 
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");

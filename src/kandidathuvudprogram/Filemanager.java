@@ -107,7 +107,7 @@ public class Filemanager {
 
 			for (int k=0; k<data[i].length; k++){
 				data[i][k] = Double.parseDouble(dataTime[k]);
-				
+
 			}
 		}
 		return data;
@@ -128,7 +128,8 @@ public class Filemanager {
 	public static void createBin(String[] datum, String filnamn, double alpha, String win, double dividerwave, double dividergrav) throws IOException {
 
 		if (dividergrav == 0)
-			dividergrav = 13;
+			dividergrav = 10;
+	
 
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/" + filnamn + ".bin");
@@ -159,6 +160,7 @@ public class Filemanager {
 				}
 			}
 		}
+
 		outputWriter.close();  
 
 		NeuralDataSetCODEC codec = new NeuralDataSetCODEC(set);
