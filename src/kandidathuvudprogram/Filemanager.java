@@ -106,7 +106,7 @@ public class Filemanager {
 			}
 
 			for (int k=0; k<data[i].length; k++){
-				data[i][k] = Double.parseDouble(dataTime[k])/divider;
+				data[i][k] = Math.pow(Double.parseDouble(dataTime[k])/divider,2);
 
 			}
 		}

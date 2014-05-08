@@ -44,7 +44,7 @@ public class KandidatHuvudprogram {
 		}
 
 		useNetwork.createFilesForAllDays(WTC);
-
+		System.exit(0);
 
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
