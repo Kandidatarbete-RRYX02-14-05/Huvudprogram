@@ -26,7 +26,7 @@ public class OptimizeNetwork {
 	Thread thread[];
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(200, 0.0); 
-		optNet.setNumberNeurons(50,60, 2);
+		optNet.setNumberNeurons(70,70, 1);
                 //optNet.manualNumberNeurons();
                 
 		optNet.multiThreadNeuronTest(1, "TrainDatum1.txt","genDatum1.txt");  
@@ -167,7 +167,7 @@ public class OptimizeNetwork {
 			if (index!=-1){
 				timeStart = System.nanoTime(); 
 				//network = new WaveCorrTest(new int[]{numberNeurons[index]});
-                                network = new WaveCorrTest(TrainDates,genDates, new int[]{numberNeurons[index]}, false,0.99, "rectangular", 0, 15, 0, "resilientpropagation","activationsigmoid");
+                                network = new WaveCorrTest(TrainDates,genDates, new int[]{numberNeurons[index]}, true,0.99, "bessel", 0, 0, 0, "resilientpropagation","activationsigmoid");
                                 
 				neuronError[index] = minimizeGenError(maxErrorTrain, 1, numberNeurons[index], network, genDates);
 				timeStop = System.nanoTime();

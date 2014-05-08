@@ -46,7 +46,7 @@ public class PowerSpectrum {
 		this.dataLength =yValues.length;
 		
 		filter(yValues);
-		removeMean();
+		removeMean(yValues);
 
 		createIntervals();
 		try {
@@ -61,6 +61,7 @@ public class PowerSpectrum {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,e.getMessage());
 		}
+		removeMean(spectrum[0]);
 		Fft.transform(spectrum[0], spectrum[1]);
 		/**for (int i=0; i<spectrum[0].length; i++){
 			if (spectrum[0][i]<0){
@@ -110,6 +111,7 @@ public class PowerSpectrum {
 			relevantSpectrum[i] = ((Math.abs(relevantSpectrum[i]))/Math.pow(Math.E,divider)); // Math.log borttagen
 		}
 		return relevantSpectrum;
+
 	}
 
 	public String getWindowName(){
@@ -137,14 +139,14 @@ public class PowerSpectrum {
 	}
 
 	// removes mean from data
-	public void removeMean(){
+	public static void removeMean(double[] data){
 		double sum = 0;
-		for (int i = 0 ; i < dataLength; i++){
-			sum += yValues[i];
+		for (int i = 0 ; i < data.length; i++){
+			sum += data[i];
 		}
-		sum = sum / dataLength;
-		for (int i = 0 ; i < dataLength; i++){
-			yValues[i] -= sum;
+		sum = sum / data.length;
+		for (int i = 0 ; i < data.length; i++){
+			data[i] -= sum;
 		}
 	}
 
@@ -223,7 +225,6 @@ public class PowerSpectrum {
 				throw new Exception("PowerSpectrum: Areal is negative. Element "+ k +" has value " + Areal[k]);
 			}
 		}
-
 		inverseFFT(Areal,Aimag);
 		covariance = new double [2][FFTLength];
 		//A blir nu covariansfunktionen.
@@ -258,10 +259,12 @@ public class PowerSpectrum {
 			spectrum[0][i]=covariance[0][L-i]*window[L-i];
 			spectrum[1][i]=covariance[1][L-i]*window[L-i];
 		}
+		
 
 		if (isMaxToBig(Math.pow(10, -10),spectrum[1])){
 			throw new Exception("ERROR, imaginary vector is non-zero");
 		}
+
 	}
 
 

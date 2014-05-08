@@ -16,7 +16,8 @@ public class useNetwork {
 			mse[i] = mse[i]/IdealDataSize;
 		}
 		
-		for (int i = 0; i < WTC.buffSet.getRecordCount(); i++){
+		for (int i = 0; i < 20; i++){
+			//WTC.buffSet.getRecordCount(); i++){
 			/*try {
 				Utskrift.write("Data/Matlabfiler/Test" + i + "fromGravimeter", (WTC.buffSet.get(i).getIdeal()).getData());
 				Utskrift.write("Data/Matlabfiler/Test" + i + "fromNet", WTC.network.compute(WTC.buffSet.get(i).getInput()).getData());
@@ -25,9 +26,9 @@ public class useNetwork {
 				e.printStackTrace();
 			}*/
 			
-			//Chart.useRelevantChart((WTC.buffSet.get(i).getIdeal()).getData(),"Test" + 2*i, 0.99, "rect", 135);
-			//Chart.useRelevantChart(WTC.network.compute(WTC.buffSet.get(i).getInput()).getData(),"Test" + (2*i+1), 0.99, "rect", 135);
-		}
+			Chart.useRelevantChart((WTC.buffSet.get(i).getIdeal()).getData(),"Test" + 2*i, 0.99, "rect", 135);
+			Chart.useRelevantChart(WTC.network.compute(WTC.buffSet.get(i).getInput()).getData(),"Test" + (2*i+1), 0.99, "rect", 135);
+		} // 
 		
 		Chart.NormalChart(mse, "mse");
 		

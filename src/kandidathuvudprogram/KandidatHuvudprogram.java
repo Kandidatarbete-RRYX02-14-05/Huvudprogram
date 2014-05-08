@@ -28,10 +28,14 @@ public class KandidatHuvudprogram {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		
+
+
 		
 		int[] nbrOfNeurons = {70};
-		WaveCorrTest WTC = new WaveCorrTest(nbrOfNeurons);
+		boolean threshold=true;
+		double alpha=0.99;
+		WaveCorrTest WTC = new WaveCorrTest("TrainDatum1.txt","genDatum.txt", nbrOfNeurons, threshold, alpha, 
+				"Bessel", 0,  0,0 , "resilientpropagation", "activationsigmoid" );
 		System.out.println("" + WTC.inputSize);
 
 
@@ -39,12 +43,10 @@ public class KandidatHuvudprogram {
 		for(int epoch = 0; epoch < 150; epoch++){ 
 			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
 		}
-		
-		WTC.saveNetwork();
-		WaveCorrTest WTC2 = new WaveCorrTest(1);
-		BufferedMLDataSet set2 = WTC2.networkGenErrorLoad();
-		System.out.println(WTC2.networkGenErrorTest(set2));
-		
+
+		useNetwork.createFilesForAllDays(WTC);
+		 
+
 		/* 
 		kandidathuvudprogram.GetDataHgsChalmers.downloadGraviData("2010-06-10","2010-06-18");
 		String[] dates = kandidathuvudprogram.GetDataHgsChalmers.generateDateString("2010-06-10","2010-06-18");
@@ -84,18 +86,22 @@ public class KandidatHuvudprogram {
         FFT fft = new FFT(2);
         fft.fft(testdata1,testdata2); 
 		//--------------
-		 
+		 */ 
 		//PowerSpectrum
-		double alpha=0.99;
-		String windowName="rectangular";
 
-		String[] date ={"100510","100511","100512","100513","100514"};
-		//PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
-		for(int i=0; i<4; i++){
-			PowerSpectrum testPower = new PowerSpectrum(Filemanager.readGravFileInParts(date[i])[0],alpha,windowName,160);
-			System.out.println(testPower.getRelevantSpectrum(1).length);
-			Chart.useChart(testPower.getSpectrum(),date[i],testPower.getAlpha(),testPower.getWindowName());
-		}
-		*/
+		/*double alpha=0.99;
+		String[] windowName={"hamming","bessel","rectangular"};
+		for(int j=0; j<3; j++){
+			
+
+			String[] date ={"140106"};
+			//PowerSpectrum testPower = new PowerSpectrum(sin,alpha,windowName,4);
+			for(int i=0; i<4; i++){
+				PowerSpectrum testPower = new PowerSpectrum(Filemanager.readGravFileInParts(date[0])[i],alpha,windowName[j],40);
+				System.out.println(testPower.getRelevantSpectrum(1).length);
+				Chart.useChart(testPower.getSpectrum(),date[0]+ "_40_"+i*6 + "h",testPower.getAlpha(),testPower.getWindowName());
+			}
+		}*/
+
 	}
 }

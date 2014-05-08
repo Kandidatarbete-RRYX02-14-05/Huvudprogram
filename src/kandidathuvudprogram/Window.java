@@ -37,12 +37,12 @@ public class Window {
 		case GAUSSIAN: 
 			double sigma = 0.4;
 			for(int i=0; i<length; i++){
-				wind[i] = Math.pow(Math.E, -2*Math.pow((i-((length-1)/2))/(sigma*(length-1)),2));
+				wind[i] = Math.pow(Math.E, -2*Math.pow((i-((length-1+0.0)/2))/(sigma*(length-1)),2));
 			}
 			return wind;
 		case BESSEL: 
 			for (int i = 0; i<length; i++){
-				wind[i] = ModBesselFunctions.bessi0(Math.PI*1.8*Math.sqrt(1.0-Math.pow(2*i/(length-1)-1, 2)))/ModBesselFunctions.bessi0(Math.PI*1.8);
+				wind[i] = ModBesselFunctions.bessi0(Math.PI*3*Math.sqrt(1.0-Math.pow((2*i+0.0)/(length-1)-1, 2)))/ModBesselFunctions.bessi0(Math.PI*3);
 			}
 			return wind;
 		
