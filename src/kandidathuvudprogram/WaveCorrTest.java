@@ -122,7 +122,7 @@ public class WaveCorrTest {
 		for (int i = 0; i <nbrOfHiddenNeurons.length; i++){
 			nbrOfHiddenNeurons[i] = network.getLayerNeuronCount(i);
 		}
- 		
+
 		// train the neural network
 		train = new ResilientPropagation(network, buffSet);
 
@@ -167,7 +167,7 @@ public class WaveCorrTest {
 		for (int i = 0; i <nbrOfHiddenNeurons.length; i++){
 			nbrOfHiddenNeurons[i] = network.getLayerNeuronCount(i);
 		}
- 		
+
 		// train the neural network
 		train = new ResilientPropagation(network, buffSet);
 
@@ -177,7 +177,7 @@ public class WaveCorrTest {
 
 	}
 
-	
+
 	public WaveCorrTest(int[] nbrOfHiddenNeurons){
 
 		this.alpha = 0.99;
@@ -388,19 +388,14 @@ public class WaveCorrTest {
 		return fakeWaveTest(Filemanager.choosePoints(testPoints),waveHeight);
 	}
 	public void saveNetwork(){
-		
+
 		int networkNbr = 1;
 		while(new File("Data/Network/savedNetwork" + networkNbr).exists()){
 			networkNbr++;
 		} 
 		EncogDirectoryPersistence.saveObject(new File("Data/Network/savedNetwork"+networkNbr), network);
 	}
-public void saveNetwork(File saveFile){
-		
-		int networkNbr = 1;
-		while(new File("Data/Network/savedNetwork" + networkNbr).exists()){
-			networkNbr++;
-		} 
+	public void saveNetwork(File saveFile){
 		EncogDirectoryPersistence.saveObject(saveFile, network);
 	}
 }
