@@ -73,6 +73,7 @@ public class Filemanager {
 		for (int i = 0; i < 4; i++) {
 			for (int k = 0; k < data[i].length; k++) {
 				data[i][k] = Double.parseDouble(splitDataTime[i][k]);
+				
 			}
 		}
 		Chart.useChart(data[0], "GravTest", 0.99, "win");
@@ -128,7 +129,7 @@ public class Filemanager {
 	public static void createBin(String[] datum, String filnamn, double alpha, String win, double dividerwave, double dividergrav) throws IOException {
 
 		if (dividergrav == 0)
-			dividergrav = 10;
+			dividergrav = 12.4;
 
 		BasicMLDataSet set = new BasicMLDataSet();
 		File binFile = new File("Data/Network/" + filnamn + ".bin");
