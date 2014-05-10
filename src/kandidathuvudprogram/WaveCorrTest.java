@@ -387,6 +387,7 @@ public class WaveCorrTest {
 		}
 		return fakeWaveTest(Filemanager.choosePoints(testPoints),waveHeight);
 	}
+	
 	public void saveNetwork(){
 
 		int networkNbr = 1;
@@ -395,6 +396,7 @@ public class WaveCorrTest {
 		} 
 		EncogDirectoryPersistence.saveObject(new File("Data/Network/savedNetwork"+networkNbr), network);
 	}
+	
 	public void saveNetwork(File saveFile){
 		EncogDirectoryPersistence.saveObject(saveFile, network);
 	}
