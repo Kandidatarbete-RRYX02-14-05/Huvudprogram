@@ -5,6 +5,7 @@
  */
 package kandidathuvudprogram;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,10 +15,26 @@ import java.util.logging.Logger;
  * @author Markus
  */
 public class TestOfNetwork {
+    
+    File networkFile;
+    
+    public TestOfNetwork(String networkFileName){
+        networkFile = new File(networkFileName);
+    }
+    
+    public TestOfNetwork(int numberNeurons, int trainIterations){
+        WaveCoreTest network = new WaveCorrTest("TrainDatum1.txt","genDatum1.txt", new int[]{numberNeurons}, true,0.99, "bessel", 0, 0, 0, "resilientpropagation","activationsigmoid");
+        for (int i=0; i<trainIterations; i++){
+            network.networkTrain();
+        }
+        
+        networkFile = new File("Network-NbrNeurons-" + numberNeurons + "-NbrIterations-" + trainIterations);
+        network.saveNetwork(networkFile); 
+    }
 
     // lat 1,35
     // lon -70,15
-    public static void testOne() { //nyttnamn
+    public void testOne() { //nyttnamn
 
         int latStart = 1,
                 latStop = 35,
@@ -29,7 +46,7 @@ public class TestOfNetwork {
         double waveMax = 25;
         double waveStep = 1;
 
-        WaveCorrTest WTC = new WaveCorrTest();// load(network);
+        WaveCorrTest WTC = new WaveCorrTest(networkFile);// load(network);
 
         int IdealDataSize = (WTC.buffSet.get(0).getIdeal()).getData().length;
 
@@ -42,7 +59,7 @@ public class TestOfNetwork {
                 k = waveMin;
                 while (k < waveMax){              
                     try {
-                        Utskrift.write("NetworkTest/NetworkTest-WaveHeight-" + k + "--" + i + "-" + j + ".txt", WTC.fakeWaveTest(i * 10, (i + 1) * 10, j * 10, (j + 1) * 10, k));
+                        Utskrift.write("NetworkTest/NetworkTest-WaveHeight-" + k + "-Lon-" + i + "-Lat-" + j + ".txt", WTC.fakeWaveTest(i * 10, (i + 1) * 10, j * 10, (j + 1) * 10, k));
                     } catch (IOException ex) {
                         Logger.getLogger(TestOfNetwork.class.getName()).log(Level.SEVERE, null, ex);
                     }
