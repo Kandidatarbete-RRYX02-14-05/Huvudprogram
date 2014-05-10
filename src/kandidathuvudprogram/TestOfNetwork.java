@@ -41,8 +41,8 @@ public class TestOfNetwork {
     // lon -70,15
     public void testOne() { //nyttnamn
 
-        int latStart = 1,
-                latStop = 35,
+        int latStart = 35,
+                latStop = 75,
                 lonStart = -70,
                 lonStop = 15;
         int stepLength = 5;
