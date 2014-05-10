@@ -1,0 +1,57 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package kandidathuvudprogram;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author Markus
+ */
+public class TestOfNetwork {
+
+    // lat 1,35
+    // lon -70,15
+    public static void testOne() { //nyttnamn
+
+        int latStart = 1,
+                latStop = 35,
+                lonStart = -70,
+                lonStop = 15;
+        int stepLength = 5;
+        
+        double waveMin = 1;
+        double waveMax = 25;
+        double waveStep = 1;
+
+        WaveCorrTest WTC = new WaveCorrTest();// load(network);
+
+        int IdealDataSize = (WTC.buffSet.get(0).getIdeal()).getData().length;
+
+        int i = lonStart - stepLength;
+        int j;
+        double k;
+        while (i < lonStop + stepLength){
+            j = latStart - stepLength;
+            while(j < latStop + stepLength){
+                k = waveMin;
+                while (k < waveMax){              
+                    try {
+                        Utskrift.write("NetworkTest/NetworkTest-WaveHeight-" + k + "--" + i + "-" + j + ".txt", WTC.fakeWaveTest(i * 10, (i + 1) * 10, j * 10, (j + 1) * 10, k));
+                    } catch (IOException ex) {
+                        Logger.getLogger(TestOfNetwork.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    k += waveStep;
+                }
+                j+=stepLength;
+            }
+            i+=stepLength;
+        }
+
+    }
+}
