@@ -363,6 +363,12 @@ public class WaveCorrTest {
 	public double[] fakeWaveTest(int[] nbrsToTry, double waveHeight){ 
 
 		double[] tmp = new double[inputSize];
+		String[] lugnDag = new String[inputSize];
+		Import imp = new Import();
+		lugnDag=imp.importWhole("wavedata/removedmissing/20100726_12.tsv");
+		for ( int i=0; i<inputSize; i++){
+			tmp[i]=Double.parseDouble(lugnDag[i])/14.0;
+		}
 
 		for ( int i = 0; i < nbrsToTry.length ; i++){
 			if (nbrsToTry[i] >= inputSize || nbrsToTry[i] < 0){

@@ -18,8 +18,9 @@ import java.util.logging.Logger;
  */
 public class TestOfNetwork {
 	public static void main(String[] args){
-	TestOfNetwork test = new TestOfNetwork(10,100);
+	TestOfNetwork test = new TestOfNetwork(30,100);
 	test.testOne();
+	System.exit(0);
 	}
     File networkFile;
     
@@ -47,8 +48,8 @@ public class TestOfNetwork {
                 lonStop = 15;
         int stepLength = 5;
         
-        double waveMin = 1;
-        double waveMax = 25;
+        double waveMin = 0;
+        double waveMax = 14;
         double waveStep = 1;
 
         WaveCorrTest WTC = new WaveCorrTest(networkFile);// load(network);
@@ -64,7 +65,7 @@ public class TestOfNetwork {
                 k = waveMin;
                 while (k <= waveMax){              
                     try {
-                        Utskrift.write("NetworkTest/NetworkTest-WaveHeight-" + k + "-Lon-" + i + "-Lat-" + j + ".txt", WTC.fakeWaveTest(i * 10, (i + 1) * 10, j * 10, (j + 1) * 10, k));
+                        Utskrift.write("NetworkTest/NetworkTest-WaveHeight-" + k + "-Lon-" + i + "-Lat-" + j + ".txt", WTC.fakeWaveTest(i, i + 5 , j, j + 5 , k/14.0));
                     } catch (IOException ex) {
                         Logger.getLogger(TestOfNetwork.class.getName()).log(Level.SEVERE, null, ex);
                     }
