@@ -11,13 +11,13 @@ public class Window {
 		double[] wind = new double[length];
 		Windows type = Windows.valueOf(window.toUpperCase());
 		switch (type){
-		/*case RECTANGULAR: 
+		case RECTANGULAR: 
 
 			for(int i=0; i<length; i++){
 				wind[i] = 1;
 			}
 			return wind;
-		case HAMMING: 
+		/*case HAMMING: 
 			for(int i=0; i<length; i++){
 				wind[i] = 0.54-0.46*Math.cos(2*Math.PI*i/(length-1));
 			}
@@ -40,7 +40,7 @@ public class Window {
 			return wind;*/
 		case BESSEL: 
 			for (int i = 0; i<length; i++){
-				wind[i] = ModBesselFunctions.bessi0(Math.PI*3*Math.sqrt(1.0-Math.pow((i+0.0)/(length-1), 2)))/ModBesselFunctions.bessi0(Math.PI*3);
+				wind[i] = ModBesselFunctions.bessi0(Math.PI*2.4*Math.sqrt(1.0-Math.pow((i+0.0)/(length-1), 2)))/ModBesselFunctions.bessi0(Math.PI*2.4);
 			}
 			return wind;
 		

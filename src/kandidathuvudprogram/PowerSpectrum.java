@@ -107,6 +107,7 @@ public class PowerSpectrum {
 		int largestElement=(int) Math.ceil((maxfreq*FFTLength));
 		double[] relevantSpectrum = new double [largestElement-smallestElement];
 		System.arraycopy(spectrum[0],smallestElement,relevantSpectrum,0,largestElement-smallestElement);
+		
 		for(int i = 0; i < relevantSpectrum.length; i++){
 			relevantSpectrum[i] = ((Math.abs(relevantSpectrum[i]))/Math.pow(Math.E,divider)); // Math.log borttagen
 		}
