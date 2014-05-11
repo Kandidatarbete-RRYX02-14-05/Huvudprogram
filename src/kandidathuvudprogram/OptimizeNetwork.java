@@ -26,10 +26,10 @@ public class OptimizeNetwork {
 	Thread thread[];
 	public static void main(String args[]){
 		OptimizeNetwork optNet = new OptimizeNetwork(200, 0.0); 
-		optNet.setNumberNeurons(70,70, 1);
+		optNet.setNumberNeurons(600, 620, 20);
                 //optNet.manualNumberNeurons();
                 
-		optNet.multiThreadNeuronTest(1, "TrainDatum1.txt","genDatum1.txt");  
+		optNet.multiThreadNeuronTest(3, "TrainDatum1.txt","genDatum1.txt");  
 	}
 
         public void manualNumberNeurons(){
