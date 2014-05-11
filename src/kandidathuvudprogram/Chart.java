@@ -47,7 +47,7 @@ public class Chart {
         int L=data.length;
         for (int i=0; i<L/2; i++){ // vilka punkter ska plottas?
         	//dataChart.add(i*2*Math.PI/L,Math.log(data[i]));
-                dataChart.add(1000*i/L,Math.log(Math.abs(data[i])));
+                dataChart.add(1000*i/L,Math.abs(data[i]));
         }
         JFreeChart chart = ChartFactory.createXYLineChart
                      ("Power Spectrum",  // Title
