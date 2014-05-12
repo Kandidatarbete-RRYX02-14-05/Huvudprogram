@@ -25,8 +25,8 @@ public class OptimizeNetwork {
 	final double maxErrorTrain;
 	Thread thread[];
 	public static void main(String args[]){
-		OptimizeNetwork optNet = new OptimizeNetwork(200, 0.0); 
-		optNet.setNumberNeurons(600, 620, 20);
+		OptimizeNetwork optNet = new OptimizeNetwork(250, 0.0); 
+		optNet.setNumberNeurons(1, 30, 20);
                 //optNet.manualNumberNeurons();
                 
 		optNet.multiThreadNeuronTest(3, "TrainDatum1.txt","genDatum1.txt");  
