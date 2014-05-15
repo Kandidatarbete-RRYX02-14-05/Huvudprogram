@@ -367,7 +367,7 @@ public class WaveCorrTest {
 		Import imp = new Import();
 		lugnDag=imp.importWhole("wavedata/removedmissing/20100726_12.tsv");
 		for ( int i=0; i<inputSize; i++){
-			tmp[i]=Double.parseDouble(lugnDag[i])/14.0;
+			tmp[i]=Math.pow(Double.parseDouble(lugnDag[i])/14.0,2);
 		}
 
 		for ( int i = 0; i < nbrsToTry.length ; i++){
@@ -382,6 +382,102 @@ public class WaveCorrTest {
 		return network.compute(tmpML).getData();
 	}
 
+	// Do not even try to understand.. It is master hardcode.. 
+	public double pyramidTest(Point p){ 
+
+		double[] tmp = new double[inputSize];
+		String[] lugnDag = new String[inputSize];
+		Import imp = new Import();
+		lugnDag=imp.importWhole("wavedata/removedmissing/20100726_12.tsv");
+		for ( int i=0; i<inputSize; i++){
+			tmp[i]=Double.parseDouble(lugnDag[i])/14.0;
+		}
+		Point[] pArr = {p};
+		if (Filemanager.choosePoints(pArr).length>0){
+		Point[] pArr2 = {new Point((int) (p.getX() + 1.5) ,(int) (p.getY()+1.5)), 
+				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()+1.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()+1.5)),
+				new Point((int) (p.getX() + 1.5) ,(int) (p.getY()+0.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()+0.5)),
+				new Point((int) (p.getX() + 1.5) ,(int) (p.getY()-0.5)),
+				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()-0.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()-0.5))};
+
+
+
+
+		
+		Point[] pArr3 = {new Point((int) (p.getX() + 2.5) ,(int) (p.getY()+2.5)), 
+				new Point((int) (p.getX() + 1.5) ,(int) (p.getY()+2.5)),
+				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()+2.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()+2.5)),
+				new Point((int) (p.getX() -1.5) ,(int) (p.getY()+2.5)),
+				new Point((int) (p.getX() + 2.5) ,(int) (p.getY()+1.5)),
+				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()+1.5)),
+				new Point((int) (p.getX() + 2.5) ,(int) (p.getY()+0.5)),
+				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()+0.5)),
+				new Point((int) (p.getX() + 2.5) ,(int) (p.getY()-0.5)),
+				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()-0.5)),
+				new Point((int) (p.getX() +2.5) ,(int) (p.getY() -1.5)),
+				new Point((int) (p.getX() + 1.5) ,(int) (p.getY() - 1.5)),
+				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()-1.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()-1.5)),
+				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()-1.5))};
+
+		
+		Point[] pArr4 = {new Point((int) (p.getX() + 3.5) ,(int) (p.getY()+3.5)), 
+				new Point((int) (p.getX() + 2.5) ,(int) (p.getY()+3.5)),
+				new Point((int) (p.getX() + 1.5) ,(int) (p.getY()+3.5)),
+				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()+3.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()+3.5)),
+				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()+3.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()+3.5)),
+				new Point((int) (p.getX() + 3.5) ,(int) (p.getY()+2.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()+2.5)),
+				new Point((int) (p.getX() + 3.5) ,(int) (p.getY()+1.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()+1.5)),
+				new Point((int) (p.getX() + 3.5) ,(int) (p.getY()+0.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()+0.5)),
+				new Point((int) (p.getX() + 3.5) ,(int) (p.getY()-0.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()-0.5)),
+				new Point((int) (p.getX() + 3.5) ,(int) (p.getY()-1.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()-1.5)),
+				new Point((int) (p.getX() + 3.5) ,(int) (p.getY()-2.5)),
+				new Point((int) (p.getX() + 2.5) ,(int) (p.getY()-2.5)),
+				new Point((int) (p.getX() + 1.5) ,(int) (p.getY()-2.5)),
+				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()-2.5)),
+				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()-2.5)),
+				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()-2.5)),
+				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()-2.5))};
+		 
+		
+			 tmp[Filemanager.choosePoints(pArr)[0]] = 15; 
+		 
+
+		 for (int i = 0; i<Filemanager.choosePoints(pArr2).length; i++){
+			tmp[Filemanager.choosePoints(pArr2)[i]] = 10;
+		 }
+		 
+		for (int i = 0; i<Filemanager.choosePoints(pArr3).length; i++){
+
+			tmp[Filemanager.choosePoints(pArr3)[i]] = 5;
+		}
+		for (int i = 0; i<Filemanager.choosePoints(pArr4).length; i++){
+
+			tmp[Filemanager.choosePoints(pArr4)[i]] = 5;
+		}
+		  
+		  
+		 BasicMLData tmpML = new BasicMLData(tmp);
+		 double[] tmpData = network.compute(tmpML).getData();
+		 double returnValue = 0;
+		 for (int i = 0; i<tmpData.length; i++)
+			 returnValue += tmpData[i];
+		 return returnValue;
+		 }
+		else return 0;
+	}
+
 	public double[] fakeWaveTest(int X1, int X2, int Y1, int Y2, double waveHeight){
 
 		Point[] testPoints = new Point[Math.abs((X2-X1)*(Y2-Y1))];
@@ -393,7 +489,7 @@ public class WaveCorrTest {
 		}
 		return fakeWaveTest(Filemanager.choosePoints(testPoints),waveHeight);
 	}
-	
+
 	public void saveNetwork(){
 
 		int networkNbr = 1;
@@ -402,7 +498,7 @@ public class WaveCorrTest {
 		} 
 		EncogDirectoryPersistence.saveObject(new File("Data/Network/savedNetwork"+networkNbr), network);
 	}
-	
+
 	public void saveNetwork(File saveFile){
 		EncogDirectoryPersistence.saveObject(saveFile, network);
 	}
