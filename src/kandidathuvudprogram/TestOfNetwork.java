@@ -5,6 +5,7 @@
  */
 package kandidathuvudprogram;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -18,14 +19,16 @@ import java.util.logging.Logger;
  */
 public class TestOfNetwork {
 	public static void main(String[] args){
-	TestOfNetwork test = new TestOfNetwork(30,100);
-	test.testOne();
+	TestOfNetwork test = new TestOfNetwork(50,1000);
+	//test.testOne()
+        String naame = "groenlandsudden";
+        test.testArea("NetworkTest/" + naame + ".txt", naame);
 	System.exit(0);
 	}
     File networkFile;
     
     public TestOfNetwork(String networkFileName){
-        networkFile = new File(networkFileName);
+        networkFile = new File(networkFileName);    
     }
     
     public TestOfNetwork(int numberNeurons, int trainIterations){
@@ -36,6 +39,27 @@ public class TestOfNetwork {
         
         networkFile = new File("Network-NbrNeurons-" + numberNeurons + "-NbrIterations-" + trainIterations);
         network.saveNetwork(networkFile); 
+    }
+    
+    public void testArea(String fileName, String testName){
+        WaveCorrTest WTC = new WaveCorrTest(networkFile);// load(network);
+        Import imp = new Import();
+ 
+        String[] pointStr = imp.importWholeComma(fileName);
+        int[] nbrsToTry;
+        Point[] pts = new Point[pointStr.length];
+        
+        for (int i=0; i<pointStr.length/2-1; i++){
+            pts[i] = new Point(Integer.parseInt(pointStr[i*2]), Integer.parseInt(pointStr[i*2+1])); 
+        }
+        nbrsToTry = Filemanager.choosePoints(pts);
+        for (int waveH=0; waveH<15; waveH++) {
+            try {
+                Utskrift.write("NetworkTest/NetworkTest-" + testName + "-waveH-" + waveH + ".txt",WTC.fakeWaveTest(nbrsToTry, waveH/14.0));
+            } catch (IOException ex) {
+                Logger.getLogger(TestOfNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     // lat 1,35

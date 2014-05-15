@@ -400,7 +400,7 @@ public class WaveCorrTest {
 		while(new File("Data/Network/savedNetwork" + networkNbr).exists()){
 			networkNbr++;
 		} 
-		EncogDirectoryPersistence.saveObject(new File("Data/Network/savedNetwork"+networkNbr), network);
+		EncogDirectoryPersistence.saveObject(new File("Data/Network/savedNetwork"+networkNbr), network);      
 	}
 	
 	public void saveNetwork(File saveFile){
