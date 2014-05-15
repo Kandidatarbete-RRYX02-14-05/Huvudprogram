@@ -122,6 +122,35 @@ public class Import {
 		}
 		return new String[] {""};
 	}
+        
+        
+        public String[] importWholeComma(String filnamn){
+		FileInputStream fis = null;
+		try {
+			File file = new File(filnamn);
+			fis = new FileInputStream(file);
+			byte[] data = new byte[(int)file.length()];
+			fis.read(data);
+			fis.close();
+
+			String temp = new String(data, "UTF-8");
+			temp = temp.replaceAll("\r", "\n").replaceAll("\n\n","\n");
+			
+			return temp.split(",",-1);
+		} catch (FileNotFoundException ex) {
+			Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (IOException ex) {
+			Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
+		} finally {
+			try {
+				fis.close();
+			} catch (IOException ex) {
+				Logger.getLogger(Import.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
+		return new String[] {""};
+	}
+        
 /**
  * Tar in en strängarray med data och delar upp den i 4 delar och returnerar strängmatris med 4 strängar.
  * @param filnamn
