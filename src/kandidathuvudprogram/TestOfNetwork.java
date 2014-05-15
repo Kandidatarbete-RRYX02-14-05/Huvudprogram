@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class TestOfNetwork {
 	public static void main(String[] args){
-	TestOfNetwork test = new TestOfNetwork(50,1000);
+	TestOfNetwork test = new TestOfNetwork("Network-NbrNeurons-50-NbrIterations-50");
 	//test.testOne()
         String naame = "groenlandsudden";
         test.testArea("NetworkTest/" + naame + ".txt", naame);
