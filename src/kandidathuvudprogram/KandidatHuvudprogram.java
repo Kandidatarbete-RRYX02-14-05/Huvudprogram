@@ -30,6 +30,10 @@ public class KandidatHuvudprogram {
 	public static void main(String[] args) {
 
 
+
+		WaveCorrTest WTCgammal = new WaveCorrTest(new File("Network-NbrNeurons-50-NbrIterations-50"));
+		
+		System.out.println("" + WTCgammal.networkGenErrorTest(WTCgammal.networkGenErrorLoad( String Generrordates )));
 		int[] nbrNeurons = {50};
 		WaveCorrTest WTCsav = new WaveCorrTest(nbrNeurons);
 		
