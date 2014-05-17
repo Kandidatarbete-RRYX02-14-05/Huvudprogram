@@ -375,7 +375,7 @@ public class WaveCorrTest {
 				throw new IllegalArgumentException("All the numbers in the input arry to fakeWaveTest need to be within [0, idealSize-1] ; nbr " + i + " is not. :(");
 			}
 			else{
-				tmp[nbrsToTry[i]] = waveHeight; 
+				tmp[nbrsToTry[i]] = Math.pow(waveHeight/14,2); 
 			}
 		}
 		BasicMLData tmpML = new BasicMLData(tmp); 
@@ -383,17 +383,34 @@ public class WaveCorrTest {
 	}
 
 	// Do not even try to understand.. It is master hardcode.. 
-	public double pyramidTest(Point p){ 
+	public double[] pyramidTest(Point p){ 
 
 		double[] tmp = new double[inputSize];
 		String[] lugnDag = new String[inputSize];
 		Import imp = new Import();
 		lugnDag=imp.importWhole("wavedata/removedmissing/20100726_12.tsv");
+		
 		for ( int i=0; i<inputSize; i++){
 			tmp[i]=Double.parseDouble(lugnDag[i])/14.0;
 		}
+		try {
+			Utskrift.write("NetworkTest/NetworkTest-" + "lugndag" + "-waveH-" + 0 + ".txt",tmp);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Point[] pArr = {p};
-		if (Filemanager.choosePoints(pArr).length>0){
+		
+
+		if (Filemanager.choosePoints(pArr).length<1){
+			
+			double[] A = {0, 0}; 
+			return A;
+		
+		} else {
+			
+			 tmp[Filemanager.choosePoints(pArr)[0]] = Math.pow(14/14.0,2);
+			
 		Point[] pArr2 = {new Point((int) (p.getX() + 1.5) ,(int) (p.getY()+1.5)), 
 				new Point((int) (p.getX() + 0.5) ,(int) (p.getY()+1.5)),
 				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()+1.5)),
@@ -404,8 +421,11 @@ public class WaveCorrTest {
 				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()-0.5))};
 
 
-
-
+		 for (int i = 0; i<Filemanager.choosePoints(pArr2).length; i++){
+				tmp[Filemanager.choosePoints(pArr2)[i]] = Math.pow(10.0/14,2);
+			 }
+			 
+		 /*
 		
 		Point[] pArr3 = {new Point((int) (p.getX() + 2.5) ,(int) (p.getY()+2.5)), 
 				new Point((int) (p.getX() + 1.5) ,(int) (p.getY()+2.5)),
@@ -424,6 +444,11 @@ public class WaveCorrTest {
 				new Point((int) (p.getX() - 0.5) ,(int) (p.getY()-1.5)),
 				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()-1.5))};
 
+		
+		for (int i = 0; i<Filemanager.choosePoints(pArr3).length; i++){
+
+			tmp[Filemanager.choosePoints(pArr3)[i]] = Math.pow(7.0/14,2);
+		}
 		
 		Point[] pArr4 = {new Point((int) (p.getX() + 3.5) ,(int) (p.getY()+3.5)), 
 				new Point((int) (p.getX() + 2.5) ,(int) (p.getY()+3.5)),
@@ -450,32 +475,31 @@ public class WaveCorrTest {
 				new Point((int) (p.getX() - 1.5) ,(int) (p.getY()-2.5)),
 				new Point((int) (p.getX() - 2.5) ,(int) (p.getY()-2.5))};
 		 
-		
-			 tmp[Filemanager.choosePoints(pArr)[0]] = 15; 
-		 
-
-		 for (int i = 0; i<Filemanager.choosePoints(pArr2).length; i++){
-			tmp[Filemanager.choosePoints(pArr2)[i]] = 10;
-		 }
-		 
-		for (int i = 0; i<Filemanager.choosePoints(pArr3).length; i++){
-
-			tmp[Filemanager.choosePoints(pArr3)[i]] = 5;
-		}
 		for (int i = 0; i<Filemanager.choosePoints(pArr4).length; i++){
 
-			tmp[Filemanager.choosePoints(pArr4)[i]] = 5;
+			tmp[Filemanager.choosePoints(pArr4)[i]] = Math.pow(5.0/14,2);
 		}
 		  
+		
+			 */
+		 
+
+		
+		
+		
 		  
 		 BasicMLData tmpML = new BasicMLData(tmp);
 		 double[] tmpData = network.compute(tmpML).getData();
-		 double returnValue = 0;
+		 double[] returnValue = {0 ,0};
 		 for (int i = 0; i<tmpData.length; i++)
-			 returnValue += tmpData[i];
+			 for (int j = 30; j<70 ; j++){
+			  returnValue[0] += tmpData[j];
+			 }
+		 for (int j = 100; j<200 ; j++){
+			  returnValue[1] += tmpData[j];
+			 }
 		 return returnValue;
-		 }
-		else return 0;
+		}
 	}
 
 	public double[] fakeWaveTest(int X1, int X2, int Y1, int Y2, double waveHeight){

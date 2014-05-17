@@ -30,20 +30,9 @@ public class KandidatHuvudprogram {
 	public static void main(String[] args) {
 
 
-		
-		int[] nbrOfNeurons = {70};
-		boolean threshold=true;
-		double alpha=0.99;
-		WaveCorrTest WTC = new WaveCorrTest("TrainDatum1.txt","genDatum.txt", nbrOfNeurons, threshold, alpha, 
-				"Bessel", 0,  0,0 , "resilientpropagation", "activationsigmoid" );
-		System.out.println("" + WTC.inputSize);
-		
-		BufferedMLDataSet set = WTC.networkGenErrorLoad();
-		for(int epoch = 0; epoch < 150; epoch++){ 
-			System.out.println("Epoch #" + epoch + " Error: " + WTC.networkTrain() + "		GenError: " + WTC.networkGenErrorTest(set));
-		}
-
+		WaveCorrTest WTC = new WaveCorrTest(new File("Data/Network/Network-NbrNeurons-50-NbrIterations-50"));
 		useNetwork.createFilesForAllDays(WTC);
+		useNetwork.createGenErrorFiles(WTC);
 		System.exit(0);
 
 		/* 
