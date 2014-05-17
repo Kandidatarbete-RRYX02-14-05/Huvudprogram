@@ -30,7 +30,14 @@ public class KandidatHuvudprogram {
 	public static void main(String[] args) {
 
 
-		WaveCorrTest WTC = new WaveCorrTest(new File("Data/Network/Network-NbrNeurons-50-NbrIterations-50"));
+		int[] nbrNeurons = {50};
+		WaveCorrTest WTCsav = new WaveCorrTest(nbrNeurons);
+		
+		WTCsav.networkMultiTrain(150);
+		WTCsav.saveNetwork(new File("NETWORKDONE"));
+		
+		
+		WaveCorrTest WTC = new WaveCorrTest(new File("NETWORKDONE"));
 		useNetwork.createFilesForAllDays(WTC);
 		useNetwork.createGenErrorFiles(WTC);
 		System.exit(0);
